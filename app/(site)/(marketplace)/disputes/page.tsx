@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import React, { useCallback, useEffect, useState } from 'react'
 import { AlertCircle, Search, Filter } from 'lucide-react'
 import DisputeDetails from '@/app/components/AdminComponents/DisputeDetails'
@@ -21,6 +23,11 @@ export interface ApiDispute {
         paymentStatus: string
         paymentMethod: string
         createdAt: string
+        items?: Array<{
+            seller?: {
+                businessName: string
+            }
+        }>
     }
     buyer: {
         id: string

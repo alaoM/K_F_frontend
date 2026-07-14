@@ -19,6 +19,8 @@ export interface Product {
   views: number;
   attributes: Record<string, any>;
   status: string;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 // 2. Cart items only need specific data
@@ -29,6 +31,7 @@ export interface CartItem {
   primaryImage: string;
   quantity: number;
   businessName: string;
+  color?: string;
 }
 
 interface CartState {

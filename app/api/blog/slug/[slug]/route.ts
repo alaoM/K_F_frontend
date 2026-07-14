@@ -4,7 +4,7 @@ import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
 export async function GET(
     request: Request,
-    { params }: { params: { slug: string } }
+    { params }: { params: Promise<{ slug: string }> }
 ) {
 
     try {
@@ -18,7 +18,7 @@ export async function GET(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { slug: string } }
+    { params }: { params: Promise<{ slug: string }> }
 ) {
     try {
         const token = await getAuthToken();

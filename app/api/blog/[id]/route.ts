@@ -4,10 +4,11 @@ import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const response = await axios.get(`${process.env.BASE_URL}/blog/${params.id}`);
+        const { id } = await params;
+        const response = await axios.get(`${process.env.BASE_URL}/blog/${id}`);
         return NextResponse.json(response.data);
     } catch (error) {
         return handleAxiosError(error);
@@ -16,12 +17,13 @@ export async function GET(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const token = await getAuthToken();
         const response = await axios.delete(
-            `${process.env.BASE_URL}/blog/${params.id}`,
+            `${process.env.BASE_URL}/blog/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

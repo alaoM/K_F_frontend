@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { setCookie, getCookie, deleteCookie } from "cookies-next";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { decrypt, encrypt } from "@/secure/__enc";
 import { get } from "http";
@@ -91,7 +91,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   // Helper: Persistence
   const updateLocalUser = (userData: User) => {
@@ -260,7 +259,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!userData.isOnboarded) {
       router.push(`/`);
     } else {
-      const redirectUrl = searchParams.get("redirect") || `/dashboard/${userData.role.toLowerCase()}`;
+      const redirectUrl = (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get("redirect") : null) || `/dashboard/${userData.role.toLowerCase()}`;
       router.push(decodeURIComponent(redirectUrl));
     }
   };
@@ -330,7 +329,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast.info("Check your email to verify your account");
       }
 
-       const redirectUrl = searchParams.get("redirect")
+       const redirectUrl = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get("redirect") : null;
 
       
 

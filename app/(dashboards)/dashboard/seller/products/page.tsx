@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic'
+
 import AddProduct from '@/app/components/AdminComponents/AddProduct';
 import ProductList from '@/app/components/AdminComponents/ProductsList';
 import React, { useState } from 'react';

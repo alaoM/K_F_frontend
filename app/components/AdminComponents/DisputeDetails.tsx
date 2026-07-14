@@ -17,7 +17,7 @@ import { ApiDispute, ApiMessage } from '@/app/(site)/(marketplace)/disputes/page
 interface Props {
     dispute: ApiDispute
     onBack: () => void
-    onResolved: () => void
+    onResolved?: () => void
 }
 
 // ✅ Matches your existing upload helpers exactly
@@ -218,7 +218,7 @@ const DisputeDetails: React.FC<Props> = ({ dispute, onBack, onResolved }) => {
                 }),
             })
             toast.success(action === 'release' ? 'Funds released to seller' : 'Refund issued to buyer')
-            onResolved()
+            onResolved?.()
             onBack()
         } catch {
             toast.error('Resolution failed')

@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+export const dynamic = 'force-dynamic'
+
+import React, { Suspense, useEffect, useState } from "react";
 import { ShieldCheck, XCircle, Loader2 } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -10,7 +12,7 @@ type FormData = {
   email: string;
 };
 
-const EmailVerification: React.FC = () => {
+const EmailVerificationContent: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -161,4 +163,10 @@ const EmailVerification: React.FC = () => {
   );
 };
 
-export default EmailVerification;
+export default function EmailVerification() {
+  return (
+    <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center"><div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" /></div>}>
+      <EmailVerificationContent />
+    </Suspense>
+  )
+}

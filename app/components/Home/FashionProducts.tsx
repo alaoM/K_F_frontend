@@ -6,7 +6,16 @@ import { useState, useRef } from "react"
 
 const TABS = ["Jackets", "Jeans", "Pants", "Shirts", "T-shirts"]
 
-const PRODUCTS = {
+type ProductItem = {
+    id: number
+    name: string
+    price: number
+    oldPrice: number
+    image1: string
+    image2: string
+}
+
+const PRODUCTS: Record<string, ProductItem[]> = {
     "T-shirts": [
         {
             id: 1,
@@ -212,9 +221,9 @@ const PRODUCTS = {
 
 const FashionProducts = () => {
     const [activeTab, setActiveTab] = useState("T-shirts")
-    const scrollRef = useRef(null)
+    const scrollRef = useRef<HTMLDivElement>(null)
 
-    const scroll = direction => {
+    const scroll = (direction: 'left' | 'right') => {
         if (!scrollRef.current) return
         scrollRef.current.scrollBy({
             left: direction === "left" ? -300 : 300,

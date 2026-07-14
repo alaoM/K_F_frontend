@@ -29,7 +29,7 @@ type SellerForm = {
     banner?: string
 }
 
-const GeneralSettings = ({user}) => {
+const GeneralSettings = ({ user }: { user: any }) => {
     const {  refreshUserData } = useAuth()
     const fetcher = useApi()
 

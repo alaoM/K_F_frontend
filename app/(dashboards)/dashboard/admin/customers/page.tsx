@@ -1,4 +1,6 @@
 'use client';
+
+export const dynamic = 'force-dynamic'
 import React, { use, useCallback, useEffect, useState } from 'react';
 import { MoreVertical, Mail, Phone, UserPlus, Search, Filter } from 'lucide-react';
 import { useDebounce } from '@/hooks/debounceHook';

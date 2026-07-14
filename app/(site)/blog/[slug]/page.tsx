@@ -1,4 +1,6 @@
 "use client"
+
+export const dynamic = 'force-dynamic'
 import React, { useEffect, useState } from 'react';
 import { User, MessageSquare, Facebook, Twitter, Linkedin, Link2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useParams } from 'next/navigation';

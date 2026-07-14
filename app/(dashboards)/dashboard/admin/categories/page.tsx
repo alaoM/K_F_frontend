@@ -1,4 +1,6 @@
 "use client";
+
+export const dynamic = 'force-dynamic'
 import React, { useCallback, useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Folder } from 'lucide-react';
 import AddCategoryModal from '@/app/components/AdminComponents/AddCategory';

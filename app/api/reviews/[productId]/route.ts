@@ -4,7 +4,7 @@ import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { productId: string } }
+    { params }: { params: Promise<{ productId: string }> }
 ) {
     try {
         const { productId } = await params;
@@ -17,7 +17,7 @@ export async function GET(
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { productId: string } }
+    { params }: { params: Promise<{ productId: string }> }
 ) {
     try {
         const { productId } = await params;

@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic'
+
 import React, { useState } from 'react';
 import BlogList from '@/app/components/AdminComponents/BlogList';
 import AddBlog from '@/app/components/AdminComponents/AddBlog';

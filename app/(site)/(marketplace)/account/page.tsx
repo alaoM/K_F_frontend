@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import Disputes from '@/app/components/marketplace/accountPage/Disputes'
 import Orders from '@/app/components/marketplace/accountPage/Orders'
 import Profile from '@/app/components/marketplace/accountPage/Profile'
@@ -7,9 +9,9 @@ import Security from '@/app/components/marketplace/accountPage/Security'
 import Sidebar from '@/app/components/marketplace/accountPage/Sidebar'
 import { useAuth } from '@/context/AuthContext'
 import { useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
-export default function AccountPage() {
+function AccountContent() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'profile'
@@ -80,5 +82,13 @@ export default function AccountPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" /></div>}>
+      <AccountContent />
+    </Suspense>
   )
 }

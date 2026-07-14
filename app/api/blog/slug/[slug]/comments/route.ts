@@ -4,7 +4,7 @@ import { handleAxiosError } from "@/helpers/__helper";
 
 export async function POST(
     request: Request,
-    { params }: { params: { slug: string } }
+    { params }: { params: Promise<{ slug: string }> }
 ) {
     try {
         const { slug } = await params;

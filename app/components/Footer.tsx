@@ -148,7 +148,7 @@ export default function Footer() {
     );
 }
 
-function FooterLink({ label, href = "#" }) {
+function FooterLink({ label, href = "#" }: { label: string; href?: string }) {
     return (
         <Link href={href} className="text-[13px] text-gray-500 hover:text-[#f6c947] transition-colors font-medium">
             {label}
@@ -156,7 +156,7 @@ function FooterLink({ label, href = "#" }) {
     );
 }
 
-function SocialIcon({ icon }) {
+function SocialIcon({ icon }: { icon: React.ReactNode }) {
     return (
         <div className="w-9 h-9 border border-gray-100 flex items-center justify-center text-[#222222] hover:bg-[#f6c947] hover:text-white hover:border-[#f6c947] transition-all cursor-pointer">
             {icon}

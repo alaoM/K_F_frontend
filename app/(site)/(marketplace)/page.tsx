@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import React, { useCallback, useEffect, useState } from 'react'
 import { LayoutGrid, LayoutList, Truck, RefreshCw, Headphones, ShieldCheck } from 'lucide-react'
 import { useCartStore } from '@/store/useCartStore'
@@ -139,7 +141,7 @@ export default function Page() {
 
                     {loading ? (
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <ProductSkeleton key={i} />)}
+                            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <ProductSkeleton key={i} view="grid" />)}
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
@@ -189,11 +191,11 @@ export default function Page() {
     )
 }
 
-function ServiceBlock({ icon, title, desc }) {
+function ServiceBlock({ icon, title, desc }: { icon: React.ReactElement; title: string; desc: string }) {
     return (
         <div className="flex items-center gap-6 group cursor-default">
             <div className="w-16 h-16 rounded-full bg-[#f5f5f5] flex items-center justify-center transition-all group-hover:bg-[#222222] group-hover:text-white">
-                {React.cloneElement(icon as React.ReactElement, { size: 28 })}
+                {React.cloneElement(icon, { size: 28 } as any)}
             </div>
             <div>
                 <h4 className="text-sm font-black uppercase tracking-widest text-[#222222]">{title}</h4>

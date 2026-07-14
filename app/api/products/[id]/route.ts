@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const {id} = await params;
         const res = await axios.get(`${process.env.BASE_URL}/products/${id}`);
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const {id} = await params;
         const token = await getAuthToken();
@@ -28,7 +28,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const {id} = await params;
         const token = await getAuthToken();

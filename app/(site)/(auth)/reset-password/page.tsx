@@ -1,8 +1,10 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import Link from "next/link"
 import { useForm } from "react-hook-form"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { toast } from "react-toastify"
 import { useRouter } from 'next/navigation'
@@ -13,7 +15,7 @@ type FormData = {
   otp?: string
 }
 
-const Page = () => {
+const ResetPasswordContent = () => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams();
@@ -176,5 +178,11 @@ const Page = () => {
     </>
   )
 }
+
+const Page = () => (
+  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" /></div>}>
+    <ResetPasswordContent />
+  </Suspense>
+)
 
 export default Page

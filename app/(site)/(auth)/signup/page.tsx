@@ -1,9 +1,11 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useAuth } from "@/context/AuthContext"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
@@ -17,7 +19,7 @@ type FormData = {
   terms: boolean
 }
 
-const Page = () => {
+const SignupContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -244,5 +246,11 @@ hover:text-[#eaeaea] font-semibold px-5 py-3 rounded-md bg-[#f6c947] text-black 
     </>
   )
 }
+
+const Page = () => (
+  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" /></div>}>
+    <SignupContent />
+  </Suspense>
+)
 
 export default Page

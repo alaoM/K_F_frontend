@@ -1,4 +1,6 @@
 "use client";
+
+export const dynamic = 'force-dynamic'
 import React, { useEffect, useState } from 'react';
 import { Shield, Bell, CreditCard, Store, Mail, MessageSquare, Loader2 } from 'lucide-react';
 import Security from '@/app/components/AdminComponents/Security';

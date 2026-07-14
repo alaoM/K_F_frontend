@@ -1,9 +1,9 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = params.id;
+        const { id } = await params;
         // The backend GET /seller/:slug also works for IDs because of TypeORM findOne behavior or explicit logic
         // But the controller specifically says :slug
         const res = await axios.get(`${process.env.BASE_URL}/seller/${id}`);

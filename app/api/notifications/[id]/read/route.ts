@@ -4,11 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = await getAuthToken();
-    const { id } = params;
+    const { id } = await params;
     const backendUrl = `${process.env.BASE_URL}/notifications/${id}/read`;
 
     const response = await axios.patch(backendUrl, {}, {

@@ -1,4 +1,6 @@
 "use client"
+
+export const dynamic = 'force-dynamic'
 import React, { useCallback, useEffect, useState } from 'react';
 import {
     AlertCircle,
@@ -25,6 +27,8 @@ export interface Dispute {
     status: 'pending' | 'escalated' | 'resolved' | 'under-review' | 'resolved' | 'closed' | 'open' | 'awaiting_response' | 'resolved_released' | 'resolved_refunded'
     priority: 'high' | 'medium' | 'low'; // Matches lowercase from API
     createdAt: string;
+    updatedAt?: string;
+    adminResolutionNote?: string | null;
     messages: any[];
 }
 
@@ -37,7 +41,7 @@ const initialDisputes: Dispute[] = [
         reason: 'Item not as described (Quality issue)',
         amount: 124.50,
         status: 'pending',
-        priority: 'High',
+        priority: 'high',
         createdAt: 'Apr 05, 2026',
         messages: [
             { id: '1', sender: 'Buyer', text: "The fabric quality is much thinner than what was shown in the photos. I'd like a full refund.", timestamp: 'Apr 05, 10:30 AM' },
@@ -52,7 +56,7 @@ const initialDisputes: Dispute[] = [
         reason: 'Shipping Delay (Package lost)',
         amount: 89.99,
         status: 'escalated',
-        priority: 'Medium',
+        priority: 'medium',
         createdAt: 'Apr 03, 2026',
         messages: [
             { id: '1', sender: 'Buyer', text: "It's been 10 days and the tracking hasn't updated. Where is my order?", timestamp: 'Apr 03, 09:00 AM' },
@@ -67,7 +71,7 @@ const initialDisputes: Dispute[] = [
         reason: 'Wrong size delivered',
         amount: 245.00,
         status: 'resolved',
-        priority: 'Low',
+        priority: 'low',
         createdAt: 'Mar 28, 2026',
         messages: [
             { id: '1', sender: 'Buyer', text: "I ordered a Medium but received a Small.", timestamp: 'Mar 28, 04:30 PM' },
