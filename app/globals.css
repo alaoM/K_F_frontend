@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  /* Mitho Fashion Color Palette */
+  --mitho-primary: #f6c947;
+  /* Pinkish red from fashion demo */
+  --mitho-secondary: #222222;
+  --mitho-text: #666666;
+  --mitho-heading: #222222;
+  --mitho-bg: #ffffff;
+  --mitho-border: #eeeeee;
+
+  --font-poppins: 'Poppins', sans-serif;
+}
+
+body {
+  font-family: var(--font-poppins);
+  color: var(--mitho-text);
+  background-color: var(--mitho-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--mitho-heading);
+  font-weight: 600;
+}
+
+/* Mitho Utility Classes */
+.mitho-btn {
+  @apply px-8 py-3 bg-[#222222] text-white font-bold uppercase text-xs tracking-widest transition-all hover:bg-[#f6c947] rounded-none;
+}
+
+.mitho-label-hot {
+  @apply bg-[#f6c947] text-white text-[9px] px-1.5 py-0.5 rounded-sm uppercase font-bold absolute -top-3 -right-2;
+}
+
+.mitho-label-sale {
+  @apply bg-[#222222] text-white text-[9px] px-1.5 py-0.5 rounded-sm uppercase font-bold absolute -top-3 -right-2;
+}
+
+.section-title-mitho {
+  @apply text-center mb-12;
+}
+
+.section-title-mitho h2 {
+  @apply text-3xl font-bold uppercase tracking-tight mb-2;
+}
+
+.section-title-mitho p {
+  @apply text-sm text-gray-400 max-w-lg mx-auto;
+}
+
+/* Transitions */
+.mitho-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
