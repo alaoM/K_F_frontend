@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const cookieStore = await cookies();
 
     const enc_email = cookieStore.get("u_mail")?.value;
-    const email = enc_email ? decrypt(enc_email) : null;
+    const email = body.email || (enc_email ? decrypt(enc_email) : null);
 
     // 1. Validate input early
     if (!body?.token) {

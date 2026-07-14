@@ -20,6 +20,7 @@ const ResetPasswordContent = () => {
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams();
   const q = searchParams.get("q");
+  const email = searchParams.get("email");
 
   const router = useRouter()
 
@@ -48,7 +49,7 @@ const ResetPasswordContent = () => {
         body: JSON.stringify({
           token: q,
           newPassword: password,
-
+          email: email,
         }),
       })
 
