@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import { Save, Globe, Shield, Bell, CreditCard, Store, Lock, Smartphone, Mail, MessageSquare, CheckCircle2 } from 'lucide-react';
 import Security from '@/app/components/AdminComponents/Security';
 import GeneralSettings from '@/app/components/AdminComponents/GeneralSettings';
-import PaymentSettings from '@/app/components/AdminComponents/PaymentSettings';
 
 const Settings: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState('general');
@@ -44,7 +43,19 @@ const Settings: React.FC = () => {
   );
 
   const renderPayments = () => (
-    <PaymentSettings />
+    <div className="bg-white p-8 rounded-2xl border border-[#e2e2e2] shadow-sm space-y-6">
+      <div className="border-b border-[#e2e2e2] pb-6">
+        <h3 className="text-xl font-black text-[#243e6b] uppercase tracking-tighter">Platform Payment Configuration</h3>
+        <p className="text-sm text-gray-400 font-medium">Manage platform-level payment gateway settings and commission rules.</p>
+      </div>
+      <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+        <CreditCard size={20} className="text-[#243e6b] shrink-0" />
+        <p className="text-sm text-[#243e6b] font-medium">
+          Platform payment gateway settings (Paystack / Flutterwave keys) are managed via environment variables.
+          Commission rates are configurable under <strong>General Settings</strong>.
+        </p>
+      </div>
+    </div>
   );
 
   const renderSecurity = () => (

@@ -9,6 +9,8 @@ import { useAuth } from '@/context/AuthContext';
 import NotificationBell from './AdminComponents/NotificationBell';
 
 const TopNotificationBar = ({ user }: { user: any }) => (
+  <>
+
   <div className="bg-[#f6c947] py-2.5 text-white text-[11px] font-bold uppercase tracking-widest text-center">
     <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
       <div className="hidden md:block">FREE SHIPPING ON ORDERS OVER $100</div>
@@ -36,6 +38,7 @@ const TopNotificationBar = ({ user }: { user: any }) => (
       </div>
     </div>
   </div>
+  </>
 );
 
 const Header = () => {
@@ -57,6 +60,7 @@ const Header = () => {
     { title: 'Blogs', href: '/blog' },
     { title: 'Pages', href: '#' },
   ];
+   
 
   return (
     <>
@@ -66,7 +70,7 @@ const Header = () => {
           <div className="flex items-center justify-between h-20">
             {/* LOGO */}
             <Link href="/" className="shrink-0">
-              <Image src="/logo.png" alt="Mitho Logo" width={100} height={35} className="object-contain" />
+              <Image src="/logo.png" alt="fkstores Logo" width={160} height={55} className="object-contain" />
             </Link>
 
             {/* DESKTOP MENU */}

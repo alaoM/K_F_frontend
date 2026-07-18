@@ -96,7 +96,7 @@ export const getStatusColor = (status: Dispute['status']) => {
 
 const DisputeCenter: React.FC = () => {
     const fetcher = useApi() as (url: string, options?: RequestInit) => Promise<{ data: Dispute[] }>;
-    const [disputes, setDisputes] = useState<Dispute[]>(initialDisputes);
+    const [disputes, setDisputes] = useState<Dispute[]>([]);
     const [selectedDispute, setSelectedDispute] = useState<Dispute | null>(null);
 
     const [loading, setLoading] = useState(true);
@@ -140,6 +140,14 @@ const DisputeCenter: React.FC = () => {
                 dispute={selectedDispute}
                 onBack={() => setSelectedDispute(null)}
             />
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#243e6b]" />
+            </div>
         );
     }
 

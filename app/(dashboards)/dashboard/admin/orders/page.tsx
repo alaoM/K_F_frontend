@@ -48,7 +48,7 @@ export default function OrderList() {
 
   const fetchSales = async () => {
     try {
-      const res = await fetcher('/api/sellers/sales');
+      const res = await fetcher('/api/admin/orders');
 
       setSales(res || []);
     } catch (err) {

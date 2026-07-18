@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
 import {
   ChevronLeft,
@@ -124,9 +125,17 @@ const ProductDetailClient = () => {
         <div className="space-y-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="px-3 py-1 bg-blue-50 text-[#243e6b] text-[10px] font-black uppercase tracking-widest rounded-full">
-                {product.seller?.businessName || 'Verified Vendor'}
-              </span>
+              {product.seller?.id ? (
+                <Link href={`/store/${product.seller.id}`}>
+                  <span className="px-3 py-1 bg-blue-50 text-[#243e6b] text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-blue-100 transition-all cursor-pointer">
+                    {product.seller.businessName}
+                  </span>
+                </Link>
+              ) : (
+                <span className="px-3 py-1 bg-blue-50 text-[#243e6b] text-[10px] font-black uppercase tracking-widest rounded-full">
+                  Vendor
+                </span>
+              )}
               <div className="flex items-center gap-1 text-amber-500">
                 <Star size={14} fill="currentColor" />
                 <span className="text-sm font-bold">{product.averageRating || 0}</span>
