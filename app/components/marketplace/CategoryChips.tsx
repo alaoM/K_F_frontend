@@ -14,8 +14,7 @@ const CategoryBanners = () => {
       try {
         const res = await fetch('/api/categories');
         const json = await res.json();
-        if (json.success) {
-          // Take top 3 for the banners
+        if (json.success && Array.isArray(json.data)) {
           setCategories(json.data.slice(0, 3));
         }
       } catch (err) {
@@ -28,66 +27,63 @@ const CategoryBanners = () => {
   }, []);
 
   const fallbackImages = [
-    '/img/cat/home10-cat1.jpg',
-    '/img/cat/home10-cat2.jpg',
-    '/img/cat/home10-cat3.jpg'
+    '/slides/slider1.jpg',
+    '/slides/slider2.jpg',
+    '/breadcrumb/breadcrumb.jpg'
   ];
 
   if (loading) return (
-    <div className="container mx-auto px-4 py-24">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[1, 2, 3].map(i => (
-          <div key={i} className="aspect-[4/5] bg-gray-100 animate-pulse rounded-xl" />
+          <div key={i} className="h-40 bg-gray-100 animate-pulse rounded-none" />
         ))}
       </div>
     </div>
   );
 
   return (
-    <section className="py-24">
+    <section className="py-10 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Title */}
-        <div className="text-center mb-16">
-          <span className="text-[#f6c947] text-xs font-bold uppercase tracking-[0.4em] mb-4 block">Collection</span>
-          <h2 className="text-4xl font-black text-[#222222] uppercase tracking-tight">Our categories</h2>
+        <div className="text-center mb-8">
+          <span className="text-[#f6c947] text-[10px] font-bold uppercase tracking-[0.4em] mb-2 block">Categories</span>
+          <h2 className="text-2xl md:text-3xl font-black text-[#222222] uppercase tracking-tight">Shop By Category</h2>
         </div>
 
-        {/* Banner Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {categories.map((cat, i) => {
-            const titleParts = cat.name.split(' ');
-            return (
-              <div key={cat.id} className="group relative overflow-hidden bg-[#f5f5f5] aspect-[4/5]">
-                <Image
-                  src={cat.image || fallbackImages[i % 3]}
-                  alt={cat.name}
-                  fill
-                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500" />
+        {/* Banner Grid - Compact height with sharp rectangular edges */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {categories.map((cat, i) => (
+            <div key={cat.id || i} className="group relative overflow-hidden bg-[#111111] h-44 md:h-48 rounded-none border border-gray-200">
+              <Image
+                src={cat.image || fallbackImages[i % 3]}
+                alt={cat.name}
+                fill
+                className="object-cover opacity-75 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                <Link href={`/collections?category=${cat.slug}`} className="absolute inset-0 z-10">
-                  <div className="absolute top-10 left-10">
-                    <h3 className="text-3xl font-black text-[#222222] uppercase leading-[0.9] tracking-tighter">
-                      {titleParts.map((line: string, idx: number) => (
-                        <span key={idx} className="block">{line}</span>
-                      ))}
-                    </h3>
-                  </div>
+              <Link href={`/collections?category=${encodeURIComponent(cat.name)}`} className="absolute inset-0 z-10 p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#f6c947] block mb-1">
+                    Featured Category
+                  </span>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tight group-hover:text-[#f6c947] transition-colors">
+                    {cat.name}
+                  </h3>
+                </div>
 
-                  <div className="absolute bottom-10 left-10">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#222222] bg-white px-4 py-2 rounded-full">
-                      Explore {cat.name}
-                    </span>
+                <div className="flex items-center justify-between pt-2 border-t border-white/20">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+                    Explore Now
+                  </span>
+                  <div className="w-8 h-8 bg-[#f6c947] text-[#222222] rounded-none flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                    <ArrowRight size={16} />
                   </div>
-
-                  <div className="absolute bottom-8 right-8 w-12 h-12 bg-[#222222] rounded-full flex items-center justify-center text-white transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <ArrowRight size={24} />
-                  </div>
-                </Link>
-              </div>
-            );
-          })}
+                </div>
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -1,17 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, User, ShoppingBag, Heart, Menu, X, ChevronDown } from 'lucide-react';
+import { HelpCircle, User, ShoppingCart, Menu, X, ChevronDown, LogOut } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useAuth } from '@/context/AuthContext';
 import NotificationBell from './AdminComponents/NotificationBell';
 
 const TopNotificationBar = ({ user }: { user: any }) => (
-  <>
-
-  <div className="bg-[#f6c947] py-2.5 text-white text-[11px] font-bold uppercase tracking-widest text-center">
+  <div className="bg-[#f6c947] py-2 text-white text-[11px] font-bold uppercase tracking-widest text-center">
     <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
       <div className="hidden md:block">FREE SHIPPING ON ORDERS OVER $100</div>
       <div className="flex-1 text-center">Select sale styles up to 50% off</div>
@@ -38,39 +36,56 @@ const TopNotificationBar = ({ user }: { user: any }) => (
       </div>
     </div>
   </div>
-  </>
 );
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const cartItems = useCartStore((state) => state.items);
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const [mounted, setMounted] = useState(false);
-  React.useEffect(() => {
+
+  useEffect(() => {
     setMounted(true);
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/categories');
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data);
+        }
+      } catch (err) {
+        console.error('Failed to load categories in Header', err);
+      }
+    };
+    fetchCategories();
   }, []);
 
   const NAV_LINKS = [
-    { title: 'Home', href: '/', label: 'Hot' },
     { title: 'Shops', href: '/shops', label: 'New' },
-    { title: 'Collections', href: '/collections' },
-    { title: 'Product', href: '/collections', label: 'Sale' },
+    { title: 'Categories', href: '/collections', hasDropdown: true },
     { title: 'Blogs', href: '/blog' },
-    { title: 'Pages', href: '#' },
   ];
-   
+
+  const userDashboardUrl = user
+    ? user.role === 'seller'
+      ? '/dashboard/seller'
+      : user.role === 'admin'
+      ? '/dashboard/admin'
+      : '/account'
+    : '/login';
 
   return (
     <>
       <TopNotificationBar user={mounted ? user : null} />
-      <header className="sticky top-0 z-[100] bg-white border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-[100] bg-white border-b border-gray-200 shadow-sm font-sans">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
-            {/* LOGO */}
-            <Link href="/" className="shrink-0">
-              <Image src="/logo.png" alt="fkstores Logo" width={160} height={55} className="object-contain" />
+            {/* LOGO (Home function) */}
+            <Link href="/" className="shrink-0 flex items-center gap-2">
+              <Image src="/logo.png" alt="F&K Logo" width={160} height={55} className="object-contain" priority />
             </Link>
 
             {/* DESKTOP MENU */}
@@ -83,28 +98,73 @@ const Header = () => {
                   >
                     {link.title}
                     {link.label && (
-                      <span className={`absolute -top-1 -right-0 text-[8px] px-1.5 py-0.5 rounded-sm text-white uppercase font-black ${link.label === 'Hot' ? 'bg-[#f6c947]' : link.label === 'New' ? 'bg-blue-500' : 'bg-[#222222]'}`}>
+                      <span className="absolute -top-1 -right-0 text-[8px] px-1.5 py-0.5 rounded-none text-white uppercase font-black bg-blue-500">
                         {link.label}
                       </span>
                     )}
-                    {(link.title === 'Collections' || link.title === 'Product' || link.title === 'Pages') && (
-                      <ChevronDown size={12} className="group-hover:rotate-180 transition-transform" />
+                    {link.hasDropdown && (
+                      <ChevronDown size={12} className="group-hover:rotate-180 transition-transform duration-200" />
                     )}
                   </Link>
+
+                  {/* CATEGORIES DROPDOWN MENU - Sharp Rectangular Edges */}
+                  {link.hasDropdown && (
+                    <div className="absolute top-full left-0 w-60 bg-white shadow-xl rounded-none border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform translate-y-2 group-hover:translate-y-0">
+                      <div className="px-4 py-1 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100 mb-1">
+                        Select Category
+                      </div>
+                      <Link
+                        href="/collections"
+                        className="block px-4 py-2 text-xs font-bold text-[#222222] hover:bg-[#222222] hover:text-[#f6c947] transition-colors uppercase tracking-wider"
+                      >
+                        All Categories
+                      </Link>
+                      {categories.length > 0 ? (
+                        categories.map((cat) => (
+                          <Link
+                            key={cat.id || cat.name}
+                            href={`/collections?category=${encodeURIComponent(cat.name)}`}
+                            className="block px-4 py-2 text-xs font-medium text-gray-700 hover:bg-[#222222] hover:text-[#f6c947] transition-colors uppercase tracking-wider"
+                          >
+                            {cat.name}
+                          </Link>
+                        ))
+                      ) : (
+                        ['Clothes', 'Shoes', 'Bags', 'Accessories', 'Electronics'].map((fallback) => (
+                          <Link
+                            key={fallback}
+                            href={`/collections?category=${encodeURIComponent(fallback)}`}
+                            className="block px-4 py-2 text-xs font-medium text-gray-700 hover:bg-[#222222] hover:text-[#f6c947] transition-colors uppercase tracking-wider"
+                          >
+                            {fallback}
+                          </Link>
+                        ))
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </nav>
 
-            {/* ICONS */}
-            <div className="flex items-center gap-6">
-              <button className="text-[#222222] hover:text-[#f6c947] transition-colors hidden sm:block">
-                <Search size={20} />
-              </button>
+            {/* RIGHT ICONS */}
+            <div className="flex items-center gap-5 sm:gap-6">
+              {/* HELP ICON */}
+              <Link
+                href="/contact"
+                title="Help & Support"
+                className="text-[#222222] hover:text-[#f6c947] transition-colors hidden sm:block p-1"
+              >
+                <HelpCircle size={21} />
+              </Link>
               
               {mounted && (
                 <>
-                  <Link href="/dashboard" className="text-[#222222] hover:text-[#f6c947] transition-colors hidden sm:block">
-                    <User size={20} />
+                  <Link
+                    href={userDashboardUrl}
+                    title="Account / Dashboard"
+                    className="text-[#222222] hover:text-[#f6c947] transition-colors hidden sm:block p-1"
+                  >
+                    <User size={21} />
                   </Link>
                   <div className="hidden sm:block">
                     <NotificationBell />
@@ -112,17 +172,33 @@ const Header = () => {
                 </>
               )}
 
-              <button className="text-[#222222] hover:text-[#f6c947] transition-colors relative">
-                <ShoppingBag size={20} />
+              {/* CART ICON 🛒 */}
+              <Link href="/cart" className="text-[#222222] hover:text-[#f6c947] transition-colors relative p-1" title="Shopping Cart">
+                <ShoppingCart size={21} />
                 {mounted && cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[#f6c947] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                  <span className="absolute -top-1.5 -right-1.5 bg-[#f6c947] text-[#222222] text-[10px] font-black w-4 h-4 flex items-center justify-center rounded-none shadow-sm">
                     {cartCount}
                   </span>
                 )}
-              </button>
+              </Link>
+
+              {/* LOGOUT BUTTON */}
+              {mounted && user && (
+                <button
+                  onClick={() => logout(false)}
+                  title="Logout"
+                  className="text-gray-700 hover:text-white hover:bg-red-600 border border-gray-200 transition-colors hidden sm:flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-gray-50 px-3 py-1.5 rounded-none"
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </button>
+              )}
+
+              {/* MOBILE MENU TOGGLE */}
               <button
-                className="xl:hidden text-[#222222]"
+                className="xl:hidden text-[#222222] p-1"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -132,18 +208,68 @@ const Header = () => {
 
         {/* MOBILE MENU */}
         {isMobileMenuOpen && (
-          <div className="xl:hidden bg-white border-t border-gray-100 py-4 absolute top-20 left-0 w-full shadow-lg">
-            <nav className="flex flex-col container mx-auto px-4">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.title}
-                  href={link.href}
-                  className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-50 last:border-none"
-                  onClick={() => setIsMobileMenuOpen(false)}
+          <div className="xl:hidden bg-white border-t border-gray-200 py-4 absolute top-20 left-0 w-full shadow-lg z-50 rounded-none">
+            <nav className="flex flex-col container mx-auto px-4 space-y-1">
+              <Link
+                href="/shops"
+                className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Shops
+              </Link>
+              
+              <div className="py-2 border-b border-gray-100">
+                <div className="text-sm font-bold uppercase tracking-widest text-[#222222] mb-2 flex justify-between items-center">
+                  <span>Categories</span>
+                </div>
+                <div className="pl-4 flex flex-col space-y-2 py-1">
+                  <Link
+                    href="/collections"
+                    className="text-xs font-semibold uppercase tracking-wider text-gray-600 hover:text-[#f6c947]"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    All Categories
+                  </Link>
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat.id || cat.name}
+                      href={`/collections?category=${encodeURIComponent(cat.name)}`}
+                      className="text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-[#f6c947]"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <Link
+                href="/blog"
+                className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Blogs
+              </Link>
+
+              <Link
+                href="/contact"
+                className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Help & Support
+              </Link>
+
+              {mounted && user && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    logout(false);
+                  }}
+                  className="py-3 text-sm font-bold uppercase tracking-widest text-red-500 text-left flex items-center gap-2"
                 >
-                  {link.title}
-                </Link>
-              ))}
+                  <LogOut size={16} /> Logout
+                </button>
+              )}
             </nav>
           </div>
         )}

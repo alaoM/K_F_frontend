@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingBag, Eye, Heart, Star } from 'lucide-react';
+import { ShoppingCart, Eye, Heart, Star } from 'lucide-react';
 import { formatCurrency } from '@/helpers/functions';
 import { useCartStore } from '@/store/useCartStore';
 import { toast } from 'react-toastify';
@@ -23,82 +23,92 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, view, onQuickView, o
     e.stopPropagation();
     addItem(product, 1);
     onCartOpen();
-    toast.success('Added to Bag');
+    toast.success('Added to Cart 🛒');
   };
 
   return (
     <div
-      className="group bg-white"
+      className="group bg-white rounded-none border border-gray-200 hover:border-[#222222] transition-all duration-300 flex flex-col overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* 1. PRODUCT IMAGE AREA */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#f9f9f9]">
-        <Link href={`/products/${product.id}`}>
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-50">
+        <Link href={`/products/${product.id}`} className="block w-full h-full">
           <Image
-            src={isHovered && product.otherImages?.length ? product.otherImages[0] : product.primaryImage}
-            alt={product.title}
+            src={isHovered && product.otherImages?.length ? product.otherImages[0] : (product.primaryImage || '/placeholder.png')}
+            alt={product.title || 'Product'}
             fill
-            className="object-cover transition-transform duration-1000 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </Link>
 
-        {/* LABELS */}
-        <div className="absolute top-4 left-4">
-          <span className="bg-[#222222] text-white text-[9px] font-black px-2.5 py-1.5 uppercase tracking-widest">New</span>
+        {/* BADGE */}
+        <div className="absolute top-3 left-3 z-10">
+          <span className="bg-[#222222] text-white text-[9px] font-black px-2.5 py-1 uppercase tracking-widest rounded-none">
+            New
+          </span>
         </div>
 
-        {/* OVERLAY ACTIONS (Mitho Index-10 Style) */}
-        <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-white/90 flex justify-center gap-3">
+        {/* OVERLAY QUICK ACTIONS */}
+        <div className="absolute inset-x-0 bottom-0 p-2.5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/95 backdrop-blur-md flex justify-center gap-2 border-t border-gray-200 z-20">
           <button
             onClick={(e) => { e.stopPropagation(); toast.info('Added to Wishlist'); }}
-            className="w-10 h-10 border border-gray-100 flex items-center justify-center text-[#222222] hover:bg-[#f6c947] hover:text-white transition-all"
+            title="Wishlist"
+            className="w-9 h-9 rounded-none border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-[#f6c947] hover:border-[#f6c947] hover:text-white transition-all"
           >
-            <Heart size={16} />
+            <Heart size={15} />
           </button>
           <button
             onClick={() => onQuickView(product)}
-            className="w-10 h-10 border border-gray-100 flex items-center justify-center text-[#222222] hover:bg-[#f6c947] hover:text-white transition-all"
+            title="Quick View"
+            className="w-9 h-9 rounded-none border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-[#f6c947] hover:border-[#f6c947] hover:text-white transition-all"
           >
-            <Eye size={16} />
+            <Eye size={15} />
           </button>
           <button
             onClick={handleAddToCart}
-            className="w-10 h-10 border border-gray-100 flex items-center justify-center text-[#222222] hover:bg-[#f6c947] hover:text-white transition-all"
+            title="Add to Cart"
+            className="w-9 h-9 rounded-none border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-[#f6c947] hover:border-[#f6c947] hover:text-white transition-all"
           >
-            <ShoppingBag size={16} />
+            <ShoppingCart size={15} />
           </button>
         </div>
       </div>
 
       {/* 2. PRODUCT CONTENT AREA */}
-      <div className="pt-6 pb-2">
-        <div className="flex flex-col gap-1">
+      <div className="p-3.5 flex flex-col justify-between flex-1 bg-white">
+        <div>
+          {product.seller?.businessName && (
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
+              {product.seller.businessName}
+            </span>
+          )}
           <Link href={`/products/${product.id}`}>
-            <h6 className="text-[13px] font-black text-[#222222] uppercase tracking-wider group-hover:text-[#f6c947] transition-colors line-clamp-1">
+            <h3 className="text-xs md:text-sm font-bold text-[#222222] uppercase tracking-wide group-hover:text-[#f6c947] transition-colors line-clamp-1">
               {product.title}
-            </h6>
+            </h3>
           </Link>
+        </div>
 
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-black text-[#f6c947]">{formatCurrency(product.price)}</span>
-              {product.oldPrice && (
-                <span className="text-[11px] text-gray-300 line-through font-bold">{formatCurrency(product.oldPrice)}</span>
-              )}
-            </div>
+        <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-sm font-black text-[#222222]">
+              {formatCurrency(product.price)}
+            </span>
+            {product.oldPrice && (
+              <span className="text-[10px] text-gray-400 line-through font-medium">
+                {formatCurrency(product.oldPrice)}
+              </span>
+            )}
+          </div>
 
-            {/* STARS */}
-            <div className="flex gap-0.5">
-              {[1, 2, 3, 4, 5].map(i => (
-                <Star 
-                  key={i} 
-                  size={10} 
-                  fill={i <= Math.round(product.averageRating || 0) ? "#fca311" : "none"} 
-                  stroke="#fca311" 
-                />
-              ))}
-            </div>
+          {/* RATING */}
+          <div className="flex items-center gap-0.5">
+            <Star size={11} fill="#fca311" stroke="#fca311" />
+            <span className="text-[11px] font-bold text-gray-600">
+              {product.averageRating ? product.averageRating.toFixed(1) : '5.0'}
+            </span>
           </div>
         </div>
       </div>

@@ -32,7 +32,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[650px] overflow-hidden bg-[#f5f5f5]">
+    <div className="relative w-full h-[50vh] min-h-[320px] max-h-[480px] overflow-hidden bg-[#f5f5f5]">
       {SLIDES.map((slide, index) => (
         <div
           key={index}
@@ -46,22 +46,22 @@ const HeroSection = () => {
             className="object-cover"
             priority={index === 0}
           />
-          <div className="absolute inset-0 flex items-center px-6 md:px-20 lg:px-40">
-            <div className={`max-w-xl space-y-4 md:space-y-6 transform transition-all duration-700 delay-300 ${index === current ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+          <div className="absolute inset-0 flex items-center px-6 md:px-16 lg:px-32 bg-black/10">
+            <div className={`max-w-xl space-y-3 md:space-y-4 transform transition-all duration-700 delay-300 ${index === current ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
               }`}>
               <span className="text-[#f6c947] font-bold text-xs md:text-sm tracking-[0.3em] uppercase block">
                 {slide.subtitle}
               </span>
-              <h1 className="text-4xl md:text-7xl font-bold text-[#222222] leading-none tracking-tighter uppercase">
+              <h1 className="text-3xl md:text-5xl font-bold text-[#222222] leading-none tracking-tighter uppercase drop-shadow-sm">
                 {slide.title}
               </h1>
-              <p className="text-gray-500 text-sm md:text-lg font-medium tracking-wide">
+              <p className="text-gray-600 text-xs md:text-base font-medium tracking-wide">
                 {slide.desc}
               </p>
-              <div className="pt-6">
+              <div className="pt-2">
                 <Link
                   href="/collections"
-                  className="mitho-btn inline-block"
+                  className="mitho-btn inline-block text-xs py-3 px-8"
                 >
                   {slide.cta}
                 </Link>
@@ -72,7 +72,7 @@ const HeroSection = () => {
       ))}
 
       {/* DOTS */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-3">
         {SLIDES.map((_, i) => (
           <button
             key={i}

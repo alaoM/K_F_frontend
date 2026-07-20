@@ -2,65 +2,65 @@
 
 import { formatCurrency } from '@/helpers/functions'
 import { useCartStore } from '@/store/useCartStore'
-import { X, Plus, Minus, Trash } from 'lucide-react'
+import { X, Plus, Minus, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 export default function CartDrawer({ open, onClose }: { open: boolean, onClose: () => void }) {
-   
     const router = useRouter()
-  const { items, updateQuantity, removeItem, getTotalPrice } = useCartStore()
+    const { items, updateQuantity, removeItem, getTotalPrice } = useCartStore()
 
-  
   return (
     <>
       {/* Overlay */}
       {open && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/40 z-40"
+          className="fixed inset-0 bg-black/50 z-40"
         />
       )}
 
-      {/* Drawer */}
+      {/* Drawer - Sharp Rectangular Edges */}
       <div
-        className={`fixed top-0 right-0 h-full w-[350px] bg-white z-50 shadow-xl transform transition-transform duration-300 flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-[360px] max-w-full bg-white z-50 shadow-2xl transform transition-transform duration-300 flex flex-col rounded-none ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/* HEADER (fixed) */}
-        <div className="p-2 border-b border-[#e2e2e2] flex justify-between items-center shrink-0">
-          <h3 className="font-bold text-sm">Cart ({items.length})</h3>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded">
-            <X />
+        {/* HEADER */}
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center shrink-0 bg-gray-50">
+          <h3 className="font-black text-xs uppercase tracking-widest text-[#222222]">Shopping Cart ({items.length})</h3>
+          <button onClick={onClose} className="p-1 hover:bg-gray-200 text-[#222222] transition-colors rounded-none">
+            <X size={20} />
           </button>
         </div>
 
-        {/* BODY (scrollable) */}
+        {/* BODY */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {items.length === 0 ? (
-           <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-4">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">🛍️</div>
-                <p className="font-medium">Your cart is empty</p>
-                <button onClick={onClose} className="text-[#243e6b] font-bold border-b border-[#243e6b]">Continue Shopping</button>
+           <div className="h-full flex flex-col items-center justify-center text-gray-500 gap-3 text-center">
+                <div className="w-16 h-16 bg-gray-100 flex items-center justify-center rounded-none text-xl">🛒</div>
+                <p className="text-xs font-bold uppercase tracking-wider text-[#222222]">Your cart is empty</p>
+                <button onClick={onClose} className="text-[11px] font-bold uppercase tracking-widest text-[#f6c947] bg-[#222222] px-4 py-2 hover:bg-[#f6c947] hover:text-[#222222] transition-colors rounded-none">
+                  Continue Shopping
+                </button>
               </div>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="border-b border-[#e2e2e2] pb-4">
+              <div key={item.id} className="border-b border-gray-200 pb-4">
                 {/* Item Info */}
-                <div className="flex gap-4">
-                  <div className="relative  w-32 h-32 border border-[#e2e2e2]">
+                <div className="flex gap-3">
+                  <div className="relative w-20 h-24 border border-gray-200 shrink-0 rounded-none overflow-hidden bg-gray-50">
                     <Image
-                      src={item.primaryImage}
+                      src={item.primaryImage || '/placeholder.png'}
                       alt={item.title}
                       fill
-                      className="object-cover "
+                      className="object-cover"
                     />
                   </div>
 
-                  <div className="flex-1">
-                    <p className="font-semibold">{item.title}</p>
-                    <p className="text-sm text-gray-500">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-xs text-[#222222] uppercase tracking-wide truncate">{item.title}</h4>
+                    <p className="text-xs font-black text-[#222222] mt-1">
                       {formatCurrency(item.price)}
                     </p>
                   </div>
@@ -69,43 +69,44 @@ export default function CartDrawer({ open, onClose }: { open: boolean, onClose: 
                 {/* Controls */}
                 <div className="flex justify-between items-center mt-3">
                   {/* Quantity */}
-                  <div className="flex items-center border border-[#e2e2e2] rounded overflow-hidden w-32">
+                  <div className="flex items-center border border-gray-300 rounded-none overflow-hidden w-28">
                     <button
-                      className="px-2 py-2 hover:bg-gray-100 disabled:opacity-40 w-1/4"
+                      className="w-8 h-7 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 rounded-none text-gray-600"
                       disabled={item.quantity === 1}
                       onClick={() =>
                         item.quantity > 1 &&
                         updateQuantity(item.id, item.quantity - 1)
                       }
                     >
-                      <Minus size={14} />
+                      <Minus size={12} />
                     </button>
 
-                    <span className="px-3 text-sm w-2/4 text-center border-l border-r border-[#e2e2e2]">
+                    <span className="flex-1 text-center text-xs font-bold text-[#222222]">
                       {item.quantity}
                     </span>
 
                     <button
-                      className="px-2 py-1 hover:bg-gray-100 w-1/4"
+                      className="w-8 h-7 flex items-center justify-center hover:bg-gray-100 rounded-none text-gray-600"
                       onClick={() =>
                         updateQuantity(item.id, item.quantity + 1)
                       }
                     >
-                      <Plus size={14} />
+                      <Plus size={12} />
                     </button>
                   </div>
 
                   {/* Price + Remove */}
                   <div className="flex items-center gap-3">
-                    <p className="text-sm font-medium">
+                    <p className="text-xs font-black text-[#222222]">
                       {formatCurrency(item.price * item.quantity)}
                     </p>
 
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 p-1"
+                      title="Remove Item"
                     >
-                      <Trash size={16} />
+                      <Trash2 size={15} />
                     </button>
                   </div>
                 </div>
@@ -115,27 +116,38 @@ export default function CartDrawer({ open, onClose }: { open: boolean, onClose: 
         </div>
 
         {/* FOOTER  */}
-         {items.length > 0 && (
-        <div className="p-5 space-y-4 shrink-0 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-          <div className="flex justify-between font-medium">
-            <span>Subtotal</span>
-            <span>{formatCurrency(getTotalPrice())}</span>
+        {items.length > 0 && (
+          <div className="p-4 space-y-3 shrink-0 bg-white border-t border-gray-200">
+            <div className="flex justify-between text-xs font-black uppercase tracking-wider text-[#222222]">
+              <span>Subtotal</span>
+              <span className="text-[#222222]">{formatCurrency(getTotalPrice())}</span>
+            </div>
+
+            <p className="text-[10px] text-gray-400 font-medium">
+              Taxes and shipping calculated at checkout.
+            </p>
+   
+            <button
+              onClick={() => {
+                onClose()
+                router.push('/cart')
+              }}
+              className="w-full bg-[#222222] text-white py-3 text-xs font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition-colors rounded-none"
+            >
+              View Cart
+            </button>
+
+            <button
+              onClick={() => {
+                onClose()
+                router.push('/checkout')
+              }}
+              className="w-full bg-[#f6c947] text-[#222222] py-3 text-xs font-black uppercase tracking-[0.2em] hover:bg-yellow-400 transition-colors rounded-none"
+            >
+              Checkout
+            </button>
           </div>
-
-          <p className="text-xs text-gray-500">
-            Shipping and taxes calculated at checkout
-          </p>
- 
-          <button onClick={() => router.push('/cart')} className="w-full bg-[#2f4b75] text-white py-3 rounded-md hover:opacity-90 transition">
-            VIEW CART
-          </button>
-
-          <button onClick={() => router.push('/checkout')} className="w-full bg-[#f6c947] py-3 rounded-md font-semibold hover:opacity-90 transition">
-            CHECKOUT
-          </button>
-        
-        </div>
-         )}
+        )}
       </div>
     </>
   )
