@@ -49,8 +49,9 @@ const ShopsClient = () => {
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* HERO SECTION */}
       <div className="bg-[#222222] py-16 px-4 text-center">
-        <h1 className="text-3xl md:text-5xl font-black text-white mb-3 tracking-tight uppercase">
-          Explore Our <span className="text-[#f6c947]">Global Brands</span>
+        <h1 className="text-3xl md:text-5xl font-black mb-3 tracking-tight uppercase">
+          <span className="text-white">Explore Our </span>
+          <span className="text-[#f6c947]">Global Brands</span>
         </h1>
         <p className="text-gray-300 text-xs md:text-sm max-w-xl mx-auto font-medium">
           Discover unique digital storefronts and premium collections from verified sellers across the F&K network.
@@ -159,7 +160,9 @@ const ShopsClient = () => {
       <div className="bg-white border-t border-gray-200 py-16 px-4 text-center mt-12">
         <div className="max-w-3xl mx-auto p-10 bg-[#222222] text-white rounded-none shadow-xl relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-2xl md:text-3xl font-black mb-3 uppercase tracking-tight">Want to launch your own brand?</h2>
+            <h2 className="text-2xl md:text-3xl font-black mb-3 uppercase tracking-tight text-white">
+              Want to launch your own brand?
+            </h2>
             <p className="text-gray-300 text-xs md:text-sm mb-6 max-w-lg mx-auto">
               Join top sellers and reach fashion enthusiasts across the network.
             </p>

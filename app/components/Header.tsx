@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { HelpCircle, User, ShoppingCart, Menu, X, ChevronDown, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { HelpCircle, User, ShoppingCart, Menu, X, ChevronDown, LogOut, Search } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useAuth } from '@/context/AuthContext';
 import NotificationBell from './AdminComponents/NotificationBell';
@@ -39,9 +40,12 @@ const TopNotificationBar = ({ user }: { user: any }) => (
 );
 
 const Header = () => {
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const cartItems = useCartStore((state) => state.items);
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -63,6 +67,13 @@ const Header = () => {
     fetchCategories();
   }, []);
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/collections?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   const NAV_LINKS = [
     { title: 'Shops', href: '/shops', label: 'New' },
     { title: 'Categories', href: '/collections', hasDropdown: true },
@@ -73,8 +84,8 @@ const Header = () => {
     ? user.role === 'seller'
       ? '/dashboard/seller'
       : user.role === 'admin'
-      ? '/dashboard/admin'
-      : '/account'
+        ? '/dashboard/admin'
+        : '/account'
     : '/login';
 
   return (
@@ -82,23 +93,41 @@ const Header = () => {
       <TopNotificationBar user={mounted ? user : null} />
       <header className="sticky top-0 z-[100] bg-white border-b border-gray-200 shadow-sm font-sans">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-20 gap-4">
             {/* LOGO (Home function) */}
             <Link href="/" className="shrink-0 flex items-center gap-2">
               <Image src="/logo.png" alt="F&K Logo" width={160} height={55} className="object-contain" priority />
             </Link>
 
+            {/* SEARCH INPUT BAR ON NAVBAR (Desktop) */}
+            <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md relative">
+              <Search className="absolute left-3.5 text-gray-400" size={16} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products by title or category..."
+                className="w-full pl-10 pr-24 py-2 bg-gray-50 border border-gray-300 rounded-none text-xs font-medium focus:bg-white focus:border-[#222222] outline-none transition-all"
+              />
+              <button
+                type="submit"
+                className="absolute right-1 bg-[#222222] hover:bg-[#f6c947] hover:text-[#222222] text-white px-4 py-1.5 rounded-none text-[10px] font-bold uppercase tracking-wider transition-colors"
+              >
+                Search
+              </button>
+            </form>
+
             {/* DESKTOP MENU */}
             <nav className="hidden xl:flex items-center gap-2 h-full">
               {NAV_LINKS.map((link) => (
-                <div key={link.title} className="relative group px-4 py-8 h-full flex items-center">
+                <div key={link.title} className="relative group px-3 py-8 h-full flex items-center">
                   <Link
                     href={link.href}
                     className="text-[13px] font-bold uppercase tracking-widest text-[#222222] hover:text-[#f6c947] transition-colors flex items-center gap-1"
                   >
                     {link.title}
                     {link.label && (
-                      <span className="absolute -top-1 -right-0 text-[8px] px-1.5 py-0.5 rounded-none text-white uppercase font-black bg-blue-500">
+                      <span className="absolute top-3 -right-0 text-[8px] px-1.5 py-0.5 rounded-none text-white uppercase font-black bg-blue-500">
                         {link.label}
                       </span>
                     )}
@@ -147,7 +176,7 @@ const Header = () => {
             </nav>
 
             {/* RIGHT ICONS */}
-            <div className="flex items-center gap-5 sm:gap-6">
+            <div className="flex items-center gap-4 sm:gap-5">
               {/* HELP ICON */}
               <Link
                 href="/contact"
@@ -156,7 +185,7 @@ const Header = () => {
               >
                 <HelpCircle size={21} />
               </Link>
-              
+
               {mounted && (
                 <>
                   <Link
@@ -166,9 +195,9 @@ const Header = () => {
                   >
                     <User size={21} />
                   </Link>
-                  <div className="hidden sm:block">
+                  {/* <div className="hidden sm:block">
                     <NotificationBell />
-                  </div>
+                  </div> */}
                 </>
               )}
 
@@ -209,18 +238,37 @@ const Header = () => {
         {/* MOBILE MENU */}
         {isMobileMenuOpen && (
           <div className="xl:hidden bg-white border-t border-gray-200 py-4 absolute top-20 left-0 w-full shadow-lg z-50 rounded-none">
-            <nav className="flex flex-col container mx-auto px-4 space-y-1">
+            <nav className="flex flex-col container mx-auto px-4 space-y-3">
+
+              {/* MOBILE SEARCH BAR */}
+              <form onSubmit={handleSearchSubmit} className="relative flex items-center w-full">
+                <Search className="absolute left-3 text-gray-400" size={16} />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full pl-9 pr-20 py-2 bg-gray-50 border border-gray-300 rounded-none text-xs font-medium focus:bg-white focus:border-[#222222] outline-none"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1 bg-[#222222] text-white px-3 py-1 text-[10px] font-bold uppercase rounded-none"
+                >
+                  Search
+                </button>
+              </form>
+
               <Link
                 href="/shops"
-                className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
+                className="py-2.5 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Shops
               </Link>
-              
+
               <div className="py-2 border-b border-gray-100">
-                <div className="text-sm font-bold uppercase tracking-widest text-[#222222] mb-2 flex justify-between items-center">
-                  <span>Categories</span>
+                <div className="text-sm font-bold uppercase tracking-widest text-[#222222] mb-2">
+                  Categories
                 </div>
                 <div className="pl-4 flex flex-col space-y-2 py-1">
                   <Link
@@ -245,7 +293,7 @@ const Header = () => {
 
               <Link
                 href="/blog"
-                className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
+                className="py-2.5 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Blogs
@@ -253,7 +301,7 @@ const Header = () => {
 
               <Link
                 href="/contact"
-                className="py-3 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
+                className="py-2.5 text-sm font-bold uppercase tracking-widest text-[#222222] border-b border-gray-100"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Help & Support
@@ -265,7 +313,7 @@ const Header = () => {
                     setIsMobileMenuOpen(false);
                     logout(false);
                   }}
-                  className="py-3 text-sm font-bold uppercase tracking-widest text-red-500 text-left flex items-center gap-2"
+                  className="py-2.5 text-sm font-bold uppercase tracking-widest text-red-500 text-left flex items-center gap-2"
                 >
                   <LogOut size={16} /> Logout
                 </button>

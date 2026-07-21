@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { LayoutGrid, LayoutList, Truck, RefreshCw, Headphones, ShieldCheck, Search, X } from 'lucide-react'
+import { LayoutGrid, LayoutList, Truck, RefreshCw, Headphones, ShieldCheck } from 'lucide-react'
 import { useCartStore } from '@/store/useCartStore'
 import QuickViewModal from '@/app/components/marketplace/QuickViewModal'
 import CartDrawer from '@/app/components/marketplace/CartDrawer'
@@ -54,8 +54,6 @@ export default function HomepageClient() {
     const [cartOpen, setCartOpen] = useState(false)
     const [quickView, setQuickView] = useState<any>(null)
     const [activeTab, setActiveTab] = useState('All')
-    const [searchQuery, setSearchQuery] = useState('')
-    const [appliedSearch, setAppliedSearch] = useState('')
 
     const [products, setProducts] = useState<ApiProduct[]>([])
     const [categories, setCategories] = useState<any[]>([])
@@ -81,9 +79,6 @@ export default function HomepageClient() {
             if (activeTab !== 'All') {
                 params.append('category', activeTab)
             }
-            if (appliedSearch.trim()) {
-                params.append('search', appliedSearch.trim())
-            }
 
             const res = await fetch(`/api/marketplace?${params.toString()}`)
             const data = await res.json()
@@ -93,7 +88,7 @@ export default function HomepageClient() {
         } finally {
             setLoading(false)
         }
-    }, [activeTab, appliedSearch])
+    }, [activeTab])
 
     useEffect(() => {
         fetchCategories()
@@ -103,54 +98,14 @@ export default function HomepageClient() {
         fetchProducts()
     }, [fetchProducts])
 
-    const handleSearchSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        setAppliedSearch(searchQuery)
-    }
-
-    const handleClearSearch = () => {
-        setSearchQuery('')
-        setAppliedSearch('')
-    }
-
     return (
         <div className="bg-white min-h-screen">
+            <OfferMarquee />
             {/* 1. HERO SLIDER (Half VH = 50vh, Sharp Edges) */}
             <HeroSection />
 
-            {/* SEARCH INPUT BAR - Sharp Rectangular Edges */}
-            <div className="bg-white py-5 border-b border-gray-200">
-                <div className="container mx-auto px-4 max-w-3xl">
-                    <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-                        <Search className="absolute left-4 text-gray-400" size={18} />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search products by name, description or keyword..."
-                            className="w-full pl-11 pr-32 py-3 bg-gray-50 border border-gray-300 rounded-none focus:border-[#222222] focus:bg-white outline-none text-xs font-medium transition-all"
-                        />
-                        {searchQuery && (
-                            <button
-                                type="button"
-                                onClick={handleClearSearch}
-                                className="absolute right-28 text-gray-400 hover:text-gray-600 p-1"
-                            >
-                                <X size={14} />
-                            </button>
-                        )}
-                        <button
-                            type="submit"
-                            className="absolute right-1 bg-[#222222] hover:bg-[#f6c947] hover:text-[#222222] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-none"
-                        >
-                            Search
-                        </button>
-                    </form>
-                </div>
-            </div>
-
             {/* 2. OFFER MARQUEE */}
-            <OfferMarquee />
+
 
             {/* 3. CATEGORY BANNERS (Reduced & Compact Height) */}
             <CategoryBanners />
@@ -160,7 +115,7 @@ export default function HomepageClient() {
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-8">
                         <span className="text-[#f6c947] text-[10px] font-bold uppercase tracking-[0.4em] mb-2 block">
-                            {appliedSearch ? `Search Results for "${appliedSearch}"` : 'Curated Selection'}
+                            Curated Selection
                         </span>
                         <h2 className="text-2xl md:text-3xl font-black text-[#222222] uppercase tracking-tight">
                             Fashion Products
@@ -189,15 +144,7 @@ export default function HomepageClient() {
                         </div>
                     ) : products.length === 0 ? (
                         <div className="py-16 text-center">
-                            <p className="text-gray-400 text-xs font-medium">No products found. Try adjusting your search query.</p>
-                            {appliedSearch && (
-                                <button
-                                    onClick={handleClearSearch}
-                                    className="mt-3 text-xs font-bold text-[#f6c947] hover:underline uppercase tracking-wider"
-                                >
-                                    Clear search filter
-                                </button>
-                            )}
+                            <p className="text-gray-400 text-xs font-medium">No products found in this category.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

@@ -38,33 +38,33 @@ export default function Footer() {
     };
 
     return (
-        <footer className="bg-white border-t border-gray-200 font-sans">
-            {/* Newsletter */}
-            <div className="border-b border-gray-200 bg-gray-50">
+        <footer className="bg-[#111111] text-white border-t border-gray-900 font-sans">
+            {/* Newsletter Bar */}
+            <div className="border-b border-gray-800 bg-[#181818]">
                 <div className="container mx-auto px-4 py-12 flex flex-col lg:flex-row items-center justify-between gap-6">
                     <div className="text-center lg:text-left">
-                        <h3 className="text-xl font-black uppercase tracking-[0.2em] text-[#222222]">
+                        <h3 className="text-xl md:text-2xl font-black uppercase tracking-[0.2em] text-[#f6c947]">
                             Join Our Newsletter
                         </h3>
-                        <p className="text-gray-400 mt-1 text-xs uppercase tracking-widest font-bold">
+                        <p className="text-gray-300 mt-1 text-xs uppercase tracking-widest font-bold">
                             Get 20% off on your first purchase
                         </p>
                     </div>
 
                     <div className="w-full max-w-xl">
-                        <div className="flex border border-gray-300 focus-within:border-[#222222] transition-colors rounded-none">
+                        <div className="flex border border-gray-700 focus-within:border-[#f6c947] transition-colors rounded-none">
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email.."
-                                className="flex-1 px-5 py-3 outline-none text-xs font-medium bg-white rounded-none"
+                                className="flex-1 px-5 py-3.5 outline-none text-xs font-medium bg-[#222222] text-white placeholder-gray-400 rounded-none"
                                 disabled={isSubmitting}
                             />
                             <button
                                 onClick={handleSubscribe}
                                 disabled={isSubmitting}
-                                className="bg-[#222222] text-white px-8 uppercase text-xs font-bold tracking-[0.2em] hover:bg-[#f6c947] hover:text-[#222222] transition-colors disabled:opacity-50 rounded-none"
+                                className="bg-[#f6c947] text-[#111111] px-8 uppercase text-xs font-black tracking-[0.2em] hover:bg-white transition-colors disabled:opacity-50 rounded-none"
                             >
                                 {isSubmitting ? "..." : "Subscribe"}
                             </button>
@@ -79,13 +79,13 @@ export default function Footer() {
                     {/* Logo & Follow Us */}
                     <div className="space-y-6">
                         <Link href="/">
-                            <Image src="/logo.png" alt="F&K logo" width={180} height={60} className="object-contain" />
+                            <Image src="/logo.png" alt="F&K logo" width={180} height={60} className="object-contain brightness-0 invert" />
                         </Link>
-                        <p className="text-gray-500 text-xs leading-relaxed font-medium">
+                        <p className="text-gray-300 text-xs leading-relaxed font-normal">
                             Premium fashion and lifestyle marketplace. Discover curated collections from top verified digital storefronts.
                         </p>
                         <div className="space-y-3">
-                            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#222222]">Follow Us</h4>
+                            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#f6c947]">Follow Us</h4>
                             <div className="flex gap-2">
                                 <SocialIcon icon={<Facebook size={14} />} />
                                 <SocialIcon icon={<Twitter size={14} />} />
@@ -97,7 +97,7 @@ export default function Footer() {
 
                     {/* Shop Links */}
                     <div className="lg:pl-6">
-                        <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#222222] mb-6">Shop</h4>
+                        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#f6c947] mb-6">Shop</h4>
                         <ul className="space-y-3">
                             <li><FooterLink label="Shops" href="/shops" /></li>
                             <li><FooterLink label="Categories" href="/collections" /></li>
@@ -107,7 +107,7 @@ export default function Footer() {
 
                     {/* Company Links */}
                     <div>
-                        <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#222222] mb-6">Company</h4>
+                        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#f6c947] mb-6">Company</h4>
                         <ul className="space-y-3">
                             <li><FooterLink label="Sell on F&K" href="/onboarding/become-a-seller" /></li>
                             <li><FooterLink label="About Us" href="/about" /></li>
@@ -119,17 +119,17 @@ export default function Footer() {
 
                     {/* Blogpost Section */}
                     <div>
-                        <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#222222] mb-6">Latest Blog</h4>
+                        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#f6c947] mb-6">Latest Blog</h4>
                         <div className="space-y-4">
                             {recentPosts.map((post, index) => (
                                 <Link key={index} href={`/blog/${post.slug}`} className="group block">
-                                    <h5 className="text-xs font-bold text-[#222222] group-hover:text-[#f6c947] transition-colors line-clamp-2 leading-tight mb-1">
+                                    <h5 className="text-xs font-bold text-gray-200 group-hover:text-[#f6c947] transition-colors line-clamp-2 leading-tight mb-1">
                                         {post.title}
                                     </h5>
                                     <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{post.date}</span>
                                 </Link>
                             ))}
-                            <Link href="/blog" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#222222] hover:text-[#f6c947] transition-colors pt-1">
+                            <Link href="/blog" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f6c947] hover:text-white transition-colors pt-1">
                                 View All Posts <ArrowRight size={12} />
                             </Link>
                         </div>
@@ -138,10 +138,10 @@ export default function Footer() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="bg-[#f5f5f5] py-6 border-t border-gray-200">
-                <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em]">
+            <div className="bg-[#0a0a0a] py-6 border-t border-gray-900">
+                <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em]">
                     <p>© {new Date().getFullYear()} F&K Fashion Hub. All Rights Reserved.</p>
-                    <p>Powered by <span className="text-[#222222]">Xeeneey</span></p>
+                    <p>Powered by <span className="text-white font-black">Xeeneey</span></p>
                 </div>
             </div>
         </footer>
@@ -150,7 +150,7 @@ export default function Footer() {
 
 function FooterLink({ label, href = "#" }: { label: string; href?: string }) {
     return (
-        <Link href={href} className="text-xs text-gray-600 hover:text-[#f6c947] transition-colors font-medium uppercase tracking-wider">
+        <Link href={href} className="text-xs text-gray-300 hover:text-[#f6c947] transition-colors font-semibold uppercase tracking-wider">
             {label}
         </Link>
     );
@@ -158,7 +158,7 @@ function FooterLink({ label, href = "#" }: { label: string; href?: string }) {
 
 function SocialIcon({ icon }: { icon: React.ReactNode }) {
     return (
-        <div className="w-8 h-8 border border-gray-200 flex items-center justify-center text-[#222222] hover:bg-[#222222] hover:text-[#f6c947] hover:border-[#222222] transition-all cursor-pointer rounded-none">
+        <div className="w-8 h-8 border border-gray-700 flex items-center justify-center text-white hover:bg-[#f6c947] hover:text-[#111111] hover:border-[#f6c947] transition-all cursor-pointer rounded-none">
             {icon}
         </div>
     );

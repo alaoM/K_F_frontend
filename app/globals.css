@@ -3,7 +3,6 @@
 :root {
   /* Mitho Fashion Color Palette */
   --mitho-primary: #f6c947;
-  /* Pinkish red from fashion demo */
   --mitho-secondary: #222222;
   --mitho-text: #666666;
   --mitho-heading: #222222;
@@ -20,14 +19,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* Use :where() to give base heading styles 0 specificity so Tailwind utility classes (like text-white, text-[#f6c947]) can override them freely */
+:where(h1, h2, h3, h4, h5, h6) {
   color: var(--mitho-heading);
   font-weight: 600;
+}
+
+footer h1,
+footer h2,
+footer h3,
+footer h4,
+footer h5,
+footer h6 {
+  color: inherit;
 }
 
 /* Mitho Utility Classes */
@@ -36,11 +40,11 @@ h6 {
 }
 
 .mitho-label-hot {
-  @apply bg-[#f6c947] text-white text-[9px] px-1.5 py-0.5 rounded-sm uppercase font-bold absolute -top-3 -right-2;
+  @apply bg-[#f6c947] text-white text-[9px] px-1.5 py-0.5 rounded-none uppercase font-bold absolute -top-3 -right-2;
 }
 
 .mitho-label-sale {
-  @apply bg-[#222222] text-white text-[9px] px-1.5 py-0.5 rounded-sm uppercase font-bold absolute -top-3 -right-2;
+  @apply bg-[#222222] text-white text-[9px] px-1.5 py-0.5 rounded-none uppercase font-bold absolute -top-3 -right-2;
 }
 
 .section-title-mitho {

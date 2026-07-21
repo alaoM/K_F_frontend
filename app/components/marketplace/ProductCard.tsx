@@ -44,8 +44,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, view, onQuickView, o
         </Link>
 
         {/* BADGE */}
-        <div className="absolute top-3 left-3 z-10">
-          <span className="bg-[#222222] text-white text-[9px] font-black px-2.5 py-1 uppercase tracking-widest rounded-none">
+        <div className="absolute top-0 left-2 z-10">
+          <span className="bg-[#222222] text-white text-[9px] font-black px-2.5  uppercase tracking-widest rounded-none">
             New
           </span>
         </div>
