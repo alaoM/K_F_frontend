@@ -25,9 +25,19 @@ const nextConfig: NextConfig = {
         port: '4001',
         pathname: '/uploads/**',
       },
-
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '4002',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
     ],
   },
 };
 
 export default nextConfig;
+
