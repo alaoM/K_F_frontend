@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Save, Loader2, Trash2, Star } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useApi } from '@/hooks/useApi'
+import ConfirmModal from '../ConfirmModal'
 
 /* ================= TYPES ================= */
 type Bank = {
@@ -180,13 +181,13 @@ const PaymentSettings = () => {
     }
   }
 
-  const handleDeleteBank = async (id: string) => {
-    if (!confirm('Remove bank?')) return
+  const [removeBankConfirmId, setRemoveBankConfirmId] = useState<string | null>(null);
 
+  const handleDeleteBank = async (id: string) => {
     try {
       await api.deleteBank(id)
       setSavedBanks((prev) => prev.filter((b) => b.id !== id))
-      toast.success('Removed')
+      toast.success('Bank details removed')
     } catch (err: any) {
       toast.error(err.message)
     }
@@ -298,7 +299,7 @@ const PaymentSettings = () => {
                 />
               </button>
 
-              <button onClick={() => handleDeleteBank(bank.id)}>
+              <button onClick={() => setRemoveBankConfirmId(bank.id)}>
                 <Trash2 size={16} className="text-red-500" />
               </button>
             </div>
@@ -318,13 +319,14 @@ const PaymentSettings = () => {
           >
             <option value="">Select Bank</option>
             {banksList.map((b, idx) => (
-              <option key={idx} value={b.code}>
+              <option key={`${b.code}-${idx}`} value={b.code}>
                 {b.name}
               </option>
             ))}
           </select>
 
           <input
+            type="text"
             placeholder="Account Number"
             value={newBank.accountNumber}
             onChange={(e) =>
@@ -337,20 +339,30 @@ const PaymentSettings = () => {
           />
 
           <input
+            type="text"
+            placeholder="Account Name"
             value={newBank.accountName}
             readOnly
             className="border p-2 w-full bg-gray-100"
           />
 
-          {verifying && <Loader2 className="animate-spin" />}
+          {verifying && <p className="text-xs text-gray-500">Resolving account name...</p>}
 
-          <button
-            onClick={handleAddBank}
-            disabled={saving}
-            className="bg-black text-white px-4 py-2 rounded"
-          >
-            {saving ? 'Saving...' : 'Save'}
-          </button>
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => setIsAddBankOpen(false)}
+              className="px-3 py-1 border text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddBank}
+              disabled={saving || !newBank.accountName}
+              className="px-3 py-1 bg-black text-white text-sm disabled:opacity-50"
+            >
+              Save Bank
+            </button>
+          </div>
         </div>
       )}
 

@@ -8,6 +8,7 @@ import { useApi } from '@/hooks/useApi';
 import { useDebounce } from '@/hooks/debounceHook';
 import Image from 'next/image';
 import BulkUpload from './BulkUpload';
+import ConfirmModal from '../ConfirmModal';
 
 /* ---------------- TYPES ---------------- */
 
@@ -131,15 +132,15 @@ const ProductList: React.FC<{
     }
   }, [fetchProducts, user]);
 
+  const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
+
   /* ---------------- DELETE ---------------- */
 
   const handleDeleteProduct = async (id: string) => {
-    if (!confirm('Are you sure you want to archive this product?')) return;
-
     try {
       await fetcher(`/api/products/${id}`, { method: 'DELETE' });
 
-      toast.success('Product deleted');
+      toast.success('Product archived');
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (err: any) {
@@ -281,7 +282,7 @@ const ProductList: React.FC<{
                       </button>
 
                       <button
-                        onClick={() => handleDeleteProduct(product.id)}
+                        onClick={() => setArchiveConfirmId(product.id)}
                         className="p-1.5 text-gray-400 hover:text-rose-600"
                       >
                         <Trash2 size={16} />
@@ -326,7 +327,21 @@ const ProductList: React.FC<{
           onSuccess={fetchProducts}
         />
       )}
+
+      {/* CONFIRM ARCHIVE MODAL */}
+      <ConfirmModal
+        isOpen={Boolean(archiveConfirmId)}
+        onClose={() => setArchiveConfirmId(null)}
+        onConfirm={() => {
+          if (archiveConfirmId) handleDeleteProduct(archiveConfirmId);
+        }}
+        title="Archive Product"
+        message="Are you sure you want to archive this product? Archived products will no longer be visible on the public marketplace."
+        confirmText="Archive Product"
+        variant="warning"
+      />
     </div>
+
   );
 };
 

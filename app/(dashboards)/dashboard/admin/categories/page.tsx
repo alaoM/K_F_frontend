@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, ChevronRight, ChevronDown, FolderTree, RefreshCw } from 'lucide-react';
 import AddCategoryModal from '@/app/components/AdminComponents/AddCategory';
+import ConfirmModal from '@/app/components/ConfirmModal';
 import { useApi } from '@/hooks/useApi';
 import { toast } from 'react-toastify';
 
@@ -152,10 +153,10 @@ const CategoryList: React.FC = () => {
     }
   };
 
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
   // ✅ DELETE
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this category?")) return;
-
     try {
       await fetcher(`/api/categories/${id}`, { method: 'DELETE' });
       toast.success("Category deleted");
@@ -244,7 +245,7 @@ const CategoryList: React.FC = () => {
               category={cat}
               depth={1}
               onEdit={onEditClick}
-              onDelete={handleDelete}
+              onDelete={(id) => setDeleteConfirmId(id)}
               onAddSub={onAddSubClick}
             />
           ))}
@@ -262,6 +263,20 @@ const CategoryList: React.FC = () => {
           defaultParentId={defaultParentId}
         />
       )}
+
+      {/* CONFIRM DELETE MODAL */}
+      <ConfirmModal
+        isOpen={Boolean(deleteConfirmId)}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={() => {
+          if (deleteConfirmId) handleDelete(deleteConfirmId);
+        }}
+        title="Delete Category"
+        message="Are you sure you want to delete this category? Categories containing active products or sub-categories cannot be deleted."
+        confirmText="Delete Category"
+        variant="danger"
+      />
+
     </div>
   );
 };

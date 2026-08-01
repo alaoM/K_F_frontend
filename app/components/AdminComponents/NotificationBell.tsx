@@ -53,6 +53,45 @@ const NotificationBell: React.FC = () => {
     }
   };
 
+  // Real-time SSE Stream listener (Option A)
+  useEffect(() => {
+    if (!user) return;
+
+    let eventSource: EventSource | null = null;
+
+    try {
+      eventSource = new EventSource('/api/notifications/stream');
+
+      eventSource.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (typeof payload.unreadCount === 'number') {
+            setUnreadCount(payload.unreadCount);
+          }
+          if (payload.notification) {
+            setNotifications((prev) => [payload.notification, ...prev.filter(n => n.id !== payload.notification.id)]);
+          }
+        } catch {
+          // ignore parse errors
+        }
+      };
+
+      eventSource.onerror = () => {
+        if (eventSource && eventSource.readyState === EventSource.CLOSED) {
+          eventSource.close();
+        }
+      };
+    } catch {
+      // Gracefully ignore SSE connection errors
+    }
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
 
@@ -65,10 +104,10 @@ const NotificationBell: React.FC = () => {
     // Initial fetch
     fetchUnreadCount();
 
-    // Poll every 60s ONLY if the tab is active/visible
-    const interval = setInterval(loadUnread, 60000);
+    // Fallback poll every 120s ONLY if active/visible
+    const interval = setInterval(loadUnread, 120000);
 
-    // Immediately refresh when user switches back to this tab
+    // Refresh when switching back to tab
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         fetchUnreadCount();
@@ -83,6 +122,7 @@ const NotificationBell: React.FC = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [user, isOpen]);
+
 
 
   useEffect(() => {

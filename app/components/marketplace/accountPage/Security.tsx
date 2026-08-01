@@ -5,6 +5,7 @@ import { CheckCircle2, Shield, Smartphone } from 'lucide-react'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import { TwoFactorModal } from '../../TwoFactorModal';
+import ConfirmModal from '../../ConfirmModal';
 
 const Security = () => {
     const {user, logout} = useAuth();
@@ -38,25 +39,28 @@ const Security = () => {
         finally { setLoading(false); }
     };
 
+    const [showDisable2FAConfirm, setShowDisable2FAConfirm] = useState(false);
+
     /* ---------------- Toggle 2FA ---------------- */
     const handleToggle2FA = async () => {
         if (!is2FAEnabled) {
             // Turning it ON -> Open Setup Modal
             setIs2FAModalOpen(true);
         } else {
-            // Turning it OFF -> Direct Confirmation
-            if (confirm("Disabling 2FA will leave your account vulnerable. Proceed?")) {
-                try {
-                    await fetcher('/api/users/profile', {
-                        method: 'PATCH',
-                        body: JSON.stringify({ isTwoFactorEnabled: false })
-                    });
-                    setIs2FAEnabled(false);
-                    toast.warn("2FA Disabled");
-
-                } catch (e) { toast.error("Failed to disable 2FA"); }
-            }
+            // Turning it OFF -> Open Confirm Modal
+            setShowDisable2FAConfirm(true);
         }
+    };
+
+    const confirmDisable2FA = async () => {
+        try {
+            await fetcher('/api/users/profile', {
+                method: 'PATCH',
+                body: JSON.stringify({ isTwoFactorEnabled: false })
+            });
+            setIs2FAEnabled(false);
+            toast.warn("2FA Disabled");
+        } catch { toast.error("Failed to disable 2FA"); }
     };
 
     return (
@@ -149,6 +153,16 @@ const Security = () => {
                     }}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={showDisable2FAConfirm}
+                onClose={() => setShowDisable2FAConfirm(false)}
+                onConfirm={confirmDisable2FA}
+                title="Disable Two-Factor Authentication"
+                message="Disabling 2FA will remove the extra security layer from your account and leave it vulnerable to unauthorized access. Are you sure you want to proceed?"
+                confirmText="Disable 2FA"
+                variant="warning"
+            />
         </div>
     )
 }

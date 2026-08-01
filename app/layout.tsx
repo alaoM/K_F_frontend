@@ -89,6 +89,8 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+import NetworkStatusListener from "./components/NetworkStatusListener";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -100,6 +102,7 @@ export default function RootLayout({
         className={`${poppins.variable} ${playfair.variable} antialiased`}
       >
 
+        <NetworkStatusListener />
         {children}
          <ToastContainer
             position="top-right"

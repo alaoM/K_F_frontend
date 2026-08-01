@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 import { formatCurrency } from '@/helpers/functions'
 import { getStatusColor } from '@/app/(dashboards)/dashboard/admin/disputes/page'
 import { ApiDispute, ApiMessage } from '@/app/(site)/(marketplace)/disputes/page'
+import ConfirmModal from '../ConfirmModal'
 
 
 interface Props {
@@ -201,12 +202,9 @@ const DisputeDetails: React.FC<Props> = ({ dispute, onBack, onResolved }) => {
         }
     }
 
-    const handleResolve = async (action: 'release' | 'refund') => {
-        if (!confirm(action === 'release'
-            ? 'Release funds to the seller? This cannot be undone.'
-            : 'Issue a refund to the buyer? This cannot be undone.'
-        )) return
+    const [resolveActionConfirm, setResolveActionConfirm] = useState<'release' | 'refund' | null>(null);
 
+    const handleResolve = async (action: 'release' | 'refund') => {
         setResolving(true)
         try {
             await fetcher(`/api/disputes/${dispute.id}/resolve`, {
@@ -279,7 +277,7 @@ const DisputeDetails: React.FC<Props> = ({ dispute, onBack, onResolved }) => {
                 {!isAlreadyResolved && (
                     <div className="flex items-center gap-3">
                         <button
-                            onClick={() => handleResolve('release')}
+                            onClick={() => setResolveActionConfirm('release')}
                             disabled={resolving}
                             className="flex items-center gap-2 border border-rose-200 text-rose-600 px-4 py-2 rounded-lg hover:bg-rose-50 text-sm font-bold disabled:opacity-50"
                         >
@@ -287,7 +285,7 @@ const DisputeDetails: React.FC<Props> = ({ dispute, onBack, onResolved }) => {
                             Release to seller
                         </button>
                         <button
-                            onClick={() => handleResolve('refund')}
+                            onClick={() => setResolveActionConfirm('refund')}
                             disabled={resolving}
                             className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2 rounded-lg hover:bg-emerald-700 text-sm font-bold disabled:opacity-50"
                         >
@@ -636,6 +634,22 @@ const DisputeDetails: React.FC<Props> = ({ dispute, onBack, onResolved }) => {
                     )}
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={Boolean(resolveActionConfirm)}
+                onClose={() => setResolveActionConfirm(null)}
+                onConfirm={() => {
+                    if (resolveActionConfirm) handleResolve(resolveActionConfirm);
+                }}
+                title={resolveActionConfirm === 'release' ? 'Release Funds to Seller' : 'Issue Refund to Buyer'}
+                message={resolveActionConfirm === 'release' 
+                    ? 'Are you sure you want to release the escrow funds to the seller? This action is final and cannot be undone.'
+                    : 'Are you sure you want to refund the total order amount back to the buyer? This action is final and cannot be undone.'
+                }
+                confirmText={resolveActionConfirm === 'release' ? 'Release Funds' : 'Refund Buyer'}
+                variant={resolveActionConfirm === 'release' ? 'warning' : 'danger'}
+                isLoading={resolving}
+            />
         </div>
     )
 }

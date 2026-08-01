@@ -11,6 +11,7 @@ import { OrderSkeleton } from "../../Loaders"
 import { usePathname, useSearchParams } from "next/navigation"
 import PaymentVerificationModal from "../PaymentVerification"
 import { useRouter } from "next/navigation"
+import ConfirmModal from "../../ConfirmModal"
 
 type PaymentMethod = 'paystack' | 'flutterwave'
 
@@ -166,9 +167,9 @@ export default function Orders({
         currentPage * ITEMS_PER_PAGE
     )
 
-    const handleConfirmDelivery = async (orderId: string) => {
-        if (!confirm('Have you received all items? This will release payment to the seller.')) return
+    const [confirmDeliveryOrderId, setConfirmDeliveryOrderId] = useState<string | null>(null);
 
+    const handleConfirmDelivery = async (orderId: string) => {
         setConfirmingId(orderId)
         try {
             const res = await fetch(`/api/orders/${orderId}/confirm`, { method: 'PATCH' })
@@ -355,7 +356,7 @@ export default function Orders({
 
                                     {canConfirmDelivery(order) && (
                                         <button
-                                            onClick={() => handleConfirmDelivery(order.id)}
+                                            onClick={() => setConfirmDeliveryOrderId(order.id)}
                                             disabled={confirmingId === order.id}
                                             className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-60"
                                         >
@@ -443,6 +444,19 @@ export default function Orders({
                 isOpen={isDisputeOpen}
                 onClose={() => setIsDisputeOpen(false)}
                 onSuccess={fetchOrders}
+            />
+
+            <ConfirmModal
+                isOpen={Boolean(confirmDeliveryOrderId)}
+                onClose={() => setConfirmDeliveryOrderId(null)}
+                onConfirm={() => {
+                    if (confirmDeliveryOrderId) handleConfirmDelivery(confirmDeliveryOrderId);
+                }}
+                title="Confirm Item Delivery"
+                message="Have you received all items in good condition? Confirming delivery will permanently release payment from escrow to the seller."
+                confirmText="Confirm & Release Payment"
+                variant="info"
+                isLoading={Boolean(confirmingId)}
             />
         </div>
     )
