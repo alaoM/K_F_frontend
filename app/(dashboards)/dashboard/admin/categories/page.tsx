@@ -42,13 +42,22 @@ const RecursiveCategoryNode: React.FC<{
           )}
 
           <div
-            className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-lg border border-gray-200 shrink-0 bg-cover bg-center overflow-hidden px-1 select-none"
+            className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-lg border border-gray-200 shrink-0 bg-cover bg-center overflow-hidden px-1 select-none relative group/icon cursor-help"
             style={category.image ? { backgroundImage: `url(${category.image})`, fontSize: '0' } : {}}
+            title={category.icon || '📁'}
           >
             {!category.image && (
-              <span className="whitespace-nowrap truncate max-w-full leading-none tracking-tighter text-center">
-                {category.icon || '📁'}
-              </span>
+              <>
+                <span className="whitespace-nowrap truncate max-w-full leading-none tracking-tighter text-center">
+                  {category.icon || '📁'}
+                </span>
+                {category.icon && (
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 hidden group-hover/icon:flex items-center gap-1 bg-[#1e293b] text-white text-xs px-2.5 py-1.5 rounded-xl shadow-2xl whitespace-nowrap z-[100] border border-gray-700 animate-in fade-in zoom-in-95 duration-150">
+                    <span className="text-sm">{category.icon}</span>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1e293b]" />
+                  </div>
+                )}
+              </>
             )}
           </div>
 

@@ -110,9 +110,9 @@ export default function CartPage() {
                                                     />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    {item.seller?.businessName && (
+                                                    {(item.businessName || item.seller?.businessName) && (
                                                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">
-                                                            {item.seller.businessName}
+                                                            {item.businessName || item.seller?.businessName}
                                                         </span>
                                                     )}
                                                     <h3 className="text-xs font-bold text-[#222222] uppercase tracking-wide truncate">

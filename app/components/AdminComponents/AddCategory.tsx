@@ -280,12 +280,18 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
                   placeholder="📁"
                 />
                 <div
-                  className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-lg overflow-hidden shrink-0 whitespace-nowrap px-1 select-none"
-                  title="Icon Preview"
+                  className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-lg overflow-hidden shrink-0 whitespace-nowrap px-1 select-none relative group/icon cursor-help"
+                  title={currentIcon || '📁'}
                 >
                   <span className="whitespace-nowrap truncate max-w-full leading-none tracking-tighter text-center">
                     {currentIcon || '📁'}
                   </span>
+                  {currentIcon && (
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 hidden group-hover/icon:flex items-center gap-1 bg-[#1e293b] text-white text-xs px-2.5 py-1.5 rounded-xl shadow-2xl whitespace-nowrap z-[100] border border-gray-700 animate-in fade-in zoom-in-95 duration-150">
+                      <span className="text-sm">{currentIcon}</span>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1e293b]" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

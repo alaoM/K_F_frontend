@@ -31,6 +31,11 @@ export interface CartItem {
   primaryImage: string;
   quantity: number;
   businessName: string;
+  seller?: {
+    id?: string;
+    businessName?: string;
+    logo?: string;
+  };
   color?: string;
 }
 

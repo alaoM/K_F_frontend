@@ -20,65 +20,21 @@ export interface Message {
 
 export interface Dispute {
     id: string;
-    orderId: string;
-    order: any; // Added to match live data
-    buyer: any; // Changed from string to any (object)
+    orderId?: string;
+    order?: any;
+    buyer?: any;
+    seller?: any;
+    amount?: number;
     reason: string;
-    status: 'pending' | 'escalated' | 'resolved' | 'under-review' | 'resolved' | 'closed' | 'open' | 'awaiting_response' | 'resolved_released' | 'resolved_refunded'
-    priority: 'high' | 'medium' | 'low'; // Matches lowercase from API
+    status: 'pending' | 'escalated' | 'resolved' | 'under-review' | 'closed' | 'open' | 'awaiting_response' | 'resolved_released' | 'resolved_refunded';
+    priority: 'high' | 'medium' | 'low';
     createdAt: string;
     updatedAt?: string;
     adminResolutionNote?: string | null;
     messages: any[];
 }
 
-const initialDisputes: Dispute[] = [
-    {
-        id: 'DSP-1024',
-        orderId: 'ORD-7281',
-        buyer: 'Sarah Jenkins',
-        seller: 'Urban Vogue',
-        reason: 'Item not as described (Quality issue)',
-        amount: 124.50,
-        status: 'pending',
-        priority: 'high',
-        createdAt: 'Apr 05, 2026',
-        messages: [
-            { id: '1', sender: 'Buyer', text: "The fabric quality is much thinner than what was shown in the photos. I'd like a full refund.", timestamp: 'Apr 05, 10:30 AM' },
-            { id: '2', sender: 'Seller', text: "We use premium cotton for all our shirts. Can you please provide photos of the issue?", timestamp: 'Apr 05, 11:15 AM' }
-        ]
-    },
-    {
-        id: 'DSP-1023',
-        orderId: 'ORD-7275',
-        buyer: 'Michael Chen',
-        seller: 'Classic Threads',
-        reason: 'Shipping Delay (Package lost)',
-        amount: 89.99,
-        status: 'escalated',
-        priority: 'medium',
-        createdAt: 'Apr 03, 2026',
-        messages: [
-            { id: '1', sender: 'Buyer', text: "It's been 10 days and the tracking hasn't updated. Where is my order?", timestamp: 'Apr 03, 09:00 AM' },
-            { id: '2', sender: 'Admin', text: "We are contacting the courier to locate the package. Please wait 24-48 hours.", timestamp: 'Apr 04, 02:00 PM' }
-        ]
-    },
-    {
-        id: 'DSP-1022',
-        orderId: 'ORD-7260',
-        buyer: 'Emma Wilson',
-        seller: 'Luxe Wear',
-        reason: 'Wrong size delivered',
-        amount: 245.00,
-        status: 'resolved',
-        priority: 'low',
-        createdAt: 'Mar 28, 2026',
-        messages: [
-            { id: '1', sender: 'Buyer', text: "I ordered a Medium but received a Small.", timestamp: 'Mar 28, 04:30 PM' },
-            { id: '2', sender: 'Seller', text: "We apologize for the mistake. We've shipped the correct size and you can keep the Small one.", timestamp: 'Mar 29, 10:00 AM' }
-        ]
-    }
-];
+
 
 export const getStatusColor = (status: Dispute['status']) => {
     switch (status) {
@@ -137,7 +93,7 @@ const DisputeCenter: React.FC = () => {
     if (selectedDispute) {
         return (
             <DisputeDetails
-                dispute={selectedDispute}
+                dispute={selectedDispute as any}
                 onBack={() => setSelectedDispute(null)}
             />
         );
@@ -157,7 +113,7 @@ const DisputeCenter: React.FC = () => {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-extrabold text-[#243e6b]">Dispute Center</h1>
-                    <p className="text-gray-500 text-sm">Mediate disputes</p>
+
                 </div>
 
                 <div className="flex items-center gap-3">
