@@ -42,10 +42,14 @@ const RecursiveCategoryNode: React.FC<{
           )}
 
           <div
-            className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-lg border border-gray-200 shrink-0 bg-cover bg-center"
+            className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-lg border border-gray-200 shrink-0 bg-cover bg-center overflow-hidden px-1 select-none"
             style={category.image ? { backgroundImage: `url(${category.image})`, fontSize: '0' } : {}}
           >
-            {!category.image && (category.icon || '📁')}
+            {!category.image && (
+              <span className="whitespace-nowrap truncate max-w-full leading-none tracking-tighter text-center">
+                {category.icon || '📁'}
+              </span>
+            )}
           </div>
 
           <div className="min-w-0">

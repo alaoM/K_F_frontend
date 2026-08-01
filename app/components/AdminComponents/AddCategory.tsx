@@ -62,6 +62,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   const [bulkInput, setBulkInput] = useState('');
 
   const currentImage = watch('image');
+  const currentIcon = watch('icon');
   const selectedParentId = watch('parentId');
 
   const flatOptions = useMemo(() => flattenCategoryTree(parentOptions), [parentOptions]);
@@ -271,12 +272,22 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             {/* Icon */}
             <div>
-              <label className="text-sm font-bold text-gray-700">Emoji Icon</label>
-              <input
-                {...register('icon')}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2 mt-1 text-center text-sm"
-                placeholder="📁"
-              />
+              <label className="text-sm font-bold text-gray-700">Emoji Icon(s)</label>
+              <div className="flex items-center gap-2 mt-1">
+                <input
+                  {...register('icon')}
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#243e6b] outline-none"
+                  placeholder="📁"
+                />
+                <div
+                  className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-lg overflow-hidden shrink-0 whitespace-nowrap px-1 select-none"
+                  title="Icon Preview"
+                >
+                  <span className="whitespace-nowrap truncate max-w-full leading-none tracking-tighter text-center">
+                    {currentIcon || '📁'}
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Commission */}
