@@ -48,12 +48,28 @@ const Settings: React.FC = () => {
         <h3 className="text-xl font-black text-[#243e6b] uppercase tracking-tighter">Platform Payment Configuration</h3>
         <p className="text-sm text-gray-400 font-medium">Manage platform-level payment gateway settings and commission rules.</p>
       </div>
-      <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
-        <CreditCard size={20} className="text-[#243e6b] shrink-0" />
-        <p className="text-sm text-[#243e6b] font-medium">
-          Platform payment gateway settings (Paystack / Flutterwave keys) are managed via environment variables.
-          Commission rates are configurable under <strong>General Settings</strong>.
-        </p>
+      <div className="flex items-start gap-4 p-5 bg-blue-50/70 rounded-xl border border-blue-100/80 text-sm text-[#243e6b]">
+        <CreditCard size={22} className="text-[#243e6b] shrink-0 mt-0.5" />
+        <div className="space-y-2">
+          <p className="font-semibold leading-relaxed">
+            Platform payment gateway integration keys (Paystack / Flutterwave) are securely initialized via environment variables.
+          </p>
+          <div className="flex flex-wrap gap-4 pt-1">
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('general')}
+              className="text-xs font-black uppercase tracking-wider text-[#243e6b] bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all shadow-xs"
+            >
+              ⚙️ Go to General Settings (Global Default Commission)
+            </button>
+            <a
+              href="/dashboard/admin/categories"
+              className="text-xs font-black uppercase tracking-wider text-[#243e6b] bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all shadow-xs"
+            >
+              📁 Manage Category Commissions
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -61,6 +77,36 @@ const Settings: React.FC = () => {
   const renderSecurity = () => (
     <Security />
   );
+
+  const [eventPreferences, setEventPreferences] = useState<Record<string, boolean>>({
+    'New Order Placed': true,
+    'Stock Level Alerts': true,
+    'Customer Dispute': true,
+    'Payout Processing': true,
+    'Platform Announcements': true,
+    'Creator Insights': false,
+  });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('admin_event_preferences');
+      if (saved) setEventPreferences(JSON.parse(saved));
+    } catch {
+      // fallback
+    }
+  }, []);
+
+  const toggleEventPreference = (label: string) => {
+    setEventPreferences((prev) => {
+      const updated = { ...prev, [label]: !prev[label] };
+      try {
+        localStorage.setItem('admin_event_preferences', JSON.stringify(updated));
+      } catch {
+        // fallback
+      }
+      return updated;
+    });
+  };
 
   const renderNotifications = () => (
     <div className="space-y-6">
@@ -123,7 +169,12 @@ const Settings: React.FC = () => {
             { label: 'Creator Insights', desc: 'Weekly analytics and growth tips' }
           ].map((item) => (
             <div key={item.label} className="flex items-start gap-4 p-4 border border-gray-50 rounded-xl hover:border-[#243e6b]/20 transition-all bg-gray-50/50">
-              <input type="checkbox" defaultChecked className="mt-1 w-5 h-5 accent-[#243e6b] rounded cursor-pointer" />
+              <input
+                type="checkbox"
+                checked={Boolean(eventPreferences[item.label])}
+                onChange={() => toggleEventPreference(item.label)}
+                className="mt-1 w-5 h-5 accent-[#243e6b] rounded cursor-pointer"
+              />
               <div>
                 <p className="text-sm font-bold text-[#243e6b] leading-none">{item.label}</p>
                 <p className="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-wider">{item.desc}</p>
@@ -149,11 +200,7 @@ const Settings: React.FC = () => {
           <h1 className="text-3xl font-black text-[#243e6b] uppercase tracking-tighter">Settings</h1>
           <p className="text-gray-400 font-medium">Orchestrate your store operations and account architecture.</p>
         </div>
-        <div className="flex gap-3">
-          <div className="px-4 py-2 bg-gray-100 rounded-xl text-xs font-black text-gray-400 uppercase tracking-widest border border-gray-200">
-            V2.4.0-Stable
-          </div>
-        </div>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

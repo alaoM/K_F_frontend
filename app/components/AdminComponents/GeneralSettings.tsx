@@ -50,7 +50,40 @@ const GeneralSettings = () => {
 
     const profileForm = useForm<ProfileForm>()
     const sellerForm = useForm<SellerForm>()
- 
+
+    // ✅ Global Commission State for Admin
+    const [globalCommission, setGlobalCommission] = useState<number>(5);
+    const [loadingCommission, setLoadingCommission] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (user?.role === 'admin') {
+            fetcher('/api/system-settings')
+                .then((data: any) => {
+                    if (data && data.COMMISSION_PERCENT != null) {
+                        const parsed = parseFloat(data.COMMISSION_PERCENT);
+                        setGlobalCommission(parsed < 1 ? parsed * 100 : parsed);
+                    }
+                })
+                .catch(() => {});
+        }
+    }, [user, fetcher]);
+
+    const handleSaveCommission = async () => {
+        setLoadingCommission(true);
+        try {
+            const decimalVal = globalCommission > 1 ? globalCommission / 100 : globalCommission;
+            await fetcher('/api/system-settings', {
+                method: 'POST',
+                body: JSON.stringify({ COMMISSION_PERCENT: decimalVal }),
+            });
+            toast.success("Global Commission Rate updated successfully!");
+        } catch {
+            toast.error("Failed to update commission rate");
+        } finally {
+            setLoadingCommission(false);
+        }
+    };
+
     // ✅ Populate forms
     useEffect(() => {
         if (!user) return;
@@ -175,6 +208,59 @@ const GeneralSettings = () => {
     const avatarSrc = avatarPreview ?? user?.userAvatar ?? null;
     return (
         <div className="space-y-6">
+
+            {/* ================= ADMIN GLOBAL COMMISSION SETTINGS ================= */}
+            {user.role === 'admin' && (
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-5">
+                    <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                        <div>
+                            <h3 className="font-extrabold text-[#243e6b] text-base">Global Platform Default Commission</h3>
+                            <p className="text-xs text-gray-500 font-medium mt-0.5">
+                                Set the baseline commission percentage deducted from seller payouts when no specific category rate is defined.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleSaveCommission}
+                            disabled={loadingCommission}
+                            className="flex items-center gap-2 bg-[#243e6b] hover:bg-[#1a2e50] text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all shadow-md shadow-blue-900/10 disabled:opacity-50"
+                        >
+                            <Save size={14} />
+                            {loadingCommission ? "Saving..." : "Save Commission"}
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Default Platform Commission Rate (%)</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    min="0"
+                                    max="100"
+                                    value={globalCommission}
+                                    onChange={(e) => setGlobalCommission(parseFloat(e.target.value) || 0)}
+                                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm font-black text-[#243e6b] focus:ring-2 focus:ring-[#243e6b]/20 outline-none"
+                                />
+                                <span className="absolute right-4 top-2.5 text-xs font-black text-gray-400">%</span>
+                            </div>
+                        </div>
+
+                        <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-100 text-xs text-amber-800 space-y-1">
+                            <p className="font-bold flex items-center gap-1 text-[#243e6b]">
+                                💡 Commission Resolution Hierarchy:
+                            </p>
+                            <p className="leading-relaxed text-gray-600">
+                                1. Category Specific Rate &rarr; 2. Parent Category Rate &rarr; 3. Global Default ({globalCommission}%).
+                            </p>
+                            <a href="/dashboard/admin/categories" className="font-extrabold text-[#243e6b] hover:underline block pt-0.5">
+                                Configure Category Specific Rates &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* ================= PROFILE ================= */}
             <form onSubmit={profileForm.handleSubmit(updateProfile)} className="bg-white p-6 rounded-xl space-y-6">

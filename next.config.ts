@@ -33,6 +33,14 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'assets.fkstores.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.example.com',
+      },
+      {
+        protocol: 'https',
         hostname: '**',
       },
     ],

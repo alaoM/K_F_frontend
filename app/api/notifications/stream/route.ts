@@ -16,13 +16,26 @@ export async function GET(req: NextRequest) {
         Authorization: `Bearer ${token}`,
         Accept: "text/event-stream",
       },
+      cache: 'no-store',
     });
 
     if (!backendRes.ok || !backendRes.body) {
-      return new Response("SSE stream connection failed", { status: backendRes.status });
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ type: 'error', error: 'Stream unavailable' })}\n\n`));
+          controller.close();
+        },
+      });
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache, no-transform",
+          Connection: "keep-alive",
+        },
+      });
     }
 
-    return new Response(backendRes.body as any, {
+    return new Response(backendRes.body, {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache, no-transform",
@@ -30,6 +43,19 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err: any) {
-    return new Response(err.message || "SSE Error", { status: 500 });
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ type: 'error', error: err.message || 'SSE Proxy Error' })}\n\n`));
+        controller.close();
+      },
+    });
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+      },
+    });
   }
 }
+
