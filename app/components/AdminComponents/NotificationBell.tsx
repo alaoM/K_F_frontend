@@ -54,17 +54,36 @@ const NotificationBell: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchNotifications();
-    fetchUnreadCount();
+    if (!user) return;
 
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(() => {
+    const loadUnread = () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       fetchUnreadCount();
       if (isOpen) fetchNotifications();
-    }, 30000);
+    };
 
-    return () => clearInterval(interval);
-  }, []);
+    // Initial fetch
+    fetchUnreadCount();
+
+    // Poll every 60s ONLY if the tab is active/visible
+    const interval = setInterval(loadUnread, 60000);
+
+    // Immediately refresh when user switches back to this tab
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchUnreadCount();
+        if (isOpen) fetchNotifications();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user, isOpen]);
+
 
   useEffect(() => {
     if (isOpen) fetchNotifications();

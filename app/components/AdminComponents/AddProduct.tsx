@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 interface Category {
   id: string;
   name: string;
+  commissionPercent?: number | null;
+  parent?: { commissionPercent?: number | null };
 }
 
 interface ProductFormData {
@@ -27,11 +29,26 @@ const AddProduct: React.FC<{
   initialData?: any;  
 }> = ({ onBack, initialData }) => {
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ProductFormData>();
+  const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<ProductFormData>();
 
   const fetcher = useApi();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Watch price and category for live earnings calculator
+  const watchedPrice = watch('price');
+  const watchedCategory = watch('category');
+
+  // Compute selected category's effective commission
+  const selectedCategoryObj = categories.find(c => c.id === watchedCategory);
+  const effectiveCommission = selectedCategoryObj
+    ? (selectedCategoryObj.commissionPercent ?? selectedCategoryObj.parent?.commissionPercent ?? 0.05)
+    : 0.05; // 5% global fallback
+
+  const numericPrice = Number(watchedPrice) || 0;
+  const platformFeeAmount = numericPrice * effectiveCommission;
+  const estimatedNetPayout = Math.max(0, numericPrice - platformFeeAmount);
+
 
   // Images
   const [primaryFile, setPrimaryFile] = useState<File | null>(null);
@@ -263,7 +280,30 @@ const AddProduct: React.FC<{
                 {errors.stock && <p className="text-rose-500 text-xs mt-1">{errors.stock.message}</p>}
               </div>
             </div>
+
+            {/* LIVE SELLER PAYOUT NOTIFICATION */}
+            {numericPrice > 0 && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50/60 p-4 rounded-xl border border-blue-200/80 space-y-2">
+                <div className="flex justify-between items-center text-xs font-bold text-[#243e6b]">
+                  <span className="flex items-center gap-1.5">
+                    🏷️ Category Commission {selectedCategoryObj ? `(${selectedCategoryObj.name})` : '(Default Rate)'}:
+                  </span>
+                  <span className="bg-blue-100 text-blue-900 px-2.5 py-0.5 rounded-full font-mono">
+                    {(effectiveCommission * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>Platform Fee per item sold:</span>
+                  <span className="text-rose-600 font-semibold">-₦{platformFeeAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-blue-200/60 text-xs sm:text-sm font-extrabold text-emerald-700">
+                  <span>Your Net Earnings Per Item Sold:</span>
+                  <span>₦{estimatedNetPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+              </div>
+            )}
           </div>
+
         </div>
 
         <div className="space-y-6">
