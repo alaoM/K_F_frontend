@@ -60,7 +60,7 @@ async function getCategories() {
     });
     if (!res.ok) return [];
     const data = await res.json();
-    console.log(data)
+
     return Array.isArray(data) ? data : data?.data || [];
   } catch (err) {
     console.error("Failed to prefetch categories server-side:", err);

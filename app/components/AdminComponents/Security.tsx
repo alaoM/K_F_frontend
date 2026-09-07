@@ -1,7 +1,7 @@
 "use client"
 import { useAuth } from '@/context/AuthContext';
 import { useApi } from '@/hooks/useApi';
-import { CheckCircle2, Shield, Smartphone } from 'lucide-react'
+import { CheckCircle2, Shield, Smartphone, Eye, EyeOff } from 'lucide-react'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import { TwoFactorModal } from '../TwoFactorModal';
@@ -12,10 +12,10 @@ const Security = () => {
     const [loading, setLoading] = useState(false);
      
     const [pwd, setPwd] = useState({ currentPassword: '', newPassword: '', confirm: '' });
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const fetcher = useApi()
-
-   
-
 
     const [is2FAModalOpen, setIs2FAModalOpen] = useState(false);
     const [is2FAEnabled, setIs2FAEnabled] = useState(user?.isTwoFactorEnabled);
@@ -65,30 +65,43 @@ const Security = () => {
 
     return (
         <div className="space-y-6">
-            <form onSubmit={handleChangePassword}  >
+            <form onSubmit={handleChangePassword}>
                 <div className="bg-white p-6 rounded-xl border border-[#e2e2e2] shadow-sm space-y-6">
                     <h3 className="font-bold text-[#243e6b] border-b border-[#e2e2e2] pb-4">Change Password</h3>
                     <div className="space-y-4 max-w-md">
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold text-gray-700">Current Password</label>
-                            <input type="password" placeholder="••••••••"
-                                value={pwd.currentPassword} onChange={(e) => setPwd({ ...pwd, currentPassword: e.target.value })}
-                                className="w-full border border-[#e2e2e2] rounded-md px-4 py-2 outline-none focus:border-[#243e6b] transition-colors text-sm" />
+                            <div className="relative">
+                                <input type={showCurrentPassword ? "text" : "password"} placeholder="••••••••"
+                                    value={pwd.currentPassword} onChange={(e) => setPwd({ ...pwd, currentPassword: e.target.value })}
+                                    className="w-full border border-[#e2e2e2] rounded-md px-4 py-2 pr-11 outline-none focus:border-[#243e6b] transition-colors text-sm" />
+                                <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#243e6b] transition-colors p-1 cursor-pointer">
+                                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold text-gray-700">New Password</label>
-                            <input type="password" placeholder="••••••••"
-                                value={pwd.newPassword} onChange={(e) => setPwd({ ...pwd, newPassword: e.target.value })} className="w-full border border-[#e2e2e2] rounded-md px-4 py-2 outline-none focus:border-[#243e6b] transition-colors text-sm" />
+                            <div className="relative">
+                                <input type={showNewPassword ? "text" : "password"} placeholder="••••••••"
+                                    value={pwd.newPassword} onChange={(e) => setPwd({ ...pwd, newPassword: e.target.value })} className="w-full border border-[#e2e2e2] rounded-md px-4 py-2 pr-11 outline-none focus:border-[#243e6b] transition-colors text-sm" />
+                                <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#243e6b] transition-colors p-1 cursor-pointer">
+                                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold text-gray-700">Confirm New Password</label>
-                            <input type="password" placeholder="••••••••"
-
-
-                                value={pwd.confirm} onChange={(e) => setPwd({ ...pwd, confirm: e.target.value })}
-                                className="w-full border border-[#e2e2e2] rounded-md px-4 py-2 outline-none focus:border-[#243e6b] transition-colors text-sm" />
+                            <div className="relative">
+                                <input type={showConfirm ? "text" : "password"} placeholder="••••••••"
+                                    value={pwd.confirm} onChange={(e) => setPwd({ ...pwd, confirm: e.target.value })}
+                                    className="w-full border border-[#e2e2e2] rounded-md px-4 py-2 pr-11 outline-none focus:border-[#243e6b] transition-colors text-sm" />
+                                <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#243e6b] transition-colors p-1 cursor-pointer">
+                                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
                         </div>
-                        <button disabled={loading} className="bg-[#243e6b] text-white text-xs font-bold px-6 py-2 rounded-md hover:bg-[#243e6b]/90 transition-all">
+                        <button disabled={loading} className="bg-[#243e6b] text-white text-xs font-bold px-6 py-2 rounded-md hover:bg-[#243e6b]/90 transition-all cursor-pointer">
                             {
                                 loading ? "Updating..." : "Update Password"
                             }

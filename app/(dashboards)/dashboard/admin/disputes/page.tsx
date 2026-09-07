@@ -64,7 +64,7 @@ const DisputeCenter: React.FC = () => {
             const res = await fetcher('/api/admin/disputes');
 
             const data = res.data || [];
-            console.log(data);
+
 
             setDisputes(data);
 

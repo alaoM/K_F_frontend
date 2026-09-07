@@ -4,17 +4,17 @@ import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
 export async function PATCH(
     request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+    context: { params: Promise<{ id: string }> }
 
 ) {
     try {
-          const { id } = await context.params;
- 
+        const { id } = await context.params;
+
         const token = await getAuthToken();
 
         const response = await axios.patch(
-            `${process.env.BASE_URL}/orders/sales/${id}/ship`, 
-            {},  
+            `${process.env.BASE_URL}/orders/sales/${id}/ship`,
+            {},
             {
                 headers: { Authorization: `Bearer ${token}` }
             }

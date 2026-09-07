@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
+import { Eye, EyeOff } from "lucide-react"
 
 type FormData = {
   fullName: string
@@ -27,7 +28,7 @@ const SignupContent = () => {
   const intent = searchParams.get("intent");
   const isRegisteringToSell = intent === "seller";
 
-
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -171,22 +172,32 @@ const onSubmit = async (data: FormData) => {
             {/* Password */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Password</label>
-              <input
-                type="password"
-                placeholder="Password"
-                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters"
-                  },
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d).+$/,
-                    message: "Password must contain at least one letter and one number"
-                  }
-                })}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full border p-3 pr-11 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters"
+                    },
+                    pattern: {
+                      value: /^(?=.*[A-Za-z])(?=.*\d).+$/,
+                      message: "Password must contain at least one letter and one number"
+                    }
+                  })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#111111] transition-colors p-1 cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-xs">{errors.password.message}</p>
               )}

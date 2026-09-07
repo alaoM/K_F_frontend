@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext"
 import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { Eye, EyeOff } from "lucide-react"
 
 type FormData = {
     name: string
@@ -20,6 +21,7 @@ const Page = () => {
 
     const { signIn, isLoading, verify2FA } = useAuth();
     const [showMfaModal, setShowMfaModal] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [tempUserId, setTempUserId] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [otp, setOtp] = useState("")
@@ -124,18 +126,28 @@ const Page = () => {
                                 {/* Password */}
                                 <div className="flex flex-col gap-2">
                                     <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Password</label>
-                                    <input
-                                        type="password"
-                                        placeholder="Password"
-                                        className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
-                                        {...register("password", {
-                                            required: "Password is required",
-                                            minLength: {
-                                                value: 6,
-                                                message: "Password must be at least 6 characters"
-                                            }
-                                        })}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Password"
+                                            className="w-full border p-3 pr-11 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
+                                            {...register("password", {
+                                                required: "Password is required",
+                                                minLength: {
+                                                    value: 6,
+                                                    message: "Password must be at least 6 characters"
+                                                }
+                                            })}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#111111] transition-colors p-1 cursor-pointer"
+                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
                                     {errors.password && (
                                         <p className="text-red-500 text-xs">{errors.password.message}</p>
                                     )}
