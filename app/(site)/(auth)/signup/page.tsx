@@ -94,33 +94,33 @@ const onSubmit = async (data: FormData) => {
             )}
           </div>
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/50  text-xs text-center">
+            <div className="mb-4 p-3 rounded-none bg-red-50 border border-red-200 text-xs text-center text-red-600 font-bold">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 text-gray-500">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-gray-700">
 
             {/* Name */}
-            <div className="flex flex-col gap-2">
-              <label>Name</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Name</label>
               <input
-                className="border p-3 rounded-md border-gray-300"
-                placeholder="Name"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
+                placeholder="Full Name"
                 {...register("fullName", { required: "Name is required" })}
               />
               {errors.fullName && (
-                <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+                <p className="text-red-500 text-xs">{errors.fullName.message}</p>
               )}
             </div>
 
             {/* Email */}
-            <div className="flex flex-col gap-2">
-              <label>Email Address</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Email Address</label>
               <input
                 type="email"
                 placeholder="Email address"
-                className="border p-3 rounded-md border-gray-300"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -130,51 +130,51 @@ const onSubmit = async (data: FormData) => {
                 })}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
+                <p className="text-red-500 text-xs">{errors.email.message}</p>
               )}
             </div>
 
             {/* Phone */}
-            <div className="flex flex-col gap-2">
-              <label>Phone Number</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Phone Number</label>
               <input
                 type="tel"
                 placeholder="Phone number"
-                className="border p-3 rounded-md border-gray-300"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                 {...register("phoneNumber", { required: "Phone number is required" })}
               />
               {errors.phoneNumber && (
-                <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>
+                <p className="text-red-500 text-xs">{errors.phoneNumber.message}</p>
               )}
             </div>
             {/* Address */}
-            <div className="flex flex-col gap-2">
-              <label>Address</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Address</label>
               <input
-                className="border p-3 rounded-md border-gray-300"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                 placeholder="Address"
                 {...register("address")}
               />
 
             </div>
             {/* Location */}
-            <div className="flex flex-col gap-2">
-              <label>City</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">City</label>
               <input
-                className="border p-3 rounded-md border-gray-300"
-                placeholder="Location"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
+                placeholder="Location / City"
                 {...register("location")}
               />
 
             </div>
 
             {/* Password */}
-            <div className="flex flex-col gap-2">
-              <label>Password</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Password</label>
               <input
                 type="password"
                 placeholder="Password"
-                className="border p-3 rounded-md border-gray-300"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -188,24 +188,24 @@ const onSubmit = async (data: FormData) => {
                 })}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm">{errors.password.message}</p>
+                <p className="text-red-500 text-xs">{errors.password.message}</p>
               )}
             </div>
 
             {/* Terms */}
-            <div className="flex items-start gap-2 text-sm">
+            <div className="flex items-start gap-2 text-xs">
               <input
                 type="checkbox"
-                className="mt-1"
+                className="mt-0.5 rounded-none border-gray-300 text-[#111111] focus:ring-0"
                 {...register("terms", {
                   required: "You must accept the terms"
                 })}
               />
-              <span>
+              <span className="text-gray-600">
                 I agree to the
                 <Link
                   href="/terms"
-                  className="ml-1 border-b font-medium"
+                  className="ml-1 border-b border-[#111111] font-bold text-[#111111]"
                 >
                   terms & conditions
                 </Link>
@@ -213,15 +213,14 @@ const onSubmit = async (data: FormData) => {
             </div>
 
             {errors.terms && (
-              <p className="text-red-500 text-sm">{errors.terms.message}</p>
+              <p className="text-red-500 text-xs">{errors.terms.message}</p>
             )}
 
             {/* Submit */}
             <button
               disabled={isLoading}
               type="submit"
-              className={` hover:bg-[#ababab]
-hover:text-[#eaeaea] font-semibold px-5 py-3 rounded-md bg-[#f6c947] text-black transition ${isLoading ? 'cursor-not-allowed bg-[#ababab] text-[#eaeaea]' : 'hover:bg-[#f6c947/70]'}`}
+              className="w-full bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] font-black text-xs uppercase tracking-widest px-6 py-3.5 rounded-none transition-colors cursor-pointer disabled:opacity-50"
             >
               {isLoading ? 'Creating Account...' : 'Get Started'}
             </button>
@@ -229,13 +228,13 @@ hover:text-[#eaeaea] font-semibold px-5 py-3 rounded-md bg-[#f6c947] text-black 
           </form>
 
           {/* Login link */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2  rounded-md p-5 mt-8 text-center">
-            <span className="font-semibold">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 rounded-none p-4 mt-8 text-center text-xs bg-gray-50 border border-gray-100">
+            <span className="font-bold text-gray-700 uppercase tracking-wider">
               Already have an account?
             </span>
             <Link
               href="/login"
-              className="border-b font-medium"
+              className="border-b border-[#111111] font-black uppercase text-[#111111]"
             >
               Log in
             </Link>

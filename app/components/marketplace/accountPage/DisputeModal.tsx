@@ -65,25 +65,25 @@ export default function DisputeModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
       
-      <div className="bg-white w-full max-w-lg rounded-xl p-6">
+      <div className="bg-white w-full max-w-lg rounded-none p-6 border border-gray-200 shadow-2xl">
         
-        <h2 className="text-lg font-semibold mb-4">
+        <h2 className="text-base font-black uppercase text-[#111111] mb-4">
           Raise Dispute
         </h2>
 
         {/* Reason */}
         <input
-          placeholder="Reason (e.g. Rotten Produce)"
-          className="w-full border border-[#e2e2e2] p-3 rounded mb-3"
+          placeholder="Reason (e.g. Defective item, wrong size)"
+          className="w-full border border-gray-300 p-3 rounded-none mb-3 text-xs outline-none focus:border-[#111111]"
           value={form.reason}
           onChange={(e) => handleChange('reason', e.target.value)}
         />
 
         {/* Priority */}
         <select
-          className="w-full border border-[#e2e2e2] p-3 rounded mb-3"
+          className="w-full border border-gray-300 p-3 rounded-none mb-3 text-xs outline-none focus:border-[#111111]"
           value={form.priority}
           onChange={(e) => handleChange('priority', e.target.value)}
         >
@@ -95,7 +95,7 @@ export default function DisputeModal({
         {/* Message */}
         <textarea
           placeholder="Describe the issue..."
-          className="w-full border border-[#e2e2e2] p-3 rounded mb-3"
+          className="w-full border border-gray-300 p-3 rounded-none mb-3 text-xs outline-none focus:border-[#111111]"
           rows={4}
           value={form.message}
           onChange={(e) => handleChange('message', e.target.value)}
@@ -105,7 +105,7 @@ export default function DisputeModal({
         <div className="flex justify-end gap-3 mt-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-[#e2e2e2] rounded"
+            className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-none text-xs font-bold uppercase tracking-wider cursor-pointer"
           >
             Cancel
           </button>
@@ -113,7 +113,7 @@ export default function DisputeModal({
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 bg-red-600 text-white rounded"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-none text-xs font-bold uppercase tracking-wider cursor-pointer disabled:opacity-50"
           >
             {loading ? 'Submitting...' : 'Submit Dispute'}
           </button>

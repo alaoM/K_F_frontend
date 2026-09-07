@@ -55,8 +55,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StorefrontPage({ params }: Props) {
   const { storeId } = await params;
 
-  // Fetch store server-side for JSON-LD
   let storeJsonLd: object | null = null;
+  let store: any = {
+    id: storeId,
+    businessName: 'Store',
+    businessEmail: '',
+    businessAddress: '',
+    businessCity: '',
+    businessState: '',
+    bio: '',
+    banner: '',
+    logo: '',
+    rating: 5,
+  };
+  let products: any[] = [];
+
   try {
     const res = await fetch(`${API_URL}/sellers/${storeId}`, {
       next: { revalidate: 3600 },
@@ -65,6 +78,8 @@ export default async function StorefrontPage({ params }: Props) {
       const json = await res.json();
       const s = json.data;
       if (s) {
+        store = s;
+        products = s.products || [];
         storeJsonLd = {
           '@context': 'https://schema.org',
           '@type': 'Store',
@@ -96,7 +111,7 @@ export default async function StorefrontPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
         />
       )}
-      <StorefrontClient />
+      <StorefrontClient store={store} products={products} />
     </>
   );
 }

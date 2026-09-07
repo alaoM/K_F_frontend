@@ -79,7 +79,7 @@ export default function Footer() {
                     {/* Logo & Follow Us */}
                     <div className="space-y-6">
                         <Link href="/">
-                            <Image src="/logo.png" alt="F&K logo" width={180} height={60} className="object-contain brightness-0 invert" />
+                            <Image src="/logo.png" alt="F&K logo" width={180} height={60} className="object-contain" />
                         </Link>
                         <p className="text-gray-300 text-xs leading-relaxed font-normal">
                             Premium fashion and lifestyle marketplace. Discover curated collections from top verified digital storefronts.

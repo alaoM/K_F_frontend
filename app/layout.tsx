@@ -59,6 +59,15 @@ export const metadata: Metadata = {
     images: ["/logo.png"],
     creator: "@fkstores",
   },
+  icons: {
+    icon: [
+      { url: "/logo.png" },
+    ],
+    shortcut: ["/logo.png"],
+    apple: [
+      { url: "/logo.png" },
+    ],
+  },
 };
 
 const poppins = Poppins({
@@ -97,9 +106,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${poppins.variable} ${playfair.variable} antialiased`}
+        suppressHydrationWarning
       >
 
         <NetworkStatusListener />

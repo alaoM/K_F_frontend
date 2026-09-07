@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
 export async function GET() {
@@ -16,6 +17,9 @@ export async function POST(req: NextRequest) {
         const res = await axios.post(`${process.env.BASE_URL}/categories`, body, {
             headers: { Authorization: `Bearer ${token}` }
         });
+        try {
+            revalidatePath('/', 'layout');
+        } catch {}
         return NextResponse.json({ success: true, data: res.data });
     } catch (e) { return handleAxiosError(e); }
 }

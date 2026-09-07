@@ -183,16 +183,16 @@ export default function SellerOnboardingPage() {
   if (isSuccess) {
     return (
       <div className="my-5 bg-[#f9fafb] flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-white rounded-2xl border border-[#e2e2e2] shadow-xl overflow-hidden text-center p-12 space-y-6">
-          <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto animate-bounce">
-            <Check size={48} strokeWidth={3} />
+        <div className="max-w-2xl w-full bg-white rounded-none border border-gray-200 shadow-xl overflow-hidden text-center p-12 space-y-6">
+          <div className="w-20 h-20 bg-green-100 text-green-700 rounded-none flex items-center justify-center mx-auto">
+            <Check size={40} strokeWidth={3} />
           </div>
-          <h1 className="text-3xl font-black text-[#243e6b]">Congratulations! 🎉</h1>
-          <p className="text-gray-500 text-lg">
-            Your store <span className="font-bold text-[#f6c947]">{formData.businessName}</span> has been created successfully.
+          <h1 className="text-2xl font-black uppercase text-[#111111]">Congratulations! 🎉</h1>
+          <p className="text-gray-600 text-sm">
+            Your store <span className="font-bold text-[#111111]">{formData.businessName}</span> has been created successfully.
           </p>
-          <div className="flex items-center justify-center gap-3 text-sm font-bold text-gray-400">
-            <Loader2 className="animate-spin" size={20} />
+          <div className="flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+            <Loader2 className="animate-spin" size={16} />
             REDIRECTING TO DASHBOARD...
           </div>
         </div>
@@ -204,15 +204,15 @@ export default function SellerOnboardingPage() {
   if (step === 0) {
     return (
       <div className="my-5 bg-[#f9fafb] flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-white rounded-2xl border border-[#e2e2e2] shadow-xl overflow-hidden">
-          <div className="h-2 bg-[#243e6b]" />
+        <div className="max-w-2xl w-full bg-white rounded-none border border-gray-200 shadow-xl overflow-hidden">
+          <div className="h-2 bg-[#111111]" />
           <div className="p-8 space-y-8">
-            <div className="text-center space-y-3">
-              <div className="w-16 h-16 bg-[#243e6b]/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Store size={32} className="text-[#243e6b]" />
+            <div className="text-center space-y-2">
+              <div className="w-14 h-14 bg-gray-100 rounded-none flex items-center justify-center mx-auto mb-2 text-[#111111]">
+                <Store size={28} />
               </div>
-              <h1 className="text-2xl font-extrabold text-[#243e6b]">Become a Seller 🚀</h1>
-              <p className="text-sm text-gray-500 max-w-sm mx-auto">
+              <h1 className="text-2xl font-black uppercase text-[#111111]">Become a Seller 🚀</h1>
+              <p className="text-xs text-gray-500 max-w-sm mx-auto">
                 Ready to start selling? Set up your seller profile in just a few steps and start reaching thousands of buyers.
               </p>
             </div>
@@ -223,13 +223,13 @@ export default function SellerOnboardingPage() {
                 { title: "Reach More Buyers", desc: "List your fashion items and get discovered by our community.", icon: TrendingUp },
                 { title: "Earn & Grow", desc: "Manage your inventory, process orders, and get paid securely.", icon: Wallet },
               ].map((benefit, idx) => (
-                <div key={idx} className="p-5 rounded-xl border border-[#e2e2e2] bg-gray-50 flex flex-col gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-[#243e6b] text-white">
-                    <benefit.icon size={22} />
+                <div key={idx} className="p-4 rounded-none border border-gray-200 bg-gray-50 flex flex-col gap-2.5">
+                  <div className="flex items-center justify-center w-9 h-9 rounded-none bg-[#111111] text-[#f6c947]">
+                    <benefit.icon size={18} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#243e6b] text-sm">{benefit.title}</h3>
-                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">{benefit.desc}</p>
+                    <h3 className="font-bold text-[#111111] text-xs uppercase">{benefit.title}</h3>
+                    <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">{benefit.desc}</p>
                   </div>
                 </div>
               ))}
@@ -237,10 +237,10 @@ export default function SellerOnboardingPage() {
 
             <button
               onClick={() => setStep(1)}
-              className="w-full py-3.5 flex items-center justify-center gap-2 rounded-lg font-extrabold bg-[#f6c947] text-[#243e6b] hover:bg-[#f6c947]/90 shadow-md transition-all"
+              className="w-full py-3.5 flex items-center justify-center gap-2 rounded-none font-black text-xs uppercase tracking-widest bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] shadow-md transition-all cursor-pointer"
             >
               START SELLER ONBOARDING
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
             </button>
           </div>
         </div>
@@ -251,18 +251,18 @@ export default function SellerOnboardingPage() {
   // --- Main Form Layout (Steps 1, 2, 3) ---
   return (
     <div className="bg-[#f9fafb] flex items-center justify-center p-4 my-5">
-      <div className="max-w-2xl w-full bg-white rounded-2xl border border-[#e2e2e2] shadow-xl overflow-hidden">
+      <div className="max-w-2xl w-full bg-white rounded-none border border-gray-200 shadow-xl overflow-hidden">
         {/* Header & Progress Bar */}
-        <div className="bg-[#243e6b] p-6 text-white space-y-4">
+        <div className="bg-[#111111] p-6 text-white space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Store size={24} className="text-[#f6c947]" />
+            <h2 className="text-lg font-black uppercase flex items-center gap-2">
+              <Store size={22} className="text-[#f6c947]" />
               Store Setup
             </h2>
-            <span className="text-sm font-medium text-white/80">Step {step} of {TOTAL_STEPS}</span>
+            <span className="text-xs font-bold text-gray-400 uppercase">Step {step} of {TOTAL_STEPS}</span>
           </div>
           {/* Progress Bar Track */}
-          <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-white/20 h-2 rounded-none overflow-hidden">
             <div
               className="bg-[#f6c947] h-full transition-all duration-300 ease-out"
               style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
@@ -277,37 +277,37 @@ export default function SellerOnboardingPage() {
           {step === 1 && (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="mb-6">
-                <h3 className="text-xl font-extrabold text-[#243e6b]">Basic Information</h3>
-                <p className="text-sm text-gray-500">Let customers know who they are buying from.</p>
+                <h3 className="text-lg font-black uppercase text-[#111111]">Basic Information</h3>
+                <p className="text-xs text-gray-500">Let customers know who they are buying from.</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Business Name <span className="text-red-500">*</span></label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Business Name <span className="text-red-500">*</span></label>
                   <input
                     required
                     type="text"
                     value={formData.businessName}
                     onChange={(e) => updateFields({ businessName: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] focus:border-transparent outline-none"
+                    className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none"
                     placeholder="E.g. Urban Threads"
                   />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Business Email <span className="text-red-500">*</span></label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Business Email <span className="text-red-500">*</span></label>
                     <input
                       required
                       type="email"
                       value={formData.businessEmail}
                       onChange={(e) => updateFields({ businessEmail: e.target.value })}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] focus:border-transparent outline-none"
+                      className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none"
                       placeholder="store@example.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Phone Number <span className="text-red-500">*</span></label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Phone Number <span className="text-red-500">*</span></label>
                     <PhoneNumberInput
                       value={formData.businessPhoneNumber}
                       onChange={(value) => updateFields({ businessPhoneNumber: value })}
@@ -324,59 +324,59 @@ export default function SellerOnboardingPage() {
           {step === 2 && (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="mb-6">
-                <h3 className="text-xl font-extrabold text-[#243e6b] flex items-center gap-2">
-                  <MapPin size={24} />
+                <h3 className="text-lg font-black uppercase text-[#111111] flex items-center gap-2">
+                  <MapPin size={20} />
                   Business Location
                 </h3>
-                <p className="text-sm text-gray-500">Where is your business operating from?</p>
+                <p className="text-xs text-gray-500">Where is your business operating from?</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Street Address <span className="text-red-500">*</span></label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Street Address <span className="text-red-500">*</span></label>
                   <input
                     required
                     type="text"
                     value={formData.businessAddress}
                     onChange={(e) => updateFields({ businessAddress: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] outline-none"
+                    className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none"
                     placeholder="123 Fashion Street, Suite 100"
                   />
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="col-span-1 md:col-span-2">
-                    <label className="block text-sm font-bold text-gray-700 mb-1">City <span className="text-red-500">*</span></label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">City <span className="text-red-500">*</span></label>
                     <input
                       required
                       type="text"
                       value={formData.businessCity}
                       onChange={(e) => updateFields({ businessCity: e.target.value })}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] outline-none"
+                      className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none"
                       placeholder="New York"
                     />
                   </div>
                   <div className="col-span-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-1">State <span className="text-red-500">*</span></label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">State <span className="text-red-500">*</span></label>
                     <input
                       required
                       type="text"
                       value={formData.businessState}
                       onChange={(e) => updateFields({ businessState: e.target.value })}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] outline-none"
+                      className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none"
                       placeholder="NY"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Postal / Zip Code <span className="text-red-500">*</span></label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Postal / Zip Code <span className="text-red-500">*</span></label>
                   <input
                     required
                     type="text"
                     value={formData.businessPostalCode}
                     onChange={(e) => updateFields({ businessPostalCode: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] outline-none"
+                    className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none"
                     placeholder="10001"
                   />
                 </div>
@@ -388,22 +388,22 @@ export default function SellerOnboardingPage() {
           {step === 3 && (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="mb-6">
-                <h3 className="text-xl font-extrabold text-[#243e6b] flex items-center gap-2">
-                  <ImageIcon size={24} />
+                <h3 className="text-lg font-black uppercase text-[#111111] flex items-center gap-2">
+                  <ImageIcon size={20} />
                   Store Profile
                 </h3>
-                <p className="text-sm text-gray-500">Add visuals and a bio to stand out to buyers.</p>
+                <p className="text-xs text-gray-500">Add visuals and a bio to stand out to buyers.</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Bio (Min 10 characters)</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Bio (Min 10 characters)</label>
                   <textarea
                     minLength={10}
                     rows={3}
                     value={formData.bio}
                     onChange={(e) => updateFields({ bio: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] outline-none resize-none"
+                    className="w-full p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none resize-none"
                     placeholder="Tell buyers about your brand, what you sell, and your unique style..."
                   />
                 </div>
@@ -411,19 +411,19 @@ export default function SellerOnboardingPage() {
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Logo Upload */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-bold text-gray-700">Business Logo</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">Business Logo</label>
                     <div className="relative group cursor-pointer">
-                      <div className="w-full h-32 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center bg-gray-50 group-hover:border-[#f6c947] transition-all overflow-hidden">
+                      <div className="w-full h-32 border-2 border-dashed border-gray-200 rounded-none flex flex-col items-center justify-center bg-gray-50 group-hover:border-[#f6c947] transition-all overflow-hidden">
                         {formData.logo ? (
                           <img src={formData.logo} alt="Logo" className="w-full h-full object-contain" />
                         ) : (
                           <div className="text-center">
                             {uploadingLogo ? (
-                              <Loader2 className="mx-auto animate-spin text-[#243e6b]" size={24} />
+                              <Loader2 className="mx-auto animate-spin text-[#111111]" size={24} />
                             ) : (
                               <Camera className="mx-auto text-gray-400" size={24} />
                             )}
-                            <span className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-widest block">Upload Logo</span>
+                            <span className="text-[10px] font-black text-gray-400 mt-2 uppercase tracking-widest block">Upload Logo</span>
                           </div>
                         )}
                       </div>
@@ -439,19 +439,19 @@ export default function SellerOnboardingPage() {
 
                   {/* Banner Upload */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-bold text-gray-700">Store Banner</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">Store Banner</label>
                     <div className="relative group cursor-pointer">
-                      <div className="w-full h-32 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center bg-gray-50 group-hover:border-[#f6c947] transition-all overflow-hidden">
+                      <div className="w-full h-32 border-2 border-dashed border-gray-200 rounded-none flex flex-col items-center justify-center bg-gray-50 group-hover:border-[#f6c947] transition-all overflow-hidden">
                         {formData.primaryImage ? (
                           <img src={formData.primaryImage} alt="Banner" className="w-full h-full object-cover" />
                         ) : (
                           <div className="text-center">
                             {uploadingBanner ? (
-                              <Loader2 className="mx-auto animate-spin text-[#243e6b]" size={24} />
+                              <Loader2 className="mx-auto animate-spin text-[#111111]" size={24} />
                             ) : (
                               <Upload className="mx-auto text-gray-400" size={24} />
                             )}
-                            <span className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-widest block">Upload Banner</span>
+                            <span className="text-[10px] font-black text-gray-400 mt-2 uppercase tracking-widest block">Upload Banner</span>
                           </div>
                         )}
                       </div>
@@ -478,31 +478,31 @@ export default function SellerOnboardingPage() {
             <button
               type="button"
               onClick={handleBack}
-              className="px-6 py-2.5 rounded-lg font-bold text-gray-500 hover:bg-gray-100 transition-all flex items-center gap-2"
+              className="px-6 py-2.5 rounded-none font-bold text-xs uppercase tracking-wider text-gray-600 hover:bg-gray-100 transition-all flex items-center gap-2 cursor-pointer"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={16} />
               Back
             </button>
 
             <button
               type="submit"
               disabled={isSubmitting || uploadingLogo || uploadingBanner}
-              className="px-8 py-2.5 rounded-lg font-extrabold bg-[#f6c947] text-[#243e6b] hover:bg-[#f6c947]/90 shadow-md transition-all flex items-center gap-2 disabled:opacity-70"
+              className="px-8 py-3 rounded-none font-black text-xs uppercase tracking-widest bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] shadow-md transition-all flex items-center gap-2 disabled:opacity-70 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 size={18} className="animate-spin" />
+                  <Loader2 size={16} className="animate-spin" />
                   PROCESSING...
                 </>
               ) : step === TOTAL_STEPS ? (
                 <>
-                  <CheckCircle2 size={18} />
+                  <CheckCircle2 size={16} />
                   COMPLETE SETUP
                 </>
               ) : (
                 <>
                   NEXT
-                  <ArrowRight size={18} />
+                  <ArrowRight size={16} />
                 </>
               )}
             </button>

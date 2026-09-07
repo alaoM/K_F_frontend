@@ -128,18 +128,18 @@ const DisputeCenter = () => {
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Search by ID, buyer, reason..."
-                            className="pl-10 pr-4 py-2 border rounded-md text-sm w-64"
+                            className="pl-10 pr-4 py-2 border border-gray-300 rounded-none text-xs w-64 outline-none focus:border-[#111111]"
                         />
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e2e2e2] shadow-sm overflow-hidden">
+            <div className="bg-white rounded-none border border-gray-200 shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="border-b border-[#e2e2e2] text-xs uppercase tracking-wider text-gray-500 font-bold bg-gray-50/50">
+                            <tr className="border-b border-gray-200 text-[11px] uppercase tracking-wider text-gray-500 font-bold bg-gray-50/50">
                                 <th className="px-6 py-4">Dispute</th>
                                 <th className="px-6 py-4">Buyer</th>
                                 <th className="px-6 py-4">Reason</th>
@@ -152,21 +152,21 @@ const DisputeCenter = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-sm">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-xs">
                                         Loading disputes...
                                     </td>
                                 </tr>
                             ) : filtered.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-sm">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-xs">
                                         No disputes found
                                     </td>
                                 </tr>
                             ) : filtered.map(dispute => (
-                                <tr key={dispute.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                                <tr key={dispute.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4">
                                         {/* ✅ Use actual UUID shortened */}
-                                        <span className="font-bold text-[#243e6b] text-sm">
+                                        <span className="font-bold text-[#111111] text-xs">
                                             #{dispute.id.slice(0, 8)}
                                         </span>
                                         <p className="text-[10px] text-gray-400 mt-0.5">
@@ -177,7 +177,7 @@ const DisputeCenter = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         {/* ✅ buyer comes from dispute.buyer.fullName */}
-                                        <p className="text-sm font-semibold text-[#243e6b]">
+                                        <p className="text-xs font-bold text-[#111111]">
                                             {dispute.buyer?.fullName ?? 'Unknown'}
                                         </p>
                                         <p className="text-[10px] text-gray-400">
@@ -185,7 +185,7 @@ const DisputeCenter = () => {
                                         </p>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <p className="text-sm text-gray-700 font-medium truncate max-w-[200px]">
+                                        <p className="text-xs text-gray-700 font-medium truncate max-w-[200px]">
                                             {dispute.reason}
                                         </p>
                                         {/* ✅ orderId from dispute.order.id */}
@@ -195,7 +195,7 @@ const DisputeCenter = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         {/* ✅ amount from dispute.order.totalAmount */}
-                                        <span className="text-sm font-bold text-[#243e6b]">
+                                        <span className="text-xs font-black text-[#111111]">
                                             {formatCurrency(Number(dispute.order.totalAmount))}
                                         </span>
                                     </td>
@@ -207,14 +207,14 @@ const DisputeCenter = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${STATUS_STYLE[dispute.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                                        <span className={`px-2.5 py-0.5 rounded-none text-[10px] font-black uppercase tracking-wide ${STATUS_STYLE[dispute.status] ?? 'bg-gray-100 text-gray-600'}`}>
                                             {STATUS_LABEL[dispute.status] ?? dispute.status}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button
                                             onClick={() => setSelectedDispute(dispute)}
-                                            className="bg-[#243e6b] text-white text-xs font-bold px-4 py-1.5 rounded hover:bg-[#243e6b]/90 transition-all"
+                                            className="bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-white text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-none transition-colors cursor-pointer"
                                         >
                                             View case
                                         </button>

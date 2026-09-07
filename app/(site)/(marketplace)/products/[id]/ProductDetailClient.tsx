@@ -60,7 +60,7 @@ const ProductDetailClient = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-12 h-12 border-4 border-[#243e6b] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-[#111111] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -75,45 +75,46 @@ const ProductDetailClient = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50 py-12 px-4 md:px-8 lg:px-16">
+    <div className="min-h-screen bg-white py-12 px-4 md:px-8 lg:px-16">
       {/* BACK BUTTON */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-[#243e6b] font-bold mb-8 hover:opacity-70 transition-all"
+        className="flex items-center gap-2 text-[#111111] font-bold text-xs uppercase tracking-wider mb-8 hover:text-[#f6c947] transition-all cursor-pointer"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={16} />
         Back to Store
       </button>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
 
         {/* LEFT: IMAGES */}
-        <div className="space-y-6">
-          <div className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-white shadow-xl group border border-white">
+        <div className="space-y-4">
+          <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-white shadow-xs group border border-gray-200">
             <Image
               src={images[activeIndex]}
               alt={product.title}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority
             />
-            <div className="absolute top-6 right-6 flex flex-col gap-3">
-              <button className="p-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg hover:bg-white transition-all">
-                <Heart size={20} className="text-gray-400" />
+            <div className="absolute top-4 right-4 flex flex-col gap-2">
+              <button className="p-2.5 bg-white/90 backdrop-blur-md rounded-none shadow-sm hover:bg-[#111111] hover:text-[#f6c947] transition-all cursor-pointer border border-gray-100">
+                <Heart size={18} />
               </button>
-              <button className="p-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg hover:bg-white transition-all">
-                <Share2 size={20} className="text-gray-400" />
+              <button className="p-2.5 bg-white/90 backdrop-blur-md rounded-none shadow-sm hover:bg-[#111111] hover:text-[#f6c947] transition-all cursor-pointer border border-gray-100">
+                <Share2 size={18} />
               </button>
             </div>
           </div>
 
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {images.map((img, i) => (
               <button
                 key={i}
                 onClick={() => setActiveIndex(i)}
-                className={`relative min-w-[100px] h-24 rounded-2xl overflow-hidden border-2 transition-all shadow-sm ${activeIndex === i ? 'border-[#243e6b] scale-105' : 'border-transparent hover:border-gray-300'
-                  }`}
+                className={`relative min-w-[90px] h-24 rounded-none overflow-hidden border transition-all ${
+                  activeIndex === i ? 'border-[#111111]' : 'border-gray-200 hover:border-gray-400'
+                }`}
               >
                 <Image src={img} alt="preview" fill className="object-cover" />
               </button>
@@ -122,84 +123,84 @@ const ProductDetailClient = () => {
         </div>
 
         {/* RIGHT: DETAILS */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div>
             <div className="flex items-center gap-2 mb-3">
               {product.seller?.id ? (
                 <Link href={`/store/${product.seller.id}`}>
-                  <span className="px-3 py-1 bg-blue-50 text-[#243e6b] text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-blue-100 transition-all cursor-pointer">
+                  <span className="px-3 py-1 bg-[#111111] text-[#f6c947] text-[10px] font-black uppercase tracking-widest rounded-none hover:bg-[#f6c947] hover:text-[#111111] transition-all cursor-pointer">
                     {product.seller.businessName}
                   </span>
                 </Link>
               ) : (
-                <span className="px-3 py-1 bg-blue-50 text-[#243e6b] text-[10px] font-black uppercase tracking-widest rounded-full">
-                  Vendor
+                <span className="px-3 py-1 bg-[#111111] text-[#f6c947] text-[10px] font-black uppercase tracking-widest rounded-none">
+                  Verified Vendor
                 </span>
               )}
-              <div className="flex items-center gap-1 text-amber-500">
+              <div className="flex items-center gap-1 text-[#f6c947]">
                 <Star size={14} fill="currentColor" />
-                <span className="text-sm font-bold">{product.averageRating || 0}</span>
+                <span className="text-xs font-bold text-[#111111]">{product.averageRating || 0}</span>
                 <span className="text-xs text-gray-400 font-medium">({product.reviewCount || 0} Reviews)</span>
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-[#243e6b] leading-tight mb-4 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-[#111111] leading-tight mb-3 uppercase tracking-tight">
               {product.title}
             </h1>
-            <div className="flex items-center gap-6">
-              <p className="text-3xl font-black text-[#243e6b]">
+            <div className="flex items-center gap-4">
+              <p className="text-2xl md:text-3xl font-black text-[#111111]">
                 {formatCurrency(product.price)}
               </p>
-              <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg">
-                <Eye size={16} />
-                <span className="text-sm font-bold">{product.views || 0} Views</span>
+              <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-none text-xs font-bold">
+                <Eye size={14} />
+                <span>{product.views || 0} Views</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="font-black text-[#243e6b] uppercase text-xs tracking-widest">Description</h3>
-            <p className="text-gray-600 leading-relaxed text-lg font-medium opacity-80">
+          <div className="space-y-2 border-t border-gray-100 pt-4">
+            <h3 className="font-black text-[#111111] uppercase text-xs tracking-widest">Description</h3>
+            <p className="text-gray-600 leading-relaxed text-sm font-medium">
               {product.description || 'Premium quality apparel designed for comfort and style. Every piece is crafted with attention to detail and high-quality materials to ensure longevity and a perfect fit.'}
             </p>
           </div>
 
           {/* ATTRIBUTES */}
           {product.attributes && Object.keys(product.attributes).length > 0 && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 border-t border-gray-100 pt-4">
               {Object.entries(product.attributes).map(([key, value]) => (
-                <div key={key} className="p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">{key}</p>
-                  <p className="text-[#243e6b] font-bold">{value}</p>
+                <div key={key} className="p-3 bg-gray-50 border border-gray-200 rounded-none">
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">{key}</p>
+                  <p className="text-[#111111] font-bold text-xs">{value}</p>
                 </div>
               ))}
             </div>
           )}
 
           {/* QUANTITY & ACTION */}
-          <div className="space-y-6 pt-4">
-            <div className="flex items-center gap-8">
-              <div className="space-y-2">
+          <div className="space-y-4 pt-2 border-t border-gray-100">
+            <div className="flex items-center gap-6">
+              <div className="space-y-1">
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Quantity</p>
-                <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+                <div className="flex items-center bg-white border border-gray-300 rounded-none p-0.5">
                   <button
                     onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-400"
+                    className="p-2 hover:bg-gray-100 rounded-none transition-colors text-gray-600 cursor-pointer"
                   >
-                    <Minus size={18} />
+                    <Minus size={14} />
                   </button>
-                  <span className="w-12 text-center font-black text-[#243e6b]">{qty}</span>
+                  <span className="w-10 text-center font-black text-xs text-[#111111]">{qty}</span>
                   <button
                     onClick={() => setQty(qty + 1)}
-                    className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-[#243e6b]"
+                    className="p-2 hover:bg-gray-100 rounded-none transition-colors text-[#111111] cursor-pointer"
                   >
-                    <Plus size={18} />
+                    <Plus size={14} />
                   </button>
                 </div>
               </div>
 
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-1">
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Stock</p>
-                <p className={`font-bold ${product.stock > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <p className={`font-bold text-xs ${product.stock > 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
                   {product.stock > 0 ? `${product.stock} units available` : 'Out of stock'}
                 </p>
               </div>
@@ -208,39 +209,39 @@ const ProductDetailClient = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock <= 0}
-              className="w-full h-16 bg-[#243e6b] hover:bg-[#243e6b]/90 text-white rounded-2xl flex items-center justify-center gap-3 font-black text-lg transition-all shadow-xl shadow-blue-900/20 active:scale-95 disabled:opacity-50"
+              className="w-full h-14 bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-white rounded-none flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest transition-all shadow-md active:scale-98 disabled:opacity-50 cursor-pointer"
             >
-              <ShoppingCart size={22} />
-              {cartItem ? 'UPDATE CART' : 'ADD TO BAG'}
+              <ShoppingCart size={18} />
+              {cartItem ? 'UPDATE CART' : 'ADD TO CART'}
             </button>
           </div>
 
           {/* TRUST BADGES */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t border-gray-100">
-            <div className="flex items-center gap-4 group">
-              <div className="p-3 bg-blue-50 text-[#243e6b] rounded-2xl group-hover:bg-[#243e6b] group-hover:text-white transition-all">
-                <Truck size={24} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-gray-100">
+            <div className="flex items-center gap-3 group p-3 bg-gray-50 border border-gray-100 rounded-none">
+              <div className="p-2.5 bg-white text-[#111111] rounded-none border border-gray-200">
+                <Truck size={20} />
               </div>
               <div>
-                <p className="text-xs font-black text-[#243e6b]">FREE SHIPPING</p>
-                <p className="text-[10px] text-gray-400 font-bold">On orders over ₦50k</p>
+                <p className="text-xs font-black text-[#111111]">FREE SHIPPING</p>
+                <p className="text-[10px] text-gray-400 font-bold">On orders &gt; ₦50k</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 group">
-              <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl group-hover:bg-rose-600 group-hover:text-white transition-all">
-                <ShieldCheck size={24} />
+            <div className="flex items-center gap-3 group p-3 bg-gray-50 border border-gray-100 rounded-none">
+              <div className="p-2.5 bg-white text-[#111111] rounded-none border border-gray-200">
+                <ShieldCheck size={20} />
               </div>
               <div>
-                <p className="text-xs font-black text-[#243e6b]">SECURE ESCROW</p>
+                <p className="text-xs font-black text-[#111111]">SECURE ESCROW</p>
                 <p className="text-[10px] text-gray-400 font-bold">100% money back</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 group">
-              <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl group-hover:bg-amber-600 group-hover:text-white transition-all">
-                <ArrowLeftRight size={24} />
+            <div className="flex items-center gap-3 group p-3 bg-gray-50 border border-gray-100 rounded-none">
+              <div className="p-2.5 bg-white text-[#111111] rounded-none border border-gray-200">
+                <ArrowLeftRight size={20} />
               </div>
               <div>
-                <p className="text-xs font-black text-[#243e6b]">EASY RETURNS</p>
+                <p className="text-xs font-black text-[#111111]">EASY RETURNS</p>
                 <p className="text-[10px] text-gray-400 font-bold">30-day exchange</p>
               </div>
             </div>
@@ -250,7 +251,7 @@ const ProductDetailClient = () => {
       </div>
 
       {/* REVIEWS SECTION */}
-      <div className="max-w-7xl mx-auto mt-24 pt-24 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto mt-20 pt-16 border-t border-gray-200">
         <ReviewsSection
           productId={product.id}
           averageRating={product.averageRating ?? 0}

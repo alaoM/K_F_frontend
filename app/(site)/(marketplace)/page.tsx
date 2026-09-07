@@ -52,7 +52,25 @@ const websiteJsonLd = {
   },
 };
 
-export default function HomePage() {
+async function getCategories() {
+  try {
+    const baseUrl = process.env.BASE_URL || "https://api.fkstores.com";
+    const res = await fetch(`${baseUrl}/categories`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    console.log(data)
+    return Array.isArray(data) ? data : data?.data || [];
+  } catch (err) {
+    console.error("Failed to prefetch categories server-side:", err);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const categories = await getCategories();
+
   return (
     <>
       <script
@@ -63,7 +81,8 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-      <HomepageClient />
+      <HomepageClient initialCategories={categories} />
     </>
   );
 }
+

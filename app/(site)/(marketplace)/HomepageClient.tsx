@@ -29,47 +29,35 @@ interface ApiProduct {
 const mockBlogPosts = [
     {
         title: "The Future of Sustainable Fashion",
-        slug: "the-future-of-sustainable-fashion",
+        slug: "future-of-sustainable-fashion",
         excerpt: "Sustainable fashion is no longer just a trend; it's a necessity. As we move further into 2026...",
         date: "May 16, 2026",
-        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000&auto=format&fit=crop"
+        image: "/img/menu/home2-blog-banner.jpg"
     },
     {
         title: "Top 10 Fashion Trends for Summer",
-        slug: "top-10-fashion-trends",
+        slug: "summer-trends-2026",
         excerpt: "Discover the must-have styles and colors that will dominate the fashion scene this summer...",
         date: "May 14, 2026",
-        image: "https://images.unsplash.com/photo-1523381235208-2592a89034d8?w=1000&auto=format&fit=crop"
+        image: "/img/menu/home5-blog.jpg"
     },
     {
         title: "The Rise of Virtual Fitting Rooms",
         slug: "the-rise-of-virtual-fitting-rooms",
         excerpt: "Technology is bridging the gap between physical and digital shopping experiences through VR...",
         date: "May 10, 2026",
-        image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1000&auto=format&fit=crop"
+        image: "/img/menu/home3-blog.jpg"
     }
 ]
 
-export default function HomepageClient() {
+export default function HomepageClient({ initialCategories = [] }: { initialCategories?: any[] }) {
     const [cartOpen, setCartOpen] = useState(false)
     const [quickView, setQuickView] = useState<any>(null)
     const [activeTab, setActiveTab] = useState('All')
 
     const [products, setProducts] = useState<ApiProduct[]>([])
-    const [categories, setCategories] = useState<any[]>([])
+    const categories = initialCategories
     const [loading, setLoading] = useState(true)
-
-    const fetchCategories = useCallback(async () => {
-        try {
-            const res = await fetch('/api/categories')
-            const json = await res.json()
-            if (json.success) {
-                setCategories(json.data)
-            }
-        } catch (err) {
-            console.error(err)
-        }
-    }, [])
 
     const fetchProducts = useCallback(async () => {
         setLoading(true)
@@ -91,10 +79,6 @@ export default function HomepageClient() {
     }, [activeTab])
 
     useEffect(() => {
-        fetchCategories()
-    }, [fetchCategories])
-
-    useEffect(() => {
         fetchProducts()
     }, [fetchProducts])
 
@@ -108,7 +92,7 @@ export default function HomepageClient() {
 
 
             {/* 3. CATEGORY BANNERS (Reduced & Compact Height) */}
-            <CategoryBanners />
+            <CategoryBanners categories={categories} />
 
             {/* 4. PRODUCT TAB AREA */}
             <section className="py-12 bg-[#fafafa] border-t border-gray-100">

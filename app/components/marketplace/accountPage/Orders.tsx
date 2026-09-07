@@ -243,9 +243,9 @@ export default function Orders({
                     <button
                         key={opt.value}
                         onClick={() => setFilter(opt.value)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                        className={`px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider transition-all ${
                             filter === opt.value
-                                ? 'bg-[#243e6b] text-white'
+                                ? 'bg-[#111111] text-[#f6c947]'
                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                     >
@@ -280,12 +280,12 @@ export default function Orders({
                         return (
                             <div
                                 key={order.id}
-                                className="border border-gray-100 rounded-xl p-4 bg-white flex flex-col gap-3"
+                                className="border border-gray-200 rounded-none p-4 bg-white flex flex-col gap-3 shadow-xs"
                             >
                                 {/* Top row */}
                                 <div className="flex gap-3 items-start">
                                     {firstItem?.productSnapshotImage && (
-                                        <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-gray-100 shrink-0 bg-gray-50">
+                                        <div className="relative w-12 h-12 rounded-none overflow-hidden border border-gray-200 shrink-0 bg-gray-50">
                                             <Image
                                                 src={firstItem.productSnapshotImage}
                                                 fill
@@ -298,13 +298,13 @@ export default function Orders({
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-start gap-2 flex-wrap">
                                             <div>
-                                                <p className="font-medium text-sm text-gray-900 truncate">
+                                                <p className="font-bold text-xs uppercase text-gray-900 truncate">
                                                     {firstItem?.productSnapshotTitle}
                                                     {itemCount > 1 && (
                                                         <span className="text-gray-400 font-normal ml-1">+{itemCount - 1} more</span>
                                                     )}
                                                 </p>
-                                                <p className="text-xs text-gray-500 mt-0.5">
+                                                <p className="text-[11px] text-gray-500 mt-0.5">
                                                     {firstItem?.seller?.businessName}
                                                     {' · '}
                                                     #{order.id.slice(0, 8)}
@@ -314,22 +314,22 @@ export default function Orders({
                                                     })}
                                                 </p>
                                             </div>
-                                            <p className="font-semibold text-sm text-gray-900 whitespace-nowrap">
+                                            <p className="font-black text-xs text-gray-900 whitespace-nowrap">
                                                 {formatCurrency(Number(order.totalAmount))}
                                             </p>
                                         </div>
 
                                         {/* ✅ Status badges using correct API values */}
                                         <div className="flex gap-2 flex-wrap mt-2">
-                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${PAYMENT_STATUS_STYLE[order.paymentStatus]}`}>
+                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-none text-[10px] font-black uppercase ${PAYMENT_STATUS_STYLE[order.paymentStatus]}`}>
                                                 {PAYMENT_STATUS_LABEL[order.paymentStatus]}
                                             </span>
-                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${ORDER_STATUS_STYLE[order.status]}`}>
+                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-none text-[10px] font-black uppercase ${ORDER_STATUS_STYLE[order.status]}`}>
                                                 {ORDER_STATUS_LABEL[order.status]}
                                             </span>
                                             {/* ✅ Show fulfillment status only when payment is held */}
                                             {order.paymentStatus === 'escrow_held' && (
-                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
+                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-none text-[10px] font-black uppercase ${
                                                     allShipped
                                                         ? 'bg-green-50 text-green-800'
                                                         : 'bg-gray-100 text-gray-600'
@@ -348,7 +348,7 @@ export default function Orders({
                                         <button
                                             onClick={() => handleRetryPayment(order.id)}
                                             disabled={retryingId === order.id}
-                                            className="bg-[#243e6b] text-white px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-60"
+                                            className="bg-[#111111] text-[#f6c947] px-3 py-1.5 rounded-none text-xs font-black uppercase tracking-wider disabled:opacity-60"
                                         >
                                             {retryingId === order.id ? 'Processing...' : 'Retry payment'}
                                         </button>
@@ -358,7 +358,7 @@ export default function Orders({
                                         <button
                                             onClick={() => setConfirmDeliveryOrderId(order.id)}
                                             disabled={confirmingId === order.id}
-                                            className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-60"
+                                            className="bg-emerald-600 text-white px-3 py-1.5 rounded-none text-xs font-black uppercase tracking-wider disabled:opacity-60"
                                         >
                                             {confirmingId === order.id ? 'Confirming...' : 'Confirm delivery'}
                                         </button>
@@ -367,7 +367,7 @@ export default function Orders({
                                     <button
                                         onClick={() => handleReorder(order)}
                                         disabled={!inStock}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
+                                        className={`px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider ${
                                             inStock
                                                 ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                                                 : 'bg-gray-50 text-gray-400 cursor-not-allowed'
@@ -382,7 +382,7 @@ export default function Orders({
                                                 setSelectedOrderId(order.id)
                                                 setIsDisputeOpen(true)
                                             }}
-                                            className="bg-red-50 text-red-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-100"
+                                            className="bg-red-50 text-red-700 px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider hover:bg-red-100"
                                         >
                                             Dispute
                                         </button>
@@ -397,14 +397,14 @@ export default function Orders({
             {/* ✅ Pagination */}
             {!loading && totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs text-gray-500">
                         Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredOrders.length)} of {filteredOrders.length}
                     </p>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1.5 rounded-lg text-sm bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200"
+                            className="px-3 py-1.5 rounded-none text-xs font-bold uppercase bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200"
                         >
                             Previous
                         </button>
@@ -414,9 +414,9 @@ export default function Orders({
                             <button
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
-                                className={`w-8 h-8 rounded-lg text-sm font-medium ${
+                                className={`w-8 h-8 rounded-none text-xs font-bold ${
                                     page === currentPage
-                                        ? 'bg-[#243e6b] text-white'
+                                        ? 'bg-[#111111] text-[#f6c947]'
                                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                 }`}
                             >
@@ -427,7 +427,7 @@ export default function Orders({
                         <button
                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-3 py-1.5 rounded-lg text-sm bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200"
+                            className="px-3 py-1.5 rounded-none text-xs font-bold uppercase bg-gray-100 text-gray-700 disabled:opacity-40 hover:bg-gray-200"
                         >
                             Next
                         </button>

@@ -1,12 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
- 
- 
 import {
     Loader2,
     Copy, Check, Key,
-    
 } from 'lucide-react';
 import QRCode from 'qrcode';
 import { toast } from 'react-toastify';
@@ -53,7 +50,6 @@ export const TwoFactorModal = ({ isOpen, onClose, onSuccess }: TwoFactorModalPro
             navigator.clipboard.writeText(setupData.secret);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
-
         }
     };
 
@@ -75,7 +71,6 @@ export const TwoFactorModal = ({ isOpen, onClose, onSuccess }: TwoFactorModalPro
 
             const data = await res.json();
 
-
             if (!res.ok) {
                 throw new Error(data?.message || "Verification failed");
             }
@@ -96,39 +91,38 @@ export const TwoFactorModal = ({ isOpen, onClose, onSuccess }: TwoFactorModalPro
             <div className="p-2 pb-6">
                 {step === 'loading' ? (
                     <div className="flex flex-col items-center py-12 gap-4">
-                        <Loader2 className="animate-spin text-emerald-600" size={40} />
+                        <Loader2 className="animate-spin text-[#111111]" size={40} />
                     </div>
                 ) : step === 'scan' ? (
-                    <div className="space-y-6 animate-in fade-in zoom-in duration-500">
-                        <div className="text-center space-y-2 mb-4">
-
+                    <div className="space-y-6 animate-in fade-in zoom-in duration-300">
+                        <div className="text-center space-y-1 mb-4">
                             <p className="text-xs text-gray-500">Scan the QR code with Google Authenticator or Authy.</p>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-[2.5rem] flex flex-col items-center border border-gray-100 shadow-inner relative">
-                            {qrCodeUrl && <Image width={150} height={150} src={qrCodeUrl} className="rounded-2xl shadow-2xl border-8 border-white" alt="QR" />}
+                        <div className="bg-gray-50 p-6 rounded-none flex flex-col items-center border border-gray-200 relative">
+                            {qrCodeUrl && <Image width={150} height={150} src={qrCodeUrl} className="rounded-none shadow-md border-4 border-white" alt="QR" />}
 
-                            <div className="mt-8 w-full space-y-3">
+                            <div className="mt-6 w-full space-y-2">
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Manual Entry Key</p>
-                                <div className="flex items-center gap-2 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
-                                    <Key size={16} className="text-emerald-500 shrink-0" />
-                                    <code className="flex-1 text-xs font-mono font-bold text-gray-600 truncate">{setupData?.secret}</code>
-                                    <button onClick={copySecret} className="p-2 hover:bg-gray-50 rounded-xl transition-colors">
-                                        {copied ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} className="text-gray-400" />}
+                                <div className="flex items-center gap-2 bg-white p-2.5 rounded-none border border-gray-200">
+                                    <Key size={14} className="text-[#111111] shrink-0" />
+                                    <code className="flex-1 text-xs font-mono font-bold text-gray-700 truncate">{setupData?.secret}</code>
+                                    <button onClick={copySecret} className="p-1.5 hover:bg-gray-100 rounded-none transition-colors cursor-pointer">
+                                        {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} className="text-gray-400" />}
                                     </button>
                                 </div>
                             </div>
                         </div>
-<div className='flex justify-end'>
-                        <button  onClick={() => setStep('verify')} className="px-5 py-3 bg-[#f6c947] rounded-xl font-black  tracking-widest text-xs shadow-lg shadow-emerald-100">
-                            I have linked my device
-                        </button>
+
+                        <div className='flex justify-end'>
+                            <button onClick={() => setStep('verify')} className="px-5 py-2.5 bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] rounded-none font-black uppercase tracking-widest text-xs transition-colors cursor-pointer">
+                                I have linked my device
+                            </button>
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-                        <div className="text-center space-y-2 mb-4">
-
+                    <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+                        <div className="text-center space-y-1 mb-4">
                             <p className="text-xs text-gray-500">Enter the 6-digit code displayed in your app.</p>
                         </div>
 
@@ -138,20 +132,20 @@ export const TwoFactorModal = ({ isOpen, onClose, onSuccess }: TwoFactorModalPro
                                 maxLength={6}
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value)}
-                                className="flex item-center justify-center p-2  rounded-md text-center text-3xl font-black tracking-[0.5em]    bg-gray-50 border-none"
+                                className="flex items-center justify-center p-2 rounded-none text-center text-3xl font-black tracking-[0.5em] bg-gray-50 border border-gray-300 outline-none focus:border-[#111111]"
                             />
-
                         </div>
 
-                        <div className="flex gap-3 justify-end">
-                            <button onClick={() => setStep('scan')} className="px-5 py-3 bg-[#30302f] rounded-xl 
-                            text-white  text-xs  ">Back</button>
+                        <div className="flex gap-2 justify-end">
+                            <button onClick={() => setStep('scan')} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-none text-[#111111] font-bold text-xs uppercase tracking-wider cursor-pointer">
+                                Back
+                            </button>
                             <button
                                 disabled={loading || verificationCode.length !== 6}
                                 onClick={handleVerify}
-                                className="px-5 py-3 bg-[#f6c947] rounded-xl font-black  tracking-widest text-xs shadow-lg shadow-emerald-100"
+                                className="px-5 py-2 bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] rounded-none font-black uppercase tracking-widest text-xs transition-colors cursor-pointer disabled:opacity-50"
                             >
-                                {loading ? <Loader2 className="animate-spin" /> : "Verify & Enable"}
+                                {loading ? <Loader2 className="animate-spin" size={14} /> : "Verify & Enable"}
                             </button>
                         </div>
                     </div>

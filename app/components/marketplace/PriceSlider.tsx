@@ -27,21 +27,21 @@ const PriceSlider = () => {
   const maxPercent = ((maxVal - minPrice) / (maxPrice - minPrice)) * 100;
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-1">
-        <h3 className="font-semibold text-gray-800">Price</h3>
+        <h3 className="font-bold text-xs uppercase tracking-wider text-gray-800">Price</h3>
         <button
           onClick={resetValues}
-          className="text-sm text-gray-500 hover:underline"
+          className="text-xs text-gray-500 hover:underline uppercase font-bold"
         >
           Reset
         </button>
       </div>
 
       {/* Highest Price */}
-      <p className="text-sm text-gray-500 mb-4">
+      <p className="text-xs text-gray-500 mb-4">
         The highest price is ${maxPrice.toFixed(2)}
       </p>
 
@@ -53,7 +53,7 @@ const PriceSlider = () => {
 
         {/* Active Range */}
         <div
-          className="absolute top-1/2 transform -translate-y-1/2 h-1 bg-black rounded"
+          className="absolute top-1/2 transform -translate-y-1/2 h-1 bg-[#111111] rounded-none"
           style={{
             left: `${minPercent}%`,
             width: `${maxPercent - minPercent}%`
@@ -89,7 +89,7 @@ const PriceSlider = () => {
             width: 14px;
             height: 14px;
             background: black;
-            border-radius: 50%;
+            border-radius: 0px;
             cursor: pointer;
           }
 
@@ -98,7 +98,7 @@ const PriceSlider = () => {
             width: 16px;
             height: 16px;
             background: black;
-            border-radius: 20%;
+            border-radius: 0px;
             cursor: pointer;
           }
         `}</style>
@@ -107,25 +107,25 @@ const PriceSlider = () => {
       {/* Inputs */}
       <div className="flex items-center gap-2 mt-4">
         
-        <div className="flex items-center border border-[#e2e2e2] rounded-lg px-3 py-2 w-full">
+        <div className="flex items-center border border-gray-300 rounded-none px-3 py-2 w-full text-xs">
           <span className="text-gray-500">$</span>
           <input
             type="number"
             value={minVal}
             onChange={(e) => handleMinChange(e)}
-            className="w-full outline-none ml-1"
+            className="w-full outline-none ml-1 rounded-none text-xs"
           />
         </div>
 
         <span className="text-gray-400">-</span>
 
-        <div className="flex items-center border border-[#e2e2e2] rounded-lg px-3 py-2 w-full">
+        <div className="flex items-center border border-gray-300 rounded-none px-3 py-2 w-full text-xs">
           <span className="text-gray-500">$</span>
           <input
             type="number"
             value={maxVal}
             onChange={(e) => handleMaxChange(e)}
-            className="w-full outline-none ml-1"
+            className="w-full outline-none ml-1 rounded-none text-xs"
           />
         </div>
 

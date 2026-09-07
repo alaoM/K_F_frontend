@@ -98,13 +98,13 @@ const ResetPasswordContent = () => {
           >
 
             {/* Password */}
-            <div className="flex flex-col gap-2">
-              <label>New Password</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">New Password</label>
 
               <input
                 type="password"
                 placeholder="Enter new password"
-                className="border p-3 rounded-md border-gray-300"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -115,20 +115,20 @@ const ResetPasswordContent = () => {
               />
 
               {errors.password && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-xs">
                   {errors.password.message}
                 </p>
               )}
             </div>
 
             {/* Confirm Password */}
-            <div className="flex flex-col gap-2">
-              <label>Confirm Password</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Confirm Password</label>
 
               <input
                 type="password"
                 placeholder="Confirm password"
-                className="border p-3 rounded-md border-gray-300"
+                className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                 {...register("confirmPassword", {
                   required: "Confirm your password",
                   validate: (value) =>
@@ -137,14 +137,14 @@ const ResetPasswordContent = () => {
               />
 
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-xs">
                   {errors.confirmPassword.message}
                 </p>
               )}
             </div>
 
             {error && (
-              <p className="text-red-500 text-sm text-center">
+              <p className="text-red-500 text-xs text-center">
                 {error}
               </p>
             )}
@@ -153,7 +153,7 @@ const ResetPasswordContent = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-[#f6c947] font-semibold px-7 py-3 rounded-md hover:bg-[#f6c947]/70 text-black transition mb-5 disabled:opacity-60"
+              className="bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] font-black text-xs uppercase tracking-widest px-7 py-3.5 rounded-none transition mb-5 disabled:opacity-60 cursor-pointer"
             >
               {isLoading ? "Resetting..." : "Reset Password"}
             </button>
@@ -161,14 +161,14 @@ const ResetPasswordContent = () => {
           </form>
 
           {/* Login CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-[#f6c947] rounded-md p-5 mt-8 text-center">
-            <span className="font-semibold">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-[#f6c947] rounded-none p-4 mt-8 text-center text-xs">
+            <span className="font-bold text-[#111111] uppercase tracking-wider">
               Remember your password?
             </span>
 
             <Link
               href="/login"
-              className="border-b font-medium"
+              className="border-b border-[#111111] font-black uppercase text-[#111111]"
             >
               Sign in
             </Link>

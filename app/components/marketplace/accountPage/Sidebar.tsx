@@ -27,15 +27,15 @@ export default function Sidebar({
 
   const handleNav = (key: string) => {
     router.push(`/account?tab=${key}`)
-    onClose?.() // ✅ close mobile drawer
+    onClose?.()
   }
 
   return (
-    <div className="bg-white h-full rounded-xl border border-[#e2e2e2] overflow-hidden flex flex-col">
+    <div className="bg-white h-full rounded-none border border-gray-200 overflow-hidden flex flex-col shadow-xs">
 
       {/* Profile */}
-      <div className="p-4 sm:p-6 text-center border-b border-[#e2e2e2]">
-        <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto relative rounded-full overflow-hidden border-dotted  border-2 border-[#243e6b]">
+      <div className="p-4 sm:p-6 text-center border-b border-gray-200 bg-gray-50/50">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto relative rounded-none overflow-hidden border-2 border-gray-300 bg-white">
           <Image
             fill
             src={user?.userAvatar || '/placeholder.png'}
@@ -44,10 +44,10 @@ export default function Sidebar({
           />
         </div>
 
-        <h3 className="mt-3 font-semibold text-base sm:text-lg">
+        <h3 className="mt-3 font-black text-sm sm:text-base uppercase text-[#111111]">
           {user?.fullName}
         </h3>
-        <p className="text-xs sm:text-sm text-gray-500 truncate">
+        <p className="text-xs text-gray-500 truncate">
           {user?.email}
         </p>
       </div>
@@ -58,17 +58,17 @@ export default function Sidebar({
           <button
             key={item.key}
             onClick={() => handleNav(item.key)}
-            className={`w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-[#e2e2e2] text-sm sm:text-base
+            className={`w-full flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-gray-100 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer
               ${
                 active === item.key
-                  ? 'bg-[#243e6b] text-white'
-                  : 'hover:bg-gray-100'
+                  ? 'bg-[#111111] text-[#f6c947]'
+                  : 'text-gray-700 hover:bg-gray-100'
               }`}
           >
             <span>{item.label}</span>
 
             {typeof item.count === 'number' && (
-              <span className="bg-[#f6c947] text-white text-xs px-2 py-1 rounded-full">
+              <span className={`text-[10px] font-black px-2 py-0.5 rounded-none ${active === item.key ? 'bg-[#f6c947] text-[#111111]' : 'bg-gray-200 text-gray-700'}`}>
                 {item.count}
               </span>
             )}
@@ -78,10 +78,10 @@ export default function Sidebar({
 
       {/* Become a Seller CTA */}
       {user?.role === 'buyer' && (
-        <div className="p-4 bg-blue-50 border-t border-blue-100">
+        <div className="p-4 bg-yellow-50/60 border-t border-yellow-100">
           <Link 
             href="/signup?intent=seller" 
-            className="flex items-center gap-2 justify-center w-full py-3 bg-[#243e6b] text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-blue-900/20 hover:scale-105 transition-all"
+            className="flex items-center gap-2 justify-center w-full py-3 bg-[#111111] text-[#f6c947] text-[10px] font-black uppercase tracking-widest rounded-none hover:bg-[#f6c947] hover:text-[#111111] transition-all"
           >
             <Store size={14} />
             Setup My Shop
@@ -92,9 +92,9 @@ export default function Sidebar({
       {/* Logout */}
       <button
         onClick={() => logout()}
-        className="w-full flex gap-2 items-center text-left px-4 sm:px-6 py-4 bg-rose-500 text-white hover:bg-rose-600 text-sm sm:text-base font-bold transition-colors"
+        className="w-full flex gap-2 items-center text-left px-4 sm:px-6 py-3.5 bg-red-600 text-white hover:bg-red-700 text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
       >
-        <LogOut size={16}/> 
+        <LogOut size={14}/> 
         Sign out
       </button>
     </div>

@@ -87,7 +87,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
     }
 
     return (
-        <div className="mt-3 flex flex-col gap-4 border border-[#e2e2e2] rounded-md p-6 w-full max-w-md mx-auto">
+        <div className="mt-3 flex flex-col gap-4 border border-[#e2e2e2] rounded-none p-6 w-full max-w-md mx-auto bg-white">
 
             <div className="text-center space-y-2">
                 <div className="w-16 h-16 flex items-center justify-center mx-auto">
@@ -113,7 +113,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
                         onChange={(e) => handleChange(e, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onPaste={handlePaste}
-                        className="w-12 h-12 text-center border border-gray-300 rounded-md text-lg font-bold focus:outline-none focus:ring-2 focus:ring-[#f6c947]"
+                        className="w-12 h-12 text-center border border-gray-300 rounded-none text-lg font-bold focus:outline-none focus:border-[#111111]"
                     />
                 ))}
             </div>
@@ -130,7 +130,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
             <button
                 onClick={() => onSubmit(value)}
                 disabled={loading || value.length !== length}
-                className="bg-emerald-600 text-white py-2 rounded-md font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+                className="bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] font-black uppercase text-xs tracking-widest py-3 rounded-none flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
             >
                 {loading && <Loader2 className="animate-spin" size={16} />}
                 Verify Code

@@ -39,17 +39,17 @@ export default function OrderPreviewModal({ orderItem, onClose }: Props) {
       
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
 
-            <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden">
+            <div className="bg-white w-full max-w-2xl rounded-none shadow-2xl overflow-hidden border border-gray-200">
 
                 {/* HEADER */}
                 <div className="flex items-center justify-between p-5 border-b">
-                    <h2 className="font-bold text-lg text-[#243e6b]">
+                    <h2 className="font-bold text-lg text-[#111111] uppercase tracking-wide">
                        Order #{order?.id}  
                     </h2>
 
-                    <button onClick={onClose}>
+                    <button onClick={onClose} className="p-1 text-gray-500 hover:text-black cursor-pointer">
                         <X />
                     </button>
                 </div>
@@ -59,7 +59,7 @@ export default function OrderPreviewModal({ orderItem, onClose }: Props) {
 
                     {/* BUYER INFO */}
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 relative">
+                        <div className="w-12 h-12 rounded-none overflow-hidden bg-gray-100 relative border border-gray-200">
                             <Image
                                 src={order.buyer.userAvatar || '/placeholder.png'}
                                 alt="avatar"
@@ -69,28 +69,28 @@ export default function OrderPreviewModal({ orderItem, onClose }: Props) {
                         </div>
 
                         <div>
-                            <p className="font-semibold">{order.buyer.fullName}</p>
-                            <p className="text-sm text-gray-500">{order.buyer.email}</p>
-                            <p className="text-sm text-gray-500">{order.buyer.phoneNumber}</p>
+                            <p className="font-semibold text-[#111111]">{order.buyer.fullName}</p>
+                            <p className="text-xs text-gray-500">{order.buyer.email}</p>
+                            <p className="text-xs text-gray-500">{order.buyer.phoneNumber}</p>
                         </div>
                     </div>
 
                     {/* SHIPPING */}
-                    <div className="flex items-start gap-3 text-sm text-gray-600">
+                    <div className="flex items-start gap-3 text-xs text-gray-600">
                         <MapPin size={16} />
                         <span>{order.shippingAddress}</span>
                     </div>
 
                     {/* DATE */}
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
                         <Calendar size={16} />
                         {new Date(order.createdAt).toLocaleString()}
                     </div>
 
                     {/* PRODUCT */}
-                    <div className="border rounded-lg p-4 flex gap-4">
+                    <div className="border border-gray-200 rounded-none p-4 flex gap-4">
 
-                        <div className="w-24 h-24 relative rounded-md overflow-hidden border">
+                        <div className="w-24 h-24 relative rounded-none overflow-hidden border border-gray-200">
                             <Image
                                 src={orderItem.productSnapshotImage}
                                 alt={orderItem.productSnapshotTitle}
@@ -100,41 +100,41 @@ export default function OrderPreviewModal({ orderItem, onClose }: Props) {
                         </div>
 
                         <div className="flex-1">
-                            <h3 className="font-semibold">
+                            <h3 className="font-semibold text-sm text-[#111111]">
                                 {orderItem.productSnapshotTitle}
                             </h3>
 
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs text-gray-500">
                                 Quantity: {orderItem.quantity}
                             </p>
 
-                            <p className="text-[#243e6b] font-bold mt-2">
+                            <p className="text-[#111111] font-bold mt-2 text-sm">
                                 {formatCurrency(total)}
                             </p>
                         </div>
                     </div>
 
                     {/* STATUS */}
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
 
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusStyles(orderItem.fulfillmentStatus)}`}>
+                        <span className={`px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider ${statusStyles(orderItem.fulfillmentStatus)}`}>
                             {orderItem.fulfillmentStatus}
                         </span>
 
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${paymentStyles(order.paymentStatus)}`}>
+                        <span className={`px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider ${paymentStyles(order.paymentStatus)}`}>
                             {order.paymentStatus}
                         </span>
 
-                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700">
+                        <span className="px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700">
                             {order.status}
                         </span>
 
                     </div>
 
                     {/* TOTAL */}
-                    <div className="border-t pt-4 flex justify-between font-semibold text-lg">
+                    <div className="border-t pt-4 flex justify-between font-bold text-base">
                         <span>Total Order Amount</span>
-                        <span className="text-[#243e6b]">
+                        <span className="text-[#111111]">
                             {formatCurrency(order.totalAmount)}
                         </span>
                     </div>
@@ -146,12 +146,12 @@ export default function OrderPreviewModal({ orderItem, onClose }: Props) {
 
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 border rounded-md text-sm"
+                        className="px-5 py-2.5 border border-gray-300 rounded-none text-xs font-bold uppercase tracking-wider hover:bg-gray-50 cursor-pointer"
                     >
                         Close
                     </button>
 
-                    <button className="px-4 py-2 bg-[#243e6b] text-white rounded-md text-sm">
+                    <button className="px-6 py-2.5 bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] font-black uppercase text-xs tracking-widest rounded-none shadow-md transition-all cursor-pointer">
                         Print Invoice
                     </button>
 

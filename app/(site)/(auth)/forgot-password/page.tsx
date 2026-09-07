@@ -112,12 +112,12 @@ const Page = () => {
 
               {/* Email */}
               <div className="flex flex-col gap-2">
-                <label>Email Address</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Email Address</label>
 
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="border p-3 rounded-md border-gray-300"
+                  className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
@@ -128,14 +128,14 @@ const Page = () => {
                 />
 
                 {errors.email && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500 text-xs">
                     {errors.email.message}
                   </p>
                 )}
               </div>
 
               {error && (
-                <p className="text-red-500 text-sm text-center">
+                <p className="text-red-500 text-xs text-center">
                   {error}
                 </p>
               )}
@@ -144,7 +144,7 @@ const Page = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-[#f6c947] font-semibold px-7 py-3 rounded-md hover:bg-[#f6c947/70] text-black transition mb-5 disabled:opacity-60"
+                className="bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] font-black text-xs uppercase tracking-widest px-7 py-3 rounded-none text-[#f6c947] transition mb-5 disabled:opacity-60 cursor-pointer"
               >
                 {isLoading ? "Sending..." : "Send Reset Link"}
               </button>
@@ -155,15 +155,15 @@ const Page = () => {
           {/* Success UI */}
           {isSubmitted && (
             <div className="space-y-8 text-center animate-fadeIn">
-              <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-5xl">📩</span>
+              <div className="w-20 h-20 bg-green-100 rounded-none flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">📩</span>
               </div>
 
               <div>
-                <h2 className="text-3xl font-black text-gray-900 mb-2">
+                <h2 className="text-2xl font-black text-gray-900 mb-2 uppercase">
                   Check your email
                 </h2>
-                <p className="text-gray-500 font-medium leading-relaxed">
+                <p className="text-gray-500 text-xs font-medium leading-relaxed">
                   We&apos;ve sent a password reset link to <br />
                   <strong className="text-gray-900">
                     your email address
@@ -171,12 +171,12 @@ const Page = () => {
                 </p>
               </div>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 Didn&apos;t receive the email?{" "}
                 <button
                   onClick={handleRetry}
                   disabled={retryAfter > 0}
-                  className={`font-bold transition-colors ${
+                  className={`font-bold transition-colors uppercase ${
                     retryAfter > 0
                       ? "text-gray-400 cursor-not-allowed"
                       : "text-green-600 hover:underline"
@@ -191,14 +191,14 @@ const Page = () => {
           )}
 
           {/* Signup CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-[#f6c947] rounded-md p-5 mt-8 text-center">
-            <span className="font-semibold">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-[#f6c947] rounded-none p-4 mt-8 text-center text-xs">
+            <span className="font-bold text-[#111111] uppercase tracking-wider">
               Don&apos;t have an account?
             </span>
 
             <Link
               href="/signup"
-              className="border-b font-medium"
+              className="border-b border-[#111111] font-black uppercase text-[#111111] hover:text-black transition-colors"
             >
               Create an account
             </Link>

@@ -26,11 +26,9 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
       <div
         className={`
           relative flex items-center
-          rounded-lg border bg-white p-3
+          rounded-none border bg-white p-3
           ${error ? "border-red-500" : "border-gray-300"}
-          focus-within:border-primary-500
-          focus-within:ring-1
-          focus-within:ring-primary-500
+          focus-within:border-[#111111]
         `}
       >
         {/* Left Icon */}

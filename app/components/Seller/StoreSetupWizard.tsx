@@ -77,26 +77,26 @@ const StoreSetupWizard = () => {
       <div className="flex items-center justify-center gap-4 mb-12">
         {[1, 2, 3].map((s) => (
           <div key={s} className="flex items-center gap-2">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-              step === s ? 'bg-[#243e6b] text-white scale-110 shadow-lg' : 
+            <div className={`w-10 h-10 rounded-none flex items-center justify-center font-bold transition-all ${
+              step === s ? 'bg-[#111111] text-[#f6c947] scale-110 shadow-lg' : 
               step > s ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-400'
             }`}>
               {step > s ? <CheckCircle size={20} /> : s}
             </div>
-            {s < 3 && <div className={`w-12 h-1 bg-gray-200 rounded-full ${step > s ? 'bg-emerald-500' : ''}`} />}
+            {s < 3 && <div className={`w-12 h-1 bg-gray-200 rounded-none ${step > s ? 'bg-emerald-500' : ''}`} />}
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-none shadow-xl border border-gray-100 overflow-hidden">
         {step === 1 && (
           <div className="p-8 md:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center gap-4 mb-8">
-              <div className="p-4 bg-blue-50 text-[#243e6b] rounded-3xl">
+              <div className="p-4 bg-gray-100 text-[#111111] rounded-none">
                 <Store size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[#243e6b]">Brand Identity</h2>
+                <h2 className="text-2xl font-black text-[#111111]">Brand Identity</h2>
                 <p className="text-gray-500">Tell us about your digital shop.</p>
               </div>
             </div>
@@ -108,7 +108,7 @@ const StoreSetupWizard = () => {
                   <input 
                     {...register('businessName', { required: true })} 
                     placeholder="e.g. Urban Vogue"
-                    className="w-full h-14 px-6 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold text-[#243e6b]"
+                    className="w-full h-14 px-6 rounded-none bg-gray-50 border border-gray-200 outline-none focus:border-[#111111] transition-all font-bold text-[#111111]"
                   />
                 </div>
                 <div className="space-y-2">
@@ -116,7 +116,7 @@ const StoreSetupWizard = () => {
                   <input 
                     {...register('businessEmail', { required: true })} 
                     placeholder="contact@yourbrand.com"
-                    className="w-full h-14 px-6 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold text-[#243e6b]"
+                    className="w-full h-14 px-6 rounded-none bg-gray-50 border border-gray-200 outline-none focus:border-[#111111] transition-all font-bold text-[#111111]"
                   />
                 </div>
               </div>
@@ -127,17 +127,17 @@ const StoreSetupWizard = () => {
                   {...register('bio')} 
                   rows={4}
                   placeholder="What makes your brand special?"
-                  className="w-full p-6 rounded-2xl bg-gray-50 border-none outline-none focus:ring-2 focus:ring-blue-100 transition-all font-medium text-gray-600 resize-none"
+                  className="w-full p-6 rounded-none bg-gray-50 border border-gray-200 outline-none focus:border-[#111111] transition-all font-medium text-gray-600 resize-none"
                 />
               </div>
 
               <div className="flex justify-end">
                 <button 
                   onClick={() => setStep(2)}
-                  className="flex items-center gap-3 px-10 py-4 bg-[#243e6b] text-white font-black rounded-2xl hover:bg-blue-800 transition-all shadow-xl shadow-blue-900/20"
+                  className="flex items-center gap-3 px-10 py-4 bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] font-black uppercase text-xs tracking-widest rounded-none transition-all shadow-md cursor-pointer"
                 >
                   Next Step
-                  <ArrowRight size={20} />
+                  <ArrowRight size={18} />
                 </button>
               </div>
             </div>
@@ -147,11 +147,11 @@ const StoreSetupWizard = () => {
         {step === 2 && (
           <div className="p-8 md:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center gap-4 mb-8">
-              <div className="p-4 bg-amber-50 text-amber-600 rounded-3xl">
+              <div className="p-4 bg-amber-50 text-amber-600 rounded-none">
                 <Layout size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[#243e6b]">Visual Branding</h2>
+                <h2 className="text-2xl font-black text-[#111111]">Visual Branding</h2>
                 <p className="text-gray-500">Upload your logo and shop banner.</p>
               </div>
             </div>
@@ -162,20 +162,20 @@ const StoreSetupWizard = () => {
                 <div className="space-y-4">
                   <p className="text-xs font-black uppercase tracking-widest text-gray-400">Store Logo</p>
                   <div className="relative group w-40 h-40 mx-auto md:mx-0">
-                    <div className="w-full h-full rounded-[2rem] bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-dashed border-gray-200 group-hover:border-blue-400 transition-all relative">
+                    <div className="w-full h-full rounded-none bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-200 group-hover:border-[#f6c947] transition-all relative overflow-hidden">
                       {logo ? (
                         <Image src={logo} alt="logo" fill className="object-cover" />
                       ) : (
                         <Camera size={40} className="text-gray-300" />
                       )}
-                      {uploading && <div className="absolute inset-0 bg-white/60 flex items-center justify-center"><Loader2 className="animate-spin text-blue-600" /></div>}
+                      {uploading && <div className="absolute inset-0 bg-white/60 flex items-center justify-center"><Loader2 className="animate-spin text-[#111111]" /></div>}
                     </div>
                     <button 
                       type="button"
                       onClick={() => document.getElementById('logo-input')?.click()}
-                      className="absolute -bottom-4 -right-4 p-4 bg-white text-[#243e6b] rounded-2xl shadow-xl hover:scale-110 transition-all border border-gray-100"
+                      className="absolute -bottom-3 -right-3 p-3 bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] rounded-none shadow-xl transition-all cursor-pointer"
                     >
-                      <Camera size={20} />
+                      <Camera size={18} />
                     </button>
                     <input id="logo-input" type="file" hidden onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], 'logo')} />
                   </div>
@@ -185,7 +185,7 @@ const StoreSetupWizard = () => {
                 <div className="space-y-4 flex-1">
                   <p className="text-xs font-black uppercase tracking-widest text-gray-400">Shop Banner</p>
                   <div className="relative group w-full h-40">
-                    <div className="w-full h-full rounded-[2rem] bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-dashed border-gray-200 group-hover:border-blue-400 transition-all relative">
+                    <div className="w-full h-full rounded-none bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-200 group-hover:border-[#f6c947] transition-all relative overflow-hidden">
                       {banner ? (
                         <Image src={banner} alt="banner" fill className="object-cover" />
                       ) : (
@@ -195,9 +195,9 @@ const StoreSetupWizard = () => {
                     <button 
                       type="button"
                       onClick={() => document.getElementById('banner-input')?.click()}
-                      className="absolute -bottom-4 -right-4 p-4 bg-white text-[#243e6b] rounded-2xl shadow-xl hover:scale-110 transition-all border border-gray-100"
+                      className="absolute -bottom-3 -right-3 p-3 bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] rounded-none shadow-xl transition-all cursor-pointer"
                     >
-                      <Camera size={20} />
+                      <Camera size={18} />
                     </button>
                     <input id="banner-input" type="file" hidden onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], 'banner')} />
                   </div>
@@ -206,20 +206,20 @@ const StoreSetupWizard = () => {
 
               {/* CONTACT INFO HIDDEN BUT REQUIRED */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-50">
-                 <input {...register('businessCity')} placeholder="City" className="h-12 px-4 rounded-xl bg-gray-50 outline-none" />
-                 <input {...register('businessState')} placeholder="State" className="h-12 px-4 rounded-xl bg-gray-50 outline-none" />
-                 <input {...register('businessPostalCode')} placeholder="Postal" className="h-12 px-4 rounded-xl bg-gray-50 outline-none" />
-                 <input {...register('businessPhoneNumber')} placeholder="Phone" className="h-12 px-4 rounded-xl bg-gray-50 outline-none" />
+                 <input {...register('businessCity')} placeholder="City" className="h-12 px-4 rounded-none bg-gray-50 border border-gray-200 outline-none text-xs" />
+                 <input {...register('businessState')} placeholder="State" className="h-12 px-4 rounded-none bg-gray-50 border border-gray-200 outline-none text-xs" />
+                 <input {...register('businessPostalCode')} placeholder="Postal" className="h-12 px-4 rounded-none bg-gray-50 border border-gray-200 outline-none text-xs" />
+                 <input {...register('businessPhoneNumber')} placeholder="Phone" className="h-12 px-4 rounded-none bg-gray-50 border border-gray-200 outline-none text-xs" />
               </div>
 
               <div className="flex justify-between items-center pt-8">
-                <button onClick={() => setStep(1)} className="text-gray-400 font-bold hover:text-[#243e6b]">Back</button>
+                <button onClick={() => setStep(1)} className="text-gray-400 font-bold hover:text-[#111111] text-xs uppercase tracking-wider cursor-pointer">Back</button>
                 <button 
                   onClick={handleSubmit(onSubmit)}
                   disabled={loading}
-                  className="flex items-center gap-3 px-10 py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
+                  className="flex items-center gap-3 px-10 py-4 bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] font-black uppercase text-xs tracking-widest rounded-none transition-all shadow-md cursor-pointer"
                 >
-                  {loading ? <Loader2 className="animate-spin" /> : <Globe size={20} />}
+                  {loading ? <Loader2 className="animate-spin" /> : <Globe size={18} />}
                   Launch My Shop
                 </button>
               </div>
@@ -229,23 +229,23 @@ const StoreSetupWizard = () => {
 
         {step === 3 && (
           <div className="p-16 text-center animate-in zoom-in duration-500">
-            <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8">
+            <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-none flex items-center justify-center mx-auto mb-8">
               <CheckCircle size={48} />
             </div>
-            <h2 className="text-3xl font-black text-[#243e6b] mb-4 text-center">Your Mall Space is Ready!</h2>
-            <p className="text-gray-500 mb-10 max-w-sm mx-auto">
+            <h2 className="text-3xl font-black text-[#111111] mb-4 text-center uppercase tracking-tight">Your Mall Space is Ready!</h2>
+            <p className="text-gray-500 mb-10 max-w-sm mx-auto text-sm">
               Congratulations! Your digital brand has been successfully created. You can now start adding products to your storefront.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                <button 
                 onClick={() => window.location.reload()}
-                className="px-10 py-4 bg-[#243e6b] text-white font-black rounded-2xl shadow-xl shadow-blue-900/20"
+                className="px-10 py-4 bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] font-black uppercase text-xs tracking-widest rounded-none shadow-md transition-all cursor-pointer"
                >
                  Go to Dashboard
                </button>
                <button 
                 onClick={() => window.location.href = '/shops'}
-                className="px-10 py-4 bg-gray-100 text-[#243e6b] font-black rounded-2xl"
+                className="px-10 py-4 bg-gray-100 hover:bg-gray-200 text-[#111111] font-black uppercase text-xs tracking-widest rounded-none transition-all cursor-pointer"
                >
                  View Brand Directory
                </button>

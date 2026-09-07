@@ -1,6 +1,7 @@
 // app/api/admin/categories/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getAuthToken, handleAxiosError } from "@/helpers/__helper";
 
 // DELETE a category
@@ -14,6 +15,9 @@ export async function DELETE(
         const response = await axios.delete(`${process.env.BASE_URL}/categories/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
+        try {
+            revalidatePath('/', 'layout');
+        } catch {}
         return NextResponse.json({ success: true, data: response.data });
     } catch (e) { return handleAxiosError(e); }
 }
@@ -30,6 +34,9 @@ export async function PATCH(
         const response = await axios.patch(`${process.env.BASE_URL}/categories/${id}`, body, {
             headers: { Authorization: `Bearer ${token}` }
         });
+        try {
+            revalidatePath('/', 'layout');
+        } catch {}
         return NextResponse.json({ success: true, data: response.data });
     } catch (e) { return handleAxiosError(e); }
 }

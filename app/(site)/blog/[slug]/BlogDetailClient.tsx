@@ -232,7 +232,7 @@ export default function BlogDetailClient() {
                                 <div className="space-y-8">
                                     {Array.isArray(post.comments) && post.comments.map((comment: any, index: number) => (
                                         <div key={comment.id || index} className="flex gap-6">
-                                            <div className="w-16 h-16 bg-gray-100 rounded-full flex-shrink-0 flex items-center justify-center text-xl font-bold text-gray-400">
+                                            <div className="w-16 h-16 bg-gray-100 rounded-none flex-shrink-0 flex items-center justify-center text-xl font-bold text-gray-400">
                                                 {comment.name.substring(0, 2).toUpperCase()}
                                             </div>
                                             <div>
@@ -253,7 +253,7 @@ export default function BlogDetailClient() {
                             </div>
 
                             {/* Comment Form */}
-                            <div className="bg-gray-50 p-10 rounded-sm">
+                            <div className="bg-gray-50 p-10 rounded-none">
                                 <h3 className="text-xl font-bold uppercase tracking-[0.2em] text-[#222222] mb-10">Leave a comment</h3>
                                 <form className="space-y-6" onSubmit={handleCommentSubmit}>
                                     {!user && (
@@ -316,7 +316,7 @@ export default function BlogDetailClient() {
                     <div className="lg:w-1/3">
                         <aside className="sticky top-24 space-y-12">
                             {/* Recent Posts */}
-                            <div className="p-8 border border-gray-100 rounded-sm">
+                            <div className="p-8 border border-gray-100 rounded-none">
                                 <h4 className="text-sm font-bold uppercase tracking-widest text-[#222222] mb-8">Recent Posts</h4>
                                 <div className="space-y-8">
                                     {recentPosts.map((post, index) => (
@@ -336,13 +336,19 @@ export default function BlogDetailClient() {
                             </div>
 
                             {/* Categories */}
-                            <div className="p-8 border border-gray-100 rounded-sm">
+                            <div className="p-8 border border-gray-100 rounded-none">
                                 <h4 className="text-sm font-bold uppercase tracking-widest text-[#222222] mb-6">Categories</h4>
                                 <ul className="space-y-4">
-                                    {["Fashion", "Technology", "Lifestyle", "Business", "Sustainability"].map((cat, i) => (
+                                    {[
+                                        { name: "Fashion", count: 18 },
+                                        { name: "Technology", count: 12 },
+                                        { name: "Lifestyle", count: 15 },
+                                        { name: "Business", count: 7 },
+                                        { name: "Sustainability", count: 9 },
+                                    ].map((cat, i) => (
                                         <li key={i} className="flex justify-between items-center group cursor-pointer">
-                                            <span className="text-sm text-gray-500 group-hover:text-[#f6c947] transition-colors">{cat}</span>
-                                            <span className="text-[10px] font-bold text-gray-300">({Math.floor(Math.random() * 20) + 5})</span>
+                                            <span className="text-sm text-gray-500 group-hover:text-[#f6c947] transition-colors">{cat.name}</span>
+                                            <span className="text-[10px] font-bold text-gray-300">({cat.count})</span>
                                         </li>
                                     ))}
                                 </ul>

@@ -102,11 +102,11 @@ const Page = () => {
 
                                 {/* Email */}
                                 <div className="flex flex-col gap-2">
-                                    <label>Email Address</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Email Address</label>
                                     <input
                                         type="email"
                                         placeholder="Email address"
-                                        className="border p-3 rounded-md border-gray-300"
+                                        className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                                         {...register("email", {
                                             required: "Email is required",
                                             pattern: {
@@ -116,18 +116,18 @@ const Page = () => {
                                         })}
                                     />
                                     {errors.email && (
-                                        <p className="text-red-500 text-sm">{errors.email.message}</p>
+                                        <p className="text-red-500 text-xs">{errors.email.message}</p>
                                     )}
                                 </div>
 
 
                                 {/* Password */}
                                 <div className="flex flex-col gap-2">
-                                    <label>Password</label>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Password</label>
                                     <input
                                         type="password"
                                         placeholder="Password"
-                                        className="border p-3 rounded-md border-gray-300"
+                                        className="border p-3 rounded-none border-gray-300 text-xs outline-none focus:border-[#111111]"
                                         {...register("password", {
                                             required: "Password is required",
                                             minLength: {
@@ -137,7 +137,7 @@ const Page = () => {
                                         })}
                                     />
                                     {errors.password && (
-                                        <p className="text-red-500 text-sm">{errors.password.message}</p>
+                                        <p className="text-red-500 text-xs">{errors.password.message}</p>
                                     )}
                                 </div>
 
@@ -147,9 +147,9 @@ const Page = () => {
                                         type="checkbox"
                                         checked={rememberMe}
                                         onChange={(e) => setRememberMe(e.target.checked)}
-                                        className="h-4 w-4 rounded border-gray-300 focus:ring-green-500 text-green-600 cursor-pointer"
+                                        className="h-4 w-4 rounded-none border-gray-300 text-[#111111] focus:ring-0 cursor-pointer"
                                     />
-                                    <label htmlFor="remember-me" className="block text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer">
+                                    <label htmlFor="remember-me" className="block text-xs font-medium text-gray-600 uppercase tracking-wider cursor-pointer">
                                         Remember me
                                     </label>
                                 </div>
@@ -161,14 +161,13 @@ const Page = () => {
                                 <div className="flex flex-wrap items-center justify-between gap-5">
                                     <button
                                         type="submit"
-                                        className=" bg-[#f6c947]
- font-semibold px-7 py-3 rounded-md hover:bg-[#f6c947/70]  text-black transition mb-5"
+                                        className="bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] font-black text-xs uppercase tracking-widest px-8 py-3 rounded-none text-white transition mb-5 cursor-pointer disabled:opacity-50"
                                         disabled={isLoading}
                                     >
-                                        {isLoading ? "Signing In" : "Sign In"}
+                                        {isLoading ? "Signing In..." : "Sign In"}
 
                                     </button>
-                                    <Link href="/forgot-password" className="my-5 text-gray-500 border-b py-1">Forgot your password?</Link>
+                                    <Link href="/forgot-password" className="my-5 text-gray-500 hover:text-black border-b py-1 text-xs font-bold uppercase">Forgot your password?</Link>
                                 </div>
 
                             </form>
@@ -178,13 +177,13 @@ const Page = () => {
 
 
                     {/* Login link */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-[#f6c947] rounded-md p-5 mt-8 text-center">
-                        <span className="font-semibold">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 bg-[#f6c947] rounded-none p-4 mt-8 text-center text-xs">
+                        <span className="font-bold text-[#111111] uppercase tracking-wider">
                             Don&apos;t have an account?
                         </span>
                         <Link
                             href="/signup"
-                            className="border-b font-medium"
+                            className="border-b border-[#111111] font-black uppercase text-[#111111]"
                         >
                             Create an account
                         </Link>

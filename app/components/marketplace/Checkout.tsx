@@ -45,7 +45,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null)
 
-  // ✅ Gateway selection state
+  // Gateway selection state
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('paystack')
 
   const subtotal = getTotalPrice()
@@ -66,7 +66,7 @@ export default function CheckoutPage() {
   if (isAuthLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="animate-spin text-[#243e6b]" size={40} />
+        <Loader2 className="animate-spin text-[#111111]" size={40} />
       </div>
     )
   }
@@ -90,7 +90,7 @@ export default function CheckoutPage() {
       })),
       shippingAddress,
       noteToSeller: note,
-      paymentMethod, // ✅ Now included
+      paymentMethod,
     }
 
     try {
@@ -105,7 +105,6 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error(data.message || 'Something went wrong')
       if (!data.order?.id) throw new Error('Invalid order response')
 
-      // ✅ Set order ID immediately so modal has it when reference appears
       setPlacedOrderId(data.order.id)
 
       if (!data.authorization_url) {
@@ -115,14 +114,10 @@ export default function CheckoutPage() {
         return
       }
 
-      // ✅ Route to the correct gateway handler
       if (paymentMethod === 'flutterwave') {
-        // Flutterwave uses a full redirect — no inline popup
-        // The redirect_url we set on the backend will bring them back
         window.location.href = data.authorization_url
       } else {
         window.location.href = data.authorization_url
-        // Paystack uses inline popup
       }
     } catch (err: any) {
       console.error(err)
@@ -136,37 +131,37 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* LEFT: Checkout Form */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
-          <h2 className="text-xl font-bold text-[#243e6b]">Order details</h2>
+        <div className="lg:col-span-2 bg-white p-6 rounded-none shadow-sm border border-gray-200 space-y-6">
+          <h2 className="text-xl font-black uppercase text-[#111111]">Order details</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
                 Shipping Address <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={shippingAddress}
                 onChange={(e) => setShippingAddress(e.target.value)}
                 placeholder="Enter your full delivery address"
-                className="w-full h-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] focus:border-transparent outline-none resize-none transition-all"
+                className="w-full h-24 p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none resize-none transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
                 Note to seller (Optional)
               </label>
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Any special instructions for delivery?"
-                className="w-full h-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#243e6b] focus:border-transparent outline-none resize-none transition-all"
+                className="w-full h-24 p-3 border border-gray-300 rounded-none text-xs focus:border-[#111111] outline-none resize-none transition-all"
               />
             </div>
 
-            {/* ✅ Gateway Selector */}
+            {/* Gateway Selector */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
                 Payment method
               </label>
               <div className="flex flex-col gap-3">
@@ -175,32 +170,32 @@ export default function CheckoutPage() {
                     key={gw.value}
                     type="button"
                     onClick={() => setPaymentMethod(gw.value)}
-                    className={`flex items-center gap-3 p-4 rounded-xl border transition-all text-left ${
+                    className={`flex items-center gap-3 p-4 rounded-none border transition-all text-left ${
                       paymentMethod === gw.value
-                        ? 'border-[#243e6b] bg-blue-50'
+                        ? 'border-[#111111] bg-gray-50'
                         : 'border-gray-200 hover:border-gray-300 bg-white'
                     }`}
                   >
                     {/* Radio indicator */}
                     <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                      className={`w-4 h-4 rounded-none border-2 flex items-center justify-center shrink-0 ${
                         paymentMethod === gw.value
-                          ? 'border-[#243e6b] bg-[#243e6b]'
+                          ? 'border-[#111111] bg-[#111111]'
                           : 'border-gray-300'
                       }`}
                     >
                       {paymentMethod === gw.value && (
-                        <div className="w-2 h-2 rounded-full bg-white" />
+                        <div className="w-1.5 h-1.5 bg-[#f6c947]" />
                       )}
                     </div>
 
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-gray-800">{gw.label}</p>
+                      <p className="text-xs font-black uppercase text-[#111111]">{gw.label}</p>
                       <p className="text-xs text-gray-500 mt-0.5">{gw.description}</p>
                     </div>
 
                     {gw.isDefault && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-md font-medium">
+                      <span className="text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded-none font-black uppercase">
                         Default
                       </span>
                     )}
@@ -212,35 +207,35 @@ export default function CheckoutPage() {
         </div>
 
         {/* RIGHT: Order Summary */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6 h-fit">
-          <h2 className="text-lg font-bold text-[#243e6b]">
+        <div className="bg-white p-6 rounded-none shadow-sm border border-gray-200 space-y-6 h-fit">
+          <h2 className="text-base font-black uppercase text-[#111111]">
             Order Summary ({items.length})
           </h2>
 
           <div className="max-h-80 overflow-y-auto pr-2">
             {items.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-6">Your cart is empty</p>
+              <p className="text-xs text-gray-500 text-center py-6">Your cart is empty</p>
             ) : (
               items.map((item) => (
                 <div
                   key={item.id}
                   className="flex gap-4 border-b border-gray-100 pb-4 mb-4 last:mb-0 last:border-0 last:pb-0"
                 >
-                  <div className="w-16 h-16 relative border rounded-md overflow-hidden bg-gray-50 shrink-0">
+                  <div className="w-16 h-16 relative border border-gray-200 rounded-none overflow-hidden bg-gray-50 shrink-0">
                     <Image src={item.primaryImage} alt={item.title} fill className="object-cover" />
                   </div>
-                  <div className="text-sm flex-1 flex flex-col justify-between">
+                  <div className="text-xs flex-1 flex flex-col justify-between">
                     <div>
-                      <p className="font-semibold line-clamp-1">{item.title}</p>
-                      <p className="text-gray-500 text-xs mt-0.5">{item.businessName}</p>
+                      <p className="font-bold text-[#111111] line-clamp-1">{item.title}</p>
+                      <p className="text-gray-400 text-[10px] mt-0.5">{item.businessName}</p>
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                      <p className="font-medium text-[#243e6b]">
+                      <p className="font-black text-[#111111]">
                         {item.quantity} × {formatCurrency(item.price)}
                       </p>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="text-red-500 hover:text-red-700 text-xs font-semibold"
+                        className="text-red-500 hover:text-red-700 text-xs font-bold uppercase"
                       >
                         Remove
                       </button>
@@ -251,29 +246,29 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-lg">
+          <div className="space-y-3 text-xs bg-gray-50 p-4 rounded-none border border-gray-100">
             <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium">{formatCurrency(subtotal)}</span>
+              <span className="text-gray-600 font-medium">Subtotal</span>
+              <span className="font-bold">{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Shipping</span>
-              <span className="text-green-600 font-semibold">Calculated at payment</span>
+              <span className="text-gray-600 font-medium">Shipping</span>
+              <span className="text-emerald-700 font-bold">Calculated at payment</span>
             </div>
-            <div className="flex justify-between font-bold text-lg border-t border-gray-200 pt-3 mt-3">
-              <span>Total</span>
-              <span className="text-[#243e6b]">{formatCurrency(subtotal)}</span>
+            <div className="flex justify-between font-black text-sm border-t border-gray-200 pt-3 mt-3">
+              <span className="uppercase">Total</span>
+              <span className="text-[#111111]">{formatCurrency(subtotal)}</span>
             </div>
           </div>
 
           <button
             onClick={handlePlaceOrder}
             disabled={items.length === 0 || isSubmitting}
-            className="w-full bg-[#f6c947] text-[#243e6b] py-3.5 rounded-lg font-extrabold shadow-md hover:bg-[#f6c947]/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-[#111111] text-[#f6c947] hover:bg-[#f6c947] hover:text-[#111111] py-3.5 rounded-none font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
               <>
-                <Loader2 size={18} className="animate-spin" />
+                <Loader2 size={16} className="animate-spin" />
                 PROCESSING...
               </>
             ) : (
@@ -283,12 +278,11 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* ✅ Pass gateway to modal so it verifies with the right gateway */}
       {reference && (
-    <PaymentVerificationModal
-        gateway={searchParams.get('gateway') as PaymentMethod ?? 'paystack'}
-    />
-)}
+        <PaymentVerificationModal
+            gateway={searchParams.get('gateway') as PaymentMethod ?? 'paystack'}
+        />
+      )}
 
     </div>
   )

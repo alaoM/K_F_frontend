@@ -102,16 +102,16 @@ const EmailVerificationContent: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-[#f9fafb] flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl border border-[#e2e2e2] shadow-xl overflow-hidden">
+      <div className="max-w-md w-full bg-white rounded-none border border-gray-200 shadow-xl overflow-hidden">
 
-        <div className="h-2 bg-[#243e6b]" />
+        <div className="h-2 bg-[#111111]" />
 
         <div className="p-8 text-center space-y-6">
           {status === "loading" && (
             <>
-              <Loader2 className="mx-auto animate-spin text-[#243e6b]" size={40} />
-              <h2 className="text-xl font-bold text-[#243e6b]">Verifying Email...</h2>
-              <p className="text-sm text-gray-500">
+              <Loader2 className="mx-auto animate-spin text-[#111111]" size={40} />
+              <h2 className="text-lg font-black uppercase text-[#111111]">Verifying Email...</h2>
+              <p className="text-xs text-gray-500">
                 Please wait while we confirm your email address.
               </p>
             </>
@@ -119,15 +119,15 @@ const EmailVerificationContent: React.FC = () => {
 
           {status === "success" && (
             <>
-              <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600">
+              <div className="w-16 h-16 mx-auto bg-green-100 rounded-none flex items-center justify-center text-green-700">
                 <ShieldCheck size={32} />
               </div>
-              <h2 className="text-xl font-bold text-[#243e6b]">Verification Successful</h2>
-              <p className="text-sm text-gray-500">{message}</p>
+              <h2 className="text-xl font-black uppercase text-[#111111]">Verification Successful</h2>
+              <p className="text-xs text-gray-500">{message}</p>
 
               <button
                 onClick={() => router.push("/login")}
-                className="mt-4 w-full bg-[#f6c947] text-[#243e6b] font-bold py-3 rounded-lg"
+                className="mt-4 w-full bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-[#f6c947] font-black text-xs uppercase tracking-widest py-3.5 rounded-none transition-colors cursor-pointer"
               >
                 Go to Login
               </button>
@@ -136,25 +136,23 @@ const EmailVerificationContent: React.FC = () => {
 
           {status === "error" && (
             <>
-              <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center text-red-600">
+              <div className="w-16 h-16 mx-auto bg-red-100 rounded-none flex items-center justify-center text-red-600">
                 <XCircle size={32} />
               </div>
 
-              <h2 className="text-xl font-bold text-red-600">
+              <h2 className="text-xl font-black uppercase text-red-600">
                 Verification Failed
               </h2>
 
-              <p className="text-sm text-gray-500">{message}</p>
-              <div className="flex gap-2 justify-between">
-                <Link href="/signup" className="bg-[#f6c947] rounded-md py-2 px-5 text-center">
-                Register
+              <p className="text-xs text-gray-500">{message}</p>
+              <div className="flex gap-2 justify-between pt-2">
+                <Link href="/signup" className="flex-1 bg-[#111111] text-[#f6c947] hover:bg-black font-black text-xs uppercase tracking-wider rounded-none py-2.5 px-4 text-center">
+                  Register
                 </Link>
-<button className="bg-[#243e6b] text-white rounded-md py-2 px-5  text-center" onClick={resendVerification}>
-                Resend Email
-              </button>
+                <button className="flex-1 bg-red-600 text-white hover:bg-red-700 font-bold text-xs uppercase tracking-wider rounded-none py-2.5 px-4 text-center cursor-pointer" onClick={resendVerification}>
+                  Resend Email
+                </button>
               </div>
-
-              
             </>
           )}
         </div>

@@ -16,35 +16,19 @@ type ProfileForm = {
     userAvatar: string
 }
 
-type SellerForm = {
-    businessName: string
-    businessEmail: string
-    businessPhoneNumber: string
-    businessAddress: string
-    businessCity: string
-    businessState: string
-    businessPostalCode: string
-    bio?: string
-    logo?: string
-    banner?: string
-}
-
 const GeneralSettings = ({ user }: { user: any }) => {
-    const {  refreshUserData } = useAuth()
+    const { refreshUserData } = useAuth()
     const fetcher = useApi()
 
     const [loadingProfile, setLoadingProfile] = useState(false)
-     const [uploading, setUploading] = useState(false)
+    const [uploading, setUploading] = useState(false)
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
     const fileInputRef = React.useRef<HTMLInputElement>(null)
-    
-   
 
     const profileForm = useForm<ProfileForm>()
-  
- 
-    // ✅ Populate forms
+
+    // Populate forms
     useEffect(() => {
         if (!user) return;
 
@@ -55,11 +39,9 @@ const GeneralSettings = ({ user }: { user: any }) => {
             address: user.address ?? '',
             userAvatar: user.userAvatar ?? '',
         });
-
-       
     }, [user]);
 
-    // ✅ PROFILE UPDATE
+    // PROFILE UPDATE
     const updateProfile = async (data: ProfileForm) => {
         setLoadingProfile(true);
 
@@ -86,38 +68,33 @@ const GeneralSettings = ({ user }: { user: any }) => {
         }
     };
 
-    
-    // if (!user) return null;
-
     const avatarSrc = avatarPreview ?? user?.userAvatar ?? null;
     return (
         <div className="space-y-6">
 
             {/* ================= PROFILE ================= */}
-            <form onSubmit={profileForm.handleSubmit(updateProfile)} className="bg-white p-6 rounded-xl space-y-6">
+            <form onSubmit={profileForm.handleSubmit(updateProfile)} className="bg-white p-6 rounded-none space-y-6">
 
-                <div className="flex justify-between border-b pb-4">
-                    <h3 className="font-bold">Profile</h3>
-
+                <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <h3 className="font-black text-xs uppercase tracking-wider text-[#111111]">Profile Details</h3>
 
                     <button
                         type="submit"
                         disabled={loadingProfile}
-                        className="flex items-center gap-2 bg-[#243e6b] text-white text-xs font-bold px-4 py-2 rounded-md"
+                        className="flex items-center gap-2 bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-white text-xs font-black uppercase tracking-wider px-5 py-2.5 rounded-none transition-colors cursor-pointer"
                     >
                         <Save size={14} />
-                        {loadingProfile ? "Saving..." : "Save"}
+                        {loadingProfile ? "Saving..." : "Save Changes"}
                     </button>
                 </div>
-                  
 
                 <div className="flex items-center gap-4">
                     <div className="relative group">
-                        <div className="w-36 h-36 rounded-full border-dotted border-3 border-[#243e6b] flex items-center justify-center shadow-2xl overflow-hidden relative">
-                            {avatarSrc ? <Image unoptimized fill src={avatarSrc} className="object-cover"  alt="Avatar" /> : <User size={50} />}
+                        <div className="w-28 h-28 rounded-none border-2 border-gray-300 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                            {avatarSrc ? <Image unoptimized fill src={avatarSrc} className="object-cover" alt="Avatar" /> : <User size={40} className="text-gray-400" />}
                             {uploading && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><Loader2 className="animate-spin" /></div>}
                         </div>
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute -bottom-2 -right-2 bg-gray-900 text-white p-3 rounded-full shadow-xl hover:scale-110 transition-all border-2 border-white"><Camera size={18} /></button>
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 bg-[#111111] text-[#f6c947] p-2 rounded-none shadow-md hover:bg-black transition-all cursor-pointer"><Camera size={14} /></button>
                         <input
                             type="file"
                             ref={fileInputRef}
@@ -151,8 +128,6 @@ const GeneralSettings = ({ user }: { user: any }) => {
                         />
                     </div>
                 </div>
-                {/* Avatar */}
-
 
                 <Input label="Full Name" register={profileForm.register("fullName")} />
                 <Input label="Email" register={profileForm.register("email")} />
@@ -160,8 +135,6 @@ const GeneralSettings = ({ user }: { user: any }) => {
                 <Input label="Address" register={profileForm.register("address")} />
 
             </form>
- 
-
         </div>
     )
 }
@@ -170,10 +143,10 @@ export default GeneralSettings
 
 const Input = ({ label, register }: any) => (
     <div className="space-y-1.5">
-        <label className="text-sm font-bold text-gray-700">{label}</label>
+        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">{label}</label>
         <input
             {...register}
-            className="w-full border rounded-md px-4 py-2 text-sm"
+            className="w-full border border-gray-300 rounded-none px-3.5 py-2.5 text-xs outline-none focus:border-[#111111]"
         />
     </div>
 )

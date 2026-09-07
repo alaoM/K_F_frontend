@@ -35,15 +35,15 @@ function AccountContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-3 sm:p-4">
+    <div className="min-h-screen bg-gray-50 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
 
-        {/* 🔥 Mobile Header */}
+        {/* Mobile Header */}
         <div className="lg:hidden flex justify-between items-center mb-4">
-          <h1 className="text-lg font-bold">My Account</h1>
+          <h1 className="text-base font-black uppercase text-[#111111]">My Account</h1>
           <button
             onClick={() => setShowSidebar(true)}
-            className="px-4 py-2 bg-[#243e6b] text-white rounded-lg"
+            className="px-4 py-2 bg-[#111111] text-[#f6c947] text-xs font-black uppercase tracking-wider rounded-none"
           >
             Menu
           </button>
@@ -57,13 +57,13 @@ function AccountContent() {
           </div>
 
           {/* Content */}
-          <div className="col-span-1 lg:col-span-9 bg-white p-4 sm:p-6 rounded-xl shadow-sm">
+          <div className="col-span-1 lg:col-span-9 bg-white p-4 sm:p-6 rounded-none border border-gray-200 shadow-xs">
             {renderContent()}
           </div>
         </div>
       </div>
 
-      {/* 🔥 Mobile Sidebar Drawer */}
+      {/* Mobile Sidebar Drawer */}
       {showSidebar && (
         <div className="fixed inset-0 z-50 flex">
           {/* Overlay */}
@@ -87,7 +87,7 @@ function AccountContent() {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-[#111111] border-t-transparent rounded-full animate-spin" /></div>}>
       <AccountContent />
     </Suspense>
   )

@@ -71,14 +71,15 @@ const HeroSection = () => {
         </div>
       ))}
 
-      {/* DOTS */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-3">
+      {/* BARS / INDICATORS */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
         {SLIDES.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`h-1.5 rounded-full transition-all ${i === current ? 'w-8 bg-[#222222]' : 'w-2 bg-[#cccccc]'
+            className={`h-1.5 rounded-none transition-all cursor-pointer ${i === current ? 'w-8 bg-[#222222]' : 'w-3 bg-[#cccccc] hover:bg-[#888888]'
               }`}
+            aria-label={`Go to slide ${i + 1}`}
           />
         ))}
       </div>
