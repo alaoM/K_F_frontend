@@ -519,22 +519,24 @@ export default function Navbar({
 
             {/* Desktop Live Autocomplete Search Bar */}
             <div className="hidden lg:flex flex-1 max-w-xl mx-auto relative" ref={searchContainerRef}>
-              <form onSubmit={handleSearchSubmit} className="w-full flex items-center relative">
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products, brands, 5-gen categories..."
-                  className="w-full h-11 pl-4 pr-14 bg-[#f8f8f8] border border-gray-300 rounded-none text-xs font-medium text-[#111111] placeholder-gray-400 focus:bg-white focus:border-[#111111] outline-none transition-all"
-                />
-                <button
-                  type="submit"
-                  aria-label="Submit search"
-                  className="absolute right-0 top-0 h-11 w-12 bg-[#111111] text-white hover:bg-[#f6c947] hover:text-[#111111] transition-colors flex items-center justify-center rounded-none cursor-pointer"
-                >
-                  <Search size={18} />
-                </button>
+              <form onSubmit={handleSearchSubmit} className="w-full">
+                <div className="relative w-full flex items-center">
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products, brands, 5-gen categories..."
+                    className="w-full h-11 pl-4 pr-14 bg-[#f8f8f8] border border-gray-300 rounded-none text-xs font-medium text-[#111111] placeholder-gray-400 focus:bg-white focus:border-[#111111] outline-none transition-all"
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Submit search"
+                    className="absolute right-0 inset-y-0 w-12 bg-[#111111] text-white hover:bg-[#f6c947] hover:text-[#111111] transition-colors flex items-center justify-center rounded-none cursor-pointer"
+                  >
+                    <Search size={18} />
+                  </button>
+                </div>
               </form>
 
               {/* Live Instant Search Dropdown Panel */}
@@ -840,21 +842,24 @@ export default function Navbar({
 
           {/* Collapsible Mobile Search Input */}
           {isMobileSearchOpen && (
-            <form onSubmit={handleSearchSubmit} className="lg:hidden mt-3 pt-3 border-t border-gray-100 flex items-center relative">
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, brands, categories..."
-                className="w-full h-10 pl-3 pr-12 bg-gray-50 border border-gray-300 text-xs font-medium text-[#111111] rounded-none outline-none focus:bg-white focus:border-[#111111]"
-                autoFocus
-              />
-              <button
-                type="submit"
-                className="absolute right-0 top-0 h-10 w-11 bg-[#111111] text-white flex items-center justify-center rounded-none cursor-pointer"
-              >
-                <Search size={16} />
-              </button>
+            <form onSubmit={handleSearchSubmit} className="lg:hidden mt-3 pt-3 border-t border-gray-100">
+              <div className="relative w-full flex items-center">
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products, brands, categories..."
+                  className="w-full h-10 pl-3 pr-12 bg-gray-50 border border-gray-300 text-xs font-medium text-[#111111] rounded-none outline-none focus:bg-white focus:border-[#111111] transition-all"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  aria-label="Submit search"
+                  className="absolute right-0 inset-y-0 w-11 bg-[#111111] text-white hover:bg-[#f6c947] hover:text-[#111111] flex items-center justify-center rounded-none cursor-pointer transition-colors"
+                >
+                  <Search size={16} />
+                </button>
+              </div>
             </form>
           )}
         </div>
@@ -1373,20 +1378,23 @@ export default function Navbar({
           {/* Drawer Content */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {/* Mobile Search */}
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-              <input
-                type="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, brands..."
-                className="w-full h-10 pl-3 pr-10 bg-gray-50 border border-gray-300 text-xs font-medium rounded-none outline-none focus:border-[#111111]"
-              />
-              <button
-                type="submit"
-                className="absolute right-0 top-0 h-10 w-10 bg-[#111111] text-white flex items-center justify-center rounded-none cursor-pointer"
-              >
-                <Search size={15} />
-              </button>
+            <form onSubmit={handleSearchSubmit} className="w-full">
+              <div className="relative w-full flex items-center">
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products, brands..."
+                  className="w-full h-10 pl-3 pr-11 bg-gray-50 border border-gray-300 text-xs font-medium rounded-none outline-none focus:border-[#111111] transition-all"
+                />
+                <button
+                  type="submit"
+                  aria-label="Submit search"
+                  className="absolute right-0 inset-y-0 w-10 bg-[#111111] text-white hover:bg-[#f6c947] hover:text-[#111111] flex items-center justify-center rounded-none cursor-pointer transition-colors"
+                >
+                  <Search size={15} />
+                </button>
+              </div>
             </form>
 
             {/* Dynamic 5-Generation Category Tree Accordion */}
