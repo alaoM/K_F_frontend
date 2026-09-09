@@ -30,7 +30,10 @@ export interface Product {
   isVerifiedVendor: boolean;
 
   category: string;
+  categoryId?: string;
   status: string;
+  rawStatus?: string;
+  rawCategory?: any;
 
   createdAt: string;
   updatedAt: string;
@@ -76,6 +79,9 @@ const getStatusStyle = (status: string) => {
 
 const mapProduct = (p: any): Product => ({
   ...p,
+  rawStatus: p.status,
+  categoryId: p.categoryId || p.category?.id,
+  rawCategory: p.category,
   name: p.title,
   image: p.primaryImage,
   category: p.category?.name || 'N/A',
@@ -127,10 +133,8 @@ const ProductList: React.FC<{
   }, [page, debouncedSearch, fetcher]);
 
   useEffect(() => {
-    if (user?.hasCreatedStore) {
-      fetchProducts();
-    }
-  }, [fetchProducts, user]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
 

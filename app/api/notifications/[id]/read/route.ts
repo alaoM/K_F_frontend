@@ -17,6 +17,6 @@ export async function PATCH(
 
     return NextResponse.json(response.data);
   } catch (error) {
-    return NextResponse.json(handleAxiosError(error));
+    return handleAxiosError(error);
   }
 }

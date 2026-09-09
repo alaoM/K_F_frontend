@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     const formData = await req.formData();
-    const files = formData.getAll("files"); 
+    const files = formData.getAll("files");
 
     if (!files || files.length === 0) {
       return NextResponse.json(
@@ -22,25 +22,22 @@ export async function POST(req: Request) {
       );
     }
 
-   const uploadForm = new FormData();
+    const uploadForm = new FormData();
     files.forEach((file) => {
-     uploadForm.append("files", file); 
+      uploadForm.append("files", file);
     });
 
-    
-    const backendUrl = `${process.env.BASE_URL}/upload/bulk`; 
+    const backendUrl = `${process.env.BASE_URL}/upload/bulk`;
 
     const response = await axios.post(backendUrl, uploadForm, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
       },
     });
 
     return NextResponse.json(response.data);
   } catch (error) {
     console.error("Upload Error:", error);
-    const errorResult = handleAxiosError(error);
-    return NextResponse.json(errorResult);
+    return handleAxiosError(error);
   }
 }

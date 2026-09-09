@@ -14,13 +14,14 @@ export async function getAuthToken() {
 // Universal Error Handler to hide backend logic
 export function handleAxiosError(error: unknown) {
     const axiosError = error as AxiosError<any>;
-    console.error("Backend Error:", axiosError.response?.data || axiosError.message);
+    console.error("Backend Error:", axiosError.response?.data || axiosError.message || error);
 
-    if (axiosError.response) {
+    if (axiosError?.response) {
         const status = axiosError.response.status;
-        const message = axiosError.response.data?.message || "An error occurred";
+        const message = axiosError.response.data?.message || axiosError.response.data?.error || "An error occurred";
         return NextResponse.json({ success: false, message }, { status });
     }
-    return NextResponse.json({ success: false, message: "Service Unavailable" }, { status: 500 });
+    const fallbackMessage = (error as Error)?.message || "Service Unavailable";
+    return NextResponse.json({ success: false, message: fallbackMessage }, { status: 500 });
 }
 

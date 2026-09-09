@@ -10,7 +10,7 @@ export async function GET() {
     });
     return NextResponse.json(response.data);
   } catch (error) {
-    return NextResponse.json(handleAxiosError(error));
+    return handleAxiosError(error);
   }
 }
 
@@ -23,6 +23,6 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(response.data);
   } catch (error) {
-    return NextResponse.json(handleAxiosError(error));
+    return handleAxiosError(error);
   }
 }

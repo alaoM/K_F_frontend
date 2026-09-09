@@ -3,13 +3,10 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
- 
   try {
     const formData = await req.formData();
     const file = formData.get("file");
-     const token = await getAuthToken();
-
-
+    const token = await getAuthToken();
 
     if (!file) {
       return NextResponse.json(
@@ -42,20 +39,12 @@ export async function POST(req: Request) {
 
     const response = await axios.post(backendUrl, uploadForm, {
       headers: {
-         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
-
-    }); 
-
-  
- 
+    });
 
     return NextResponse.json(response.data);
   } catch (error) {
-
-    const errorResult = handleAxiosError(error);
-    return NextResponse.json(errorResult);
-
+    return handleAxiosError(error);
   }
 }

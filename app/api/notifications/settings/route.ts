@@ -13,7 +13,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(response.data);
   } catch (error) {
-    return NextResponse.json(handleAxiosError(error));
+    return handleAxiosError(error);
   }
 }
 
@@ -29,6 +29,6 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json(response.data);
   } catch (error) {
-    return NextResponse.json(handleAxiosError(error));
+    return handleAxiosError(error);
   }
 }
