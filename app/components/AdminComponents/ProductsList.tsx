@@ -277,23 +277,28 @@ const ProductList: React.FC<{
 
                   {/* ACTIONS */}
                   <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100">
+                    <div className="flex justify-end items-center gap-1.5">
                       <button
-                         onClick={() => onEditProduct(product)} 
-                        className="p-1.5 text-gray-400 hover:text-[#243e6b]"
+                        onClick={() => onEditProduct(product)}
+                        title="Edit product"
+                        className="p-2 text-slate-500 hover:text-[#243e6b] bg-slate-50 hover:bg-blue-50 border border-slate-200/80 hover:border-blue-300 rounded-md transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
                       >
-                        <Edit size={16} />
+                        <Edit size={15} />
                       </button>
 
                       <button
                         onClick={() => setArchiveConfirmId(product.id)}
-                        className="p-1.5 text-gray-400 hover:text-rose-600"
+                        title="Archive product"
+                        className="p-2 text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 border border-slate-200/80 hover:border-rose-300 rounded-md transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={15} />
                       </button>
 
-                      <button className="p-1.5 text-gray-400 hover:text-gray-600">
-                        <MoreVertical size={16} />
+                      <button
+                        title="More options"
+                        className="p-2 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-gray-100 border border-slate-200/80 hover:border-slate-300 rounded-md transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
+                      >
+                        <MoreVertical size={15} />
                       </button>
                     </div>
                   </td>
