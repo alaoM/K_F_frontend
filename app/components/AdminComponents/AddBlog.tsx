@@ -91,23 +91,23 @@ const AddBlog: React.FC<{
       {/* HEADER */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">
-          <button onClick={onBack} className="p-2 hover:bg-[#243e6b] bg-gray-100 rounded-full text-gray-500 hover:text-white transition-all">
-            <ArrowLeft size={24} />
+          <button onClick={onBack} className="p-2 hover:bg-[#111111] bg-gray-100 border border-gray-300 rounded-none text-[#111111] hover:text-[#f6c947] transition-all">
+            <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-xl font-black text-[#243e6b] uppercase tracking-tight">
+            <h1 className="text-2xl font-black text-[#111111] uppercase tracking-tight">
               {initialData ? 'Edit Blog Post' : 'Create New Post'}
             </h1>
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Article Details</p>
+            <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mt-0.5">Article details and publishing</p>
           </div>
         </div>
 
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className="flex items-center gap-2 bg-[#243e6b] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#1a2f52] transition-all shadow-lg shadow-blue-900/10"
+          className="flex items-center gap-2 bg-[#f6c947] text-[#111111] border-2 border-[#f6c947] font-black uppercase text-xs tracking-wider px-6 py-2.5 rounded-none hover:bg-[#111111] hover:text-[#f6c947] hover:border-[#111111] transition-all shadow-sm disabled:opacity-50"
         >
-          <Save size={18} />
+          <Save size={16} />
           {isSubmitting ? 'Publishing...' : initialData ? 'Update Post' : 'Publish Post'}
         </button>
       </div>
@@ -115,29 +115,29 @@ const AddBlog: React.FC<{
       {/* FORM CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-6">
-            <h3 className="font-black text-[#243e6b] uppercase tracking-wider text-sm border-b border-gray-50 pb-4">Content Information</h3>
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-[#111111] uppercase tracking-wider text-sm border-b border-gray-200 pb-3">Content Information</h3>
             
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Post Title</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">Post Title</label>
                 <input
                   {...register('title', { required: 'Title is required' })}
                   placeholder="Enter a catchy title..."
-                  className="w-full bg-gray-50 border-none rounded-xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#243e6b]/10 transition-all font-medium text-sm"
+                  className="w-full bg-white border border-gray-300 rounded-none px-4 py-2.5 outline-none focus:border-[#111111] transition-all text-xs font-semibold"
                 />
-                {errors.title && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">{errors.title.message}</p>}
+                {errors.title && <p className="text-rose-500 text-xs font-bold mt-1 uppercase tracking-wider">{errors.title.message}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Content (HTML/Markdown supported)</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">Content (HTML/Markdown supported)</label>
                 <textarea
                   {...register('content', { required: 'Content is required' })}
                   rows={15}
                   placeholder="Write your article here..."
-                  className="w-full bg-gray-50 border-none rounded-xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#243e6b]/10 transition-all font-medium text-sm resize-none"
+                  className="w-full bg-white border border-gray-300 rounded-none px-4 py-2.5 outline-none focus:border-[#111111] transition-all text-xs font-semibold resize-none"
                 />
-                {errors.content && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">{errors.content.message}</p>}
+                {errors.content && <p className="text-rose-500 text-xs font-bold mt-1 uppercase tracking-wider">{errors.content.message}</p>}
               </div>
             </div>
           </div>
@@ -145,8 +145,8 @@ const AddBlog: React.FC<{
 
         <div className="space-y-6">
           {/* FEATURED IMAGE */}
-          <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-6">
-            <h3 className="font-black text-[#243e6b] uppercase tracking-wider text-sm border-b border-gray-50 pb-4">Featured Image</h3>
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-[#111111] uppercase tracking-wider text-sm border-b border-gray-200 pb-3">Featured Image</h3>
             
             <label className="block cursor-pointer">
               <input
@@ -155,21 +155,21 @@ const AddBlog: React.FC<{
                 onChange={handleImageChange}
                 className="hidden"
               />
-              <div className="aspect-[4/3] border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center text-center hover:border-[#243e6b] transition-all group relative overflow-hidden bg-gray-50">
+              <div className="aspect-[4/3] border-2 border-dashed border-gray-300 rounded-none flex flex-col items-center justify-center text-center hover:border-[#111111] transition-all group relative overflow-hidden bg-gray-50">
                 {featuredPreview ? (
                   <>
-                    <Image src={featuredPreview} alt="Preview" fill className="object-cover" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
-                      <p className="text-white text-[10px] font-black uppercase tracking-widest">Change Image</p>
+                    <Image src={featuredPreview} alt="Preview" fill className="object-cover rounded-none" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-200">
+                      <p className="text-[#f6c947] text-xs font-black uppercase tracking-wider">Change Image</p>
                     </div>
                   </>
                 ) : (
                   <div className="p-6">
-                    <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-gray-400 group-hover:text-[#243e6b] group-hover:scale-110 transition-all mb-4 mx-auto shadow-sm">
+                    <div className="w-12 h-12 rounded-none bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 group-hover:text-[#111111] group-hover:bg-[#f6c947] transition-all mb-3 mx-auto">
                       <Upload size={20} />
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[#243e6b]">Upload Image</p>
-                    <p className="text-[9px] text-gray-400 mt-2 font-bold uppercase tracking-widest">PNG, JPG or WEBP (Max 2MB)</p>
+                    <p className="text-xs font-black uppercase tracking-wider text-[#111111]">Upload Image</p>
+                    <p className="text-[11px] text-gray-500 mt-1 font-medium">PNG, JPG or WEBP (Max 2MB)</p>
                   </div>
                 )}
               </div>
@@ -177,15 +177,15 @@ const AddBlog: React.FC<{
           </div>
 
           {/* TAGS */}
-          <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm space-y-6">
-            <h3 className="font-black text-[#243e6b] uppercase tracking-wider text-sm border-b border-gray-50 pb-4">Meta Data</h3>
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-[#111111] uppercase tracking-wider text-sm border-b border-gray-200 pb-3">Meta Data</h3>
             
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Tags (Comma separated)</label>
+              <label className="text-xs font-black uppercase tracking-wider text-[#111111]">Tags (Comma separated)</label>
               <input
                 {...register('tags')}
                 placeholder="Fashion, Tech, Trends..."
-                className="w-full bg-gray-50 border-none rounded-xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#243e6b]/10 transition-all font-medium text-sm"
+                className="w-full bg-white border border-gray-300 rounded-none px-4 py-2.5 outline-none focus:border-[#111111] transition-all text-xs font-semibold"
               />
             </div>
           </div>

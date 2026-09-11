@@ -69,17 +69,20 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
+      <div className="bg-white rounded-none border-2 border-[#111111] w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
         
         {/* HEADER */}
-        <div className="p-6 border-b flex justify-between items-center bg-gray-50/50">
+        <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
           <div>
-            <h2 className="text-xl font-bold text-[#243e6b]">Bulk Product Upload</h2>
-            <p className="text-sm text-gray-500">Upload multiple products via JSON file</p>
+            <h2 className="text-xl font-black uppercase tracking-tight text-[#111111]">Bulk Product Upload</h2>
+            <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mt-0.5">Upload multiple products via JSON catalog file</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <X size={20} />
+          <button 
+            onClick={onClose} 
+            className="p-2 hover:bg-[#111111] text-gray-600 hover:text-white rounded-none transition-colors border border-gray-300"
+          >
+            <X size={18} />
           </button>
         </div>
 
@@ -88,52 +91,52 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ onClose, onSuccess }) => {
           
           {/* UPLOAD ZONE */}
           {!file ? (
-            <label className="border-2 border-dashed border-gray-200 rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer hover:border-[#243e6b] hover:bg-blue-50/30 transition-all group">
+            <label className="border-2 border-dashed border-gray-300 rounded-none p-12 flex flex-col items-center justify-center cursor-pointer hover:border-[#111111] hover:bg-gray-50 transition-all group">
               <input type="file" className="hidden" accept=".json" onChange={handleFileChange} />
-              <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-[#243e6b] group-hover:bg-blue-50 transition-all mb-4">
-                <Upload size={30} />
+              <div className="w-16 h-16 rounded-none bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 group-hover:text-[#111111] group-hover:bg-[#f6c947] group-hover:border-[#f6c947] transition-all mb-4">
+                <Upload size={28} />
               </div>
-              <p className="font-bold text-gray-700">Click to upload or drag and drop</p>
-              <p className="text-sm text-gray-400 mt-1">Only .JSON files are supported</p>
+              <p className="font-black uppercase text-xs tracking-wider text-[#111111]">Click to upload or drag and drop</p>
+              <p className="text-xs text-gray-500 mt-1 font-medium">Only .JSON files are supported</p>
             </label>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-300 rounded-none">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-white rounded-lg text-blue-600 shadow-sm">
+                  <div className="p-2 bg-white border border-gray-200 rounded-none text-[#111111] shadow-sm">
                     <FileText size={20} />
                   </div>
                   <div>
-                    <p className="font-bold text-sm text-blue-900">{file.name}</p>
-                    <p className="text-xs text-blue-700">{(file.size / 1024).toFixed(2)} KB • {previewData?.length} items found</p>
+                    <p className="font-black text-xs uppercase tracking-wider text-[#111111]">{file.name}</p>
+                    <p className="text-xs text-gray-600 font-medium">{(file.size / 1024).toFixed(2)} KB • {previewData?.length} items found</p>
                   </div>
                 </div>
-                <button onClick={() => { setFile(null); setPreviewData(null); }} className="text-xs font-bold text-rose-600 hover:underline">
+                <button onClick={() => { setFile(null); setPreviewData(null); }} className="text-xs font-black uppercase tracking-wider text-rose-600 hover:underline">
                   Remove
                 </button>
               </div>
 
               {/* PREVIEW TABLE */}
-              <div className="border rounded-xl overflow-hidden">
+              <div className="border border-gray-300 rounded-none overflow-hidden">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-gray-50 text-gray-500 font-bold text-[10px] uppercase">
+                  <thead className="bg-gray-100 text-[#111111] font-black text-[11px] uppercase tracking-wider border-b border-gray-200">
                     <tr>
                       <th className="px-4 py-3">Product Name</th>
                       <th className="px-4 py-3">Price</th>
                       <th className="px-4 py-3">Stock</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y">
+                  <tbody className="divide-y divide-gray-200">
                     {previewData?.slice(0, 5).map((item, i) => (
-                      <tr key={i} className="text-gray-600">
-                        <td className="px-4 py-3 font-medium">{item.title}</td>
-                        <td className="px-4 py-3">₦{Number(item.price).toLocaleString()}</td>
-                        <td className="px-4 py-3">{item.stock}</td>
+                      <tr key={i} className="text-gray-700 text-xs">
+                        <td className="px-4 py-3 font-bold text-[#111111]">{item.title}</td>
+                        <td className="px-4 py-3 font-semibold">₦{Number(item.price).toLocaleString()}</td>
+                        <td className="px-4 py-3 font-semibold">{item.stock}</td>
                       </tr>
                     ))}
                     {previewData && previewData.length > 5 && (
                       <tr>
-                        <td colSpan={3} className="px-4 py-2 text-center text-xs text-gray-400 italic bg-gray-50/30">
+                        <td colSpan={3} className="px-4 py-2 text-center text-xs text-gray-500 font-bold uppercase tracking-wider bg-gray-50">
                           ... and {previewData.length - 5} more items
                         </td>
                       </tr>
@@ -143,11 +146,11 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ onClose, onSuccess }) => {
               </div>
 
               {/* TIPS */}
-              <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl flex gap-3">
-                <AlertCircle size={20} className="text-amber-600 shrink-0" />
-                <div className="text-xs text-amber-800 space-y-1">
-                  <p className="font-bold">Important Notes:</p>
-                  <ul className="list-disc list-inside space-y-0.5 opacity-80">
+              <div className="p-4 bg-amber-50 border border-amber-300 rounded-none flex gap-3">
+                <AlertCircle size={20} className="text-amber-800 shrink-0" />
+                <div className="text-xs text-amber-900 space-y-1">
+                  <p className="font-black uppercase tracking-wider text-[11px]">Important Notes:</p>
+                  <ul className="list-disc list-inside space-y-0.5 opacity-90 font-medium">
                     <li>Ensure all categories IDs are correct</li>
                     <li>Images should be provided as absolute URLs</li>
                     <li>Status will default to 'draft' if not specified</li>
@@ -159,27 +162,27 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ onClose, onSuccess }) => {
         </div>
 
         {/* FOOTER */}
-        <div className="p-6 border-t flex justify-end gap-3 bg-gray-50/50">
+        <div className="p-6 border-t border-gray-200 flex justify-end gap-3 bg-gray-50">
           <button 
             onClick={onClose}
             disabled={isUploading}
-            className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-6 py-2.5 text-xs font-black uppercase tracking-wider text-gray-700 hover:bg-gray-200 rounded-none border border-gray-300 transition-colors"
           >
             Cancel
           </button>
           <button 
             disabled={!file || isUploading}
             onClick={handleUpload}
-            className="px-8 py-2.5 bg-[#243e6b] text-white text-sm font-bold rounded-lg shadow-lg shadow-blue-900/10 hover:bg-[#243e6b]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-8 py-2.5 bg-[#f6c947] text-[#111111] border-2 border-[#f6c947] hover:bg-[#111111] hover:text-[#f6c947] hover:border-[#111111] text-xs font-black uppercase tracking-wider rounded-none shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-200"
           >
             {isUploading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-[#111111] border-t-transparent rounded-full animate-spin" />
                 Uploading...
               </>
             ) : (
               <>
-                <CheckCircle2 size={18} />
+                <CheckCircle2 size={16} />
                 Confirm Bulk Upload
               </>
             )}

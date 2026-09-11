@@ -43,7 +43,7 @@ export interface Product {
   image: string;
 }
 
-/* ---------------- HELPERS ---------------- */
+  /* ---------------- HELPERS ---------------- */
 
 const ITEMS_PER_PAGE = 10;
 
@@ -67,13 +67,13 @@ const normalizeStatus = (status: string) => {
 const getStatusStyle = (status: string) => {
   switch (status) {
     case 'Active':
-      return 'bg-emerald-100 text-emerald-700';
+      return 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-black';
     case 'Draft':
-      return 'bg-gray-100 text-gray-600';
+      return 'bg-gray-100 text-gray-800 border border-gray-300 font-black';
     case 'Out of Stock':
-      return 'bg-rose-100 text-rose-700';
+      return 'bg-rose-100 text-rose-800 border border-rose-300 font-black';
     default:
-      return 'bg-gray-100 text-gray-500';
+      return 'bg-gray-100 text-gray-700 border border-gray-200 font-black';
   }
 };
 
@@ -92,7 +92,7 @@ const mapProduct = (p: any): Product => ({
 
 const ProductList: React.FC<{ 
   onAddProduct: () => void;
-  onEditProduct: (product: Product) => void;  // ✅ NEW
+  onEditProduct: (product: Product) => void;
 }> = ({ onAddProduct, onEditProduct }) => {
   
   const { user } = useAuth();
@@ -157,47 +157,54 @@ const ProductList: React.FC<{
   return (
     <div className="space-y-6">
       {/* HEADER */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#243e6b]">Products</h1>
-          <p className="text-gray-500 text-sm">
-            Manage your inventory and product listings.
+          <h1 className="text-2xl font-black uppercase tracking-tight text-[#111111]">Products</h1>
+          <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold mt-1">
+            Manage your inventory and live product catalog
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setIsBulkUploading(true)}
-            className="flex items-center gap-2 bg-white text-[#243e6b] border border-[#243e6b] font-bold px-6 py-2 rounded-md hover:bg-gray-50"
+            className="flex items-center gap-2 bg-white text-[#111111] border-2 border-[#111111] font-black uppercase text-xs tracking-wider px-5 py-2.5 rounded-none hover:bg-[#111111] hover:text-white transition-all duration-200"
           >
             Bulk Upload
           </button>
           <button
             onClick={onAddProduct}
-            className="flex items-center gap-2 bg-[#f6c947] text-[#243e6b] font-bold px-6 py-2 rounded-md hover:bg-[#f6c947]/90"
+            className="flex items-center gap-2 bg-[#f6c947] text-[#111111] border-2 border-[#f6c947] font-black uppercase text-xs tracking-wider px-5 py-2.5 rounded-none hover:bg-[#111111] hover:text-[#f6c947] hover:border-[#111111] transition-all duration-200 shadow-sm"
           >
-            <Plus size={18} />
+            <Plus size={16} />
             Add Product
           </button>
         </div>
       </div>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-xl border border-[#e2e2e2] shadow-sm overflow-hidden">
+      {/* TABLE CONTAINER */}
+      <div className="bg-white rounded-none border border-gray-300 shadow-sm overflow-hidden">
         {/* TOP BAR */}
-        <div className="p-4 border-b flex justify-between bg-gray-50/50">
-          <div className="flex gap-4">
-            <select className="border rounded-md px-4 py-1.5 text-sm">
+        <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50">
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border border-gray-300 rounded-none px-3 py-1.5 text-xs font-semibold focus:border-[#111111] outline-none bg-white w-56"
+            />
+            <select className="border border-gray-300 rounded-none px-3 py-1.5 text-xs font-black uppercase tracking-wider text-gray-700 bg-white outline-none focus:border-[#111111]">
               <option>All Categories</option>
             </select>
 
-            <select className="border rounded-md px-4 py-1.5 text-sm">
+            <select className="border border-gray-300 rounded-none px-3 py-1.5 text-xs font-black uppercase tracking-wider text-gray-700 bg-white outline-none focus:border-[#111111]">
               <option>Status: All</option>
             </select>
           </div>
 
-          <p className="text-sm text-gray-500">
-            Showing {products.length} of {total}
+          <p className="text-xs font-black uppercase tracking-wider text-gray-500">
+            Showing {products.length} of {total} products
           </p>
         </div>
 
@@ -205,128 +212,140 @@ const ProductList: React.FC<{
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b text-xs uppercase text-gray-500 font-bold">
-                <th className="px-6 py-4">Product</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Price</th>
-                <th className="px-6 py-4">Stock</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+              <tr className="border-b-2 border-gray-200 bg-gray-100 text-[11px] uppercase tracking-wider text-[#111111] font-black">
+                <th className="px-6 py-3.5">Product</th>
+                <th className="px-6 py-3.5">Category</th>
+                <th className="px-6 py-3.5">Price</th>
+                <th className="px-6 py-3.5">Stock</th>
+                <th className="px-6 py-3.5">Status</th>
+                <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50 group">
-                  {/* PRODUCT */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden border">
-                        <Image
-                          src={product.image || '/placeholder.png'}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-
-                      <div>
-                        <p className="font-bold text-[#243e6b] text-sm">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          ID: #{product.id.slice(0, 6)}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* CATEGORY */}
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {product.category}
-                  </td>
-
-                  {/* PRICE */}
-                  <td className="px-6 py-4 font-bold text-[#243e6b]">
-                    ₦{Number(product.price).toFixed(2)}
-                  </td>
-
-                  {/* STOCK */}
-                  <td className="px-6 py-4">
-                    <span
-                      className={`text-sm font-medium ${
-                        product.stock === 0
-                          ? 'text-rose-600'
-                          : 'text-gray-600'
-                      }`}
-                    >
-                      {product.stock} in stock
-                    </span>
-                  </td>
-
-                  {/* STATUS */}
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${getStatusStyle(
-                        product.status
-                      )}`}
-                    >
-                      {product.status}
-                    </span>
-                  </td>
-
-                  {/* ACTIONS */}
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end items-center gap-1.5">
-                      <button
-                        onClick={() => onEditProduct(product)}
-                        title="Edit product"
-                        className="p-2 text-slate-500 hover:text-[#243e6b] bg-slate-50 hover:bg-blue-50 border border-slate-200/80 hover:border-blue-300 rounded-md transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
-                      >
-                        <Edit size={15} />
-                      </button>
-
-                      <button
-                        onClick={() => setArchiveConfirmId(product.id)}
-                        title="Archive product"
-                        className="p-2 text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 border border-slate-200/80 hover:border-rose-300 rounded-md transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-
-                      <button
-                        title="More options"
-                        className="p-2 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-gray-100 border border-slate-200/80 hover:border-slate-300 rounded-md transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
-                      >
-                        <MoreVertical size={15} />
-                      </button>
-                    </div>
+            <tbody className="divide-y divide-gray-200">
+              {products.length === 0 && !loading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500 text-xs uppercase font-bold tracking-wider">
+                    No products found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                products.map((product) => (
+                  <tr key={product.id} className="hover:bg-gray-50/80 transition-colors">
+                    {/* PRODUCT */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-12 h-12 rounded-none overflow-hidden border border-gray-200 bg-gray-100 shrink-0">
+                          <Image
+                            src={product.image || '/placeholder.png'}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+
+                        <div>
+                          <p className="font-bold text-[#111111] text-sm">
+                            {product.name}
+                          </p>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                            ID: #{product.id.slice(0, 6)}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* CATEGORY */}
+                    <td className="px-6 py-4 text-xs font-semibold text-gray-700">
+                      {product.category}
+                    </td>
+
+                    {/* PRICE */}
+                    <td className="px-6 py-4 font-black text-[#111111] text-sm">
+                      ₦{Number(product.price).toFixed(2)}
+                    </td>
+
+                    {/* STOCK */}
+                    <td className="px-6 py-4">
+                      <span
+                        className={`text-xs font-bold ${
+                          product.stock === 0
+                            ? 'text-rose-600'
+                            : 'text-gray-700'
+                        }`}
+                      >
+                        {product.stock} in stock
+                      </span>
+                    </td>
+
+                    {/* STATUS */}
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2.5 py-1 rounded-none text-[10px] uppercase tracking-wider ${getStatusStyle(
+                          product.status
+                        )}`}
+                      >
+                        {product.status}
+                      </span>
+                    </td>
+
+                    {/* ACTIONS */}
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end items-center gap-1.5">
+                        <button
+                          onClick={() => onEditProduct(product)}
+                          title="Edit product"
+                          className="p-2 text-slate-700 hover:text-white bg-white hover:bg-[#111111] border border-gray-300 rounded-none transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
+                        >
+                          <Edit size={14} />
+                        </button>
+
+                        <button
+                          onClick={() => setArchiveConfirmId(product.id)}
+                          title="Archive product"
+                          className="p-2 text-rose-600 hover:text-white bg-white hover:bg-rose-600 border border-rose-300 rounded-none transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+
+                        <button
+                          title="More options"
+                          className="p-2 text-slate-500 hover:text-[#111111] bg-white hover:bg-gray-100 border border-gray-300 rounded-none transition-all duration-150 transform hover:scale-105 active:scale-95 shadow-sm"
+                        >
+                          <MoreVertical size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
         {/* PAGINATION */}
-        <div className="p-4 flex justify-end gap-4">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="text-sm disabled:opacity-50"
-          >
-            Previous
-          </button>
+        <div className="p-4 border-t border-gray-200 flex justify-between items-center bg-gray-50">
+          <span className="text-xs font-black uppercase tracking-wider text-gray-500">
+            Page {page} of {Math.max(1, Math.ceil(total / ITEMS_PER_PAGE))}
+          </span>
 
-          <span className="font-bold text-sm">{page}</span>
+          <div className="flex gap-2">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="border border-gray-300 rounded-none px-3 py-1 text-xs font-black uppercase tracking-wider bg-white hover:bg-[#111111] hover:text-[#f6c947] disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-inherit transition-all"
+            >
+              Previous
+            </button>
 
-          <button
-            disabled={page * ITEMS_PER_PAGE >= total}
-            onClick={() => setPage((p) => p + 1)}
-            className="text-sm"
-          >
-            Next
-          </button>
+            <button
+              disabled={page * ITEMS_PER_PAGE >= total}
+              onClick={() => setPage((p) => p + 1)}
+              className="border border-gray-300 rounded-none px-3 py-1 text-xs font-black uppercase tracking-wider bg-white hover:bg-[#111111] hover:text-[#f6c947] disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-inherit transition-all"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
 
@@ -350,7 +369,6 @@ const ProductList: React.FC<{
         variant="warning"
       />
     </div>
-
   );
 };
 

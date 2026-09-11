@@ -12,20 +12,20 @@ interface Props {
 const statusStyles = (status: string) => {
     switch (status) {
         case 'pending':
-            return 'bg-yellow-100 text-yellow-700'
+            return 'bg-amber-100 text-amber-800 border border-amber-300 font-black'
         case 'shipped':
-            return 'bg-blue-100 text-blue-700'
+            return 'bg-blue-100 text-blue-800 border border-blue-300 font-black'
         case 'delivered':
-            return 'bg-green-100 text-green-700'
+            return 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-black'
         default:
-            return 'bg-gray-100 text-gray-600'
+            return 'bg-gray-100 text-gray-700 border border-gray-300 font-black'
     }
 }
 
 const paymentStyles = (status: string) => {
     return status === 'released'
-        ? 'bg-green-100 text-green-700'
-        : 'bg-orange-100 text-orange-700'
+        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-black'
+        : 'bg-amber-100 text-amber-800 border border-amber-300 font-black'
 }
 
 export default function OrderPreviewModal({ orderItem, onClose }: Props) {
@@ -36,12 +36,10 @@ export default function OrderPreviewModal({ orderItem, onClose }: Props) {
     const total =
         Number(orderItem.priceAtPurchase) * orderItem.quantity
 
-      
-
     return (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
 
-            <div className="bg-white w-full max-w-2xl rounded-none shadow-2xl overflow-hidden border border-gray-200">
+            <div className="bg-white w-full max-w-2xl rounded-none shadow-2xl overflow-hidden border-2 border-[#111111]">
 
                 {/* HEADER */}
                 <div className="flex items-center justify-between p-5 border-b">

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 import React, { useEffect, useState } from 'react';
-import { Shield, Bell, CreditCard, Store, Mail, MessageSquare, Loader2 } from 'lucide-react';
+import { Shield, Bell, CreditCard, Store, Mail, MessageSquare, Loader2, ChevronRight, Zap } from 'lucide-react';
 import Security from '@/app/components/AdminComponents/Security';
 import GeneralSettings from '@/app/components/AdminComponents/GeneralSettings';
 import PaymentSettings from '@/app/components/AdminComponents/PaymentSettings';
@@ -10,166 +10,254 @@ import { useApi } from '@/hooks/useApi';
 import { toast } from 'react-toastify';
 
 const Settings: React.FC = () => {
-    const fetcher = useApi();
-    const [activeSubTab, setActiveSubTab] = useState('general');
-    
-    // Notification Settings State
-    const [notifSettings, setNotifSettings] = useState({
-        emailNotificationsEnabled: false,
-        pushNotificationsEnabled: false
-    });
-    const [loadingNotifs, setLoadingNotifs] = useState(true);
-    const [updatingNotif, setUpdatingNotif] = useState<string | null>(null);
+  const fetcher = useApi();
+  const [activeSubTab, setActiveSubTab] = useState('general');
 
-    // ✅ Load notification settings
-    useEffect(() => {
-        const loadSettings = async () => {
-            try {
-                const res = await fetcher('/api/notifications/settings');
-                if (res) {
-                    setNotifSettings({
-                        emailNotificationsEnabled: !!res.emailNotificationsEnabled,
-                        pushNotificationsEnabled: !!res.pushNotificationsEnabled
-                    });
-                }
-            } catch (error) {
-                console.error("Failed to load notification settings", error);
-            } finally {
-                setLoadingNotifs(false);
-            }
-        };
-        loadSettings();
-    }, [fetcher]);
+  // Notification Settings State
+  const [notifSettings, setNotifSettings] = useState({
+    emailNotificationsEnabled: false,
+    pushNotificationsEnabled: false
+  });
+  const [loadingNotifs, setLoadingNotifs] = useState(true);
+  const [updatingNotif, setUpdatingNotif] = useState<string | null>(null);
 
-    // ✅ Handle Toggle
-    const handleToggle = async (key: 'emailNotificationsEnabled' | 'pushNotificationsEnabled') => {
-        setUpdatingNotif(key);
-        const newVal = !notifSettings[key];
-        
-        try {
-            await fetcher('/api/notifications/settings', {
-                method: 'PATCH',
-                body: JSON.stringify({ [key]: newVal })
-            });
-            setNotifSettings(prev => ({ ...prev, [key]: newVal }));
-            toast.success("Settings updated");
-        } catch (error) {
-            toast.error("Failed to update setting");
-        } finally {
-            setUpdatingNotif(null);
+  // Load notification settings
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const res = await fetcher('/api/notifications/settings');
+        if (res) {
+          setNotifSettings({
+            emailNotificationsEnabled: !!res.emailNotificationsEnabled,
+            pushNotificationsEnabled: !!res.pushNotificationsEnabled
+          });
         }
+      } catch (error) {
+        console.error("Failed to load notification settings", error);
+      } finally {
+        setLoadingNotifs(false);
+      }
     };
+    loadSettings();
+  }, [fetcher]);
 
-    const renderNotifications = () => (
-        <div className="space-y-6">
-            <div className="bg-white p-6 rounded-xl border border-[#e2e2e2] shadow-sm space-y-6">
-                <h3 className="font-bold text-[#243e6b] border-b border-[#e2e2e2] pb-4">Notification Channels</h3>
-                
-                {loadingNotifs ? (
-                    <div className="flex items-center justify-center py-10">
-                        <Loader2 className="animate-spin text-[#243e6b]" />
-                    </div>
-                ) : (
-                    <div className="space-y-6">
-                        {/* Email */}
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Mail size={20} /></div>
-                                <div>
-                                    <p className="text-sm font-bold text-[#243e6b]">Email Notifications</p>
-                                    <p className="text-xs text-gray-500">Receive order updates and reports via email.</p>
-                                </div>
-                            </div>
-                            <div 
-                                onClick={() => updatingNotif !== 'emailNotificationsEnabled' && handleToggle('emailNotificationsEnabled')}
-                                className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${notifSettings.emailNotificationsEnabled ? 'bg-[#243e6b]' : 'bg-gray-200'}`}
-                            >
-                                <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${notifSettings.emailNotificationsEnabled ? 'right-0.5' : 'left-0.5'}`}></div>
-                                {updatingNotif === 'emailNotificationsEnabled' && <div className="absolute -right-6 top-0"><Loader2 size={12} className="animate-spin" /></div>}
-                            </div>
-                        </div>
+  // Handle Toggle
+  const handleToggle = async (key: 'emailNotificationsEnabled' | 'pushNotificationsEnabled') => {
+    setUpdatingNotif(key);
+    const newVal = !notifSettings[key];
 
-                        {/* Push */}
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="p-2 bg-purple-50 text-purple-600 rounded-lg"><Bell size={20} /></div>
-                                <div>
-                                    <p className="text-sm font-bold text-[#243e6b]">Push Notifications</p>
-                                    <p className="text-xs text-gray-500">In-browser notifications for new orders.</p>
-                                </div>
-                            </div>
-                            <div 
-                                onClick={() => updatingNotif !== 'pushNotificationsEnabled' && handleToggle('pushNotificationsEnabled')}
-                                className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${notifSettings.pushNotificationsEnabled ? 'bg-[#243e6b]' : 'bg-gray-200'}`}
-                            >
-                                <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all ${notifSettings.pushNotificationsEnabled ? 'right-0.5' : 'left-0.5'}`}></div>
-                                {updatingNotif === 'pushNotificationsEnabled' && <div className="absolute -right-6 top-0"><Loader2 size={12} className="animate-spin" /></div>}
-                            </div>
-                        </div>
+    try {
+      await fetcher('/api/notifications/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [key]: newVal })
+      });
+      setNotifSettings(prev => ({ ...prev, [key]: newVal }));
+      toast.success("Notification preferences updated");
+    } catch (error) {
+      toast.error("Failed to update notification setting");
+    } finally {
+      setUpdatingNotif(null);
+    }
+  };
 
-                        {/* SMS (Placeholder) */}
-                        <div className="flex items-center justify-between opacity-50 grayscale">
-                            <div className="flex items-center gap-4">
-                                <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><MessageSquare size={20} /></div>
-                                <div>
-                                    <p className="text-sm font-bold text-[#243e6b]">SMS Alerts (Coming Soon)</p>
-                                    <p className="text-xs text-gray-500">Get critical alerts sent to your phone.</p>
-                                </div>
-                            </div>
-                            <div className="w-10 h-5 bg-gray-200 rounded-full relative cursor-not-allowed">
-                                <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"></div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+  const renderNotifications = () => (
+    <div className="space-y-6">
+      <div className="bg-white p-6 sm:p-8 rounded-none border-2 border-gray-200 shadow-xs space-y-6">
+        <div className="border-b-2 border-gray-200 pb-5">
+          <div className="flex items-center gap-2 text-[#111111] mb-1">
+            <Bell size={20} className="text-[#f6c947]" />
+            <h3 className="text-xl font-black uppercase tracking-tight">Merchant Notification Channels</h3>
+          </div>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+            Choose how you receive live order alerts, settlement receipts, and customer messages.
+          </p>
         </div>
-    );
 
-    const subTabs = [
-        { id: 'general', label: 'General', icon: <Store size={18} /> },
-        { id: 'payment', label: 'Payments', icon: <CreditCard size={18} /> },
-        { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> },
-        { id: 'security', label: 'Security', icon: <Shield size={18} /> },
-    ];
+        {loadingNotifs ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="animate-spin text-[#111111]" />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Email */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-2 border-gray-200 bg-gray-50/50">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[#111111] text-[#f6c947] border border-[#111111] rounded-none flex items-center justify-center shrink-0">
+                  <Mail size={22} />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-[#111111] uppercase tracking-tight">Email Notifications</p>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-md mt-0.5">
+                    Receive invoices, payout confirmations, and order manifest summaries to your registered email.
+                  </p>
+                </div>
+              </div>
 
-    return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-extrabold text-[#243e6b]">Settings</h1>
-                <p className="text-gray-500 text-sm">Configure your store preferences and account details.</p>
+              <button
+                type="button"
+                onClick={() => updatingNotif !== 'emailNotificationsEnabled' && handleToggle('emailNotificationsEnabled')}
+                disabled={updatingNotif === 'emailNotificationsEnabled'}
+                className={`w-16 h-8 rounded-none relative transition-all duration-200 border-2 cursor-pointer shrink-0 ${
+                  notifSettings.emailNotificationsEnabled 
+                    ? 'bg-[#111111] border-[#111111]' 
+                    : 'bg-gray-200 border-gray-300'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 w-6 h-6 rounded-none transition-all duration-200 flex items-center justify-center font-black text-[9px] ${
+                    notifSettings.emailNotificationsEnabled 
+                      ? 'right-0.5 bg-[#f6c947] text-[#111111]' 
+                      : 'left-0.5 bg-white text-gray-400'
+                  }`}
+                >
+                  {updatingNotif === 'emailNotificationsEnabled' ? (
+                    <Loader2 size={11} className="animate-spin" />
+                  ) : notifSettings.emailNotificationsEnabled ? 'ON' : 'OFF'}
+                </div>
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-1">
-                    <nav className="flex flex-col gap-2">
-                        {subTabs.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setActiveSubTab(item.id)}
-                                className={`
-                                    w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all
-                                    ${activeSubTab === item.id
-                                        ? 'bg-[#243e6b] text-white shadow-lg translate-x-1'
-                                        : 'text-gray-500 hover:bg-white hover:shadow-sm hover:text-[#243e6b]'}
-                                `}
-                            >
-                                {item.icon}
-                                {item.label}
-                            </button>
-                        ))}
-                    </nav>
+            {/* Push */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-2 border-gray-200 bg-gray-50/50">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[#111111] text-[#f6c947] border border-[#111111] rounded-none flex items-center justify-center shrink-0">
+                  <Zap size={22} />
                 </div>
+                <div>
+                  <p className="text-sm font-black text-[#111111] uppercase tracking-tight">Browser Push Notifications</p>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-md mt-0.5">
+                    Get instant audio & visual notifications the second a shopper places an order or raises a dispute.
+                  </p>
+                </div>
+              </div>
 
-                <div className="md:col-span-3">
-                    {activeSubTab === 'general' && <GeneralSettings />}
-                    {activeSubTab === 'payment' && <PaymentSettings />}
-                    {activeSubTab === 'security' && <Security />}
-                    {activeSubTab === 'notifications' && renderNotifications()}
+              <button
+                type="button"
+                onClick={() => updatingNotif !== 'pushNotificationsEnabled' && handleToggle('pushNotificationsEnabled')}
+                disabled={updatingNotif === 'pushNotificationsEnabled'}
+                className={`w-16 h-8 rounded-none relative transition-all duration-200 border-2 cursor-pointer shrink-0 ${
+                  notifSettings.pushNotificationsEnabled 
+                    ? 'bg-[#111111] border-[#111111]' 
+                    : 'bg-gray-200 border-gray-300'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 w-6 h-6 rounded-none transition-all duration-200 flex items-center justify-center font-black text-[9px] ${
+                    notifSettings.pushNotificationsEnabled 
+                      ? 'right-0.5 bg-[#f6c947] text-[#111111]' 
+                      : 'left-0.5 bg-white text-gray-400'
+                  }`}
+                >
+                  {updatingNotif === 'pushNotificationsEnabled' ? (
+                    <Loader2 size={11} className="animate-spin" />
+                  ) : notifSettings.pushNotificationsEnabled ? 'ON' : 'OFF'}
                 </div>
+              </button>
             </div>
+
+            {/* SMS */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-2 border-gray-200 bg-gray-50/50 opacity-60">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-200 text-gray-600 rounded-none flex items-center justify-center shrink-0">
+                  <MessageSquare size={22} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-black text-[#111111] uppercase tracking-tight">SMS Dispatch Alerts</p>
+                    <span className="px-1.5 py-0.2 bg-amber-100 text-amber-900 border border-amber-300 text-[8px] font-black uppercase">
+                      Coming Soon
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-md mt-0.5">
+                    Direct SMS messages for courier dispatch confirmation and driver handover.
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-16 h-8 rounded-none bg-gray-200 border-2 border-gray-300 relative cursor-not-allowed opacity-50 shrink-0">
+                <div className="absolute top-0.5 left-0.5 w-6 h-6 rounded-none bg-white flex items-center justify-center font-black text-[9px] text-gray-400">
+                  OFF
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const subTabs = [
+    { id: 'general', label: 'Store Profile', icon: <Store size={17} /> },
+    { id: 'payment', label: 'Payout & Banking', icon: <CreditCard size={17} /> },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={17} /> },
+    { id: 'security', label: 'Security & 2FA', icon: <Shield size={17} /> },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-gray-200 pb-4">
+        <div>
+          <h1 className="text-2xl font-black uppercase tracking-tight text-[#111111]">
+            Store & Account Settings
+          </h1>
+          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-1">
+            Manage your storefront branding, settlement bank accounts, and security preferences
+          </p>
         </div>
-    );
+      </div>
+
+      {/* Grid: Sharp Navigation Sidebar + Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Settings Navigation Sidebar */}
+        <div className="lg:col-span-1">
+          <nav className="bg-white border-2 border-gray-200 shadow-xs rounded-none p-2 space-y-1.5">
+            <div className="px-3 py-2 border-b-2 border-gray-100 mb-1">
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                Settings Menu
+              </span>
+            </div>
+
+            {subTabs.map((item) => {
+              const active = activeSubTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSubTab(item.id)}
+                  className={`
+                    w-full flex items-center justify-between px-3.5 py-3 rounded-none text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-l-4
+                    ${active
+                      ? 'bg-[#111111] text-[#f6c947] border-[#f6c947] shadow-sm'
+                      : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-[#111111]'}
+                  `}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className={active ? 'text-[#f6c947]' : 'text-gray-400'}>
+                      {item.icon}
+                    </span>
+                    <span>{item.label}</span>
+                  </div>
+
+                  <ChevronRight size={13} className={active ? 'text-[#f6c947]' : 'text-gray-400'} />
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Tab Content Area */}
+        <div className="lg:col-span-3">
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
+            {activeSubTab === 'general' && <GeneralSettings />}
+            {activeSubTab === 'payment' && <PaymentSettings />}
+            {activeSubTab === 'security' && <Security />}
+            {activeSubTab === 'notifications' && renderNotifications()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Settings;

@@ -1,14 +1,20 @@
-"use client";
+'use client';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 import React, { useState, useEffect } from 'react';
-import { Save, Globe, Shield, Bell, CreditCard, Store, Lock, Smartphone, Mail, MessageSquare, CheckCircle2 } from 'lucide-react';
+import { 
+  Shield, Bell, CreditCard, Store, Mail, CheckCircle2, ChevronRight, Sliders, Lock, Zap, ArrowUpRight
+} from 'lucide-react';
 import Security from '@/app/components/AdminComponents/Security';
 import GeneralSettings from '@/app/components/AdminComponents/GeneralSettings';
+import Link from 'next/link';
 
 const Settings: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState('general');
-  const [settings, setSettings] = useState({ emailNotificationsEnabled: true, pushNotificationsEnabled: true });
+  const [settings, setSettings] = useState({ 
+    emailNotificationsEnabled: true, 
+    pushNotificationsEnabled: true 
+  });
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -43,32 +49,73 @@ const Settings: React.FC = () => {
   );
 
   const renderPayments = () => (
-    <div className="bg-white p-8 rounded-2xl border border-[#e2e2e2] shadow-sm space-y-6">
-      <div className="border-b border-[#e2e2e2] pb-6">
-        <h3 className="text-xl font-black text-[#243e6b] uppercase tracking-tighter">Platform Payment Configuration</h3>
-        <p className="text-sm text-gray-400 font-medium">Manage platform-level payment gateway settings and commission rules.</p>
-      </div>
-      <div className="flex items-start gap-4 p-5 bg-blue-50/70 rounded-xl border border-blue-100/80 text-sm text-[#243e6b]">
-        <CreditCard size={22} className="text-[#243e6b] shrink-0 mt-0.5" />
-        <div className="space-y-2">
-          <p className="font-semibold leading-relaxed">
-            Platform payment gateway integration keys (Paystack / Flutterwave) are securely initialized via environment variables.
-          </p>
-          <div className="flex flex-wrap gap-4 pt-1">
-            <button
-              type="button"
-              onClick={() => setActiveSubTab('general')}
-              className="text-xs font-black uppercase tracking-wider text-[#243e6b] bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all shadow-xs"
-            >
-              ⚙️ Go to General Settings (Global Default Commission)
-            </button>
-            <a
-              href="/dashboard/admin/categories"
-              className="text-xs font-black uppercase tracking-wider text-[#243e6b] bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all shadow-xs"
-            >
-              📁 Manage Category Commissions
-            </a>
+    <div className="space-y-6">
+      {/* Overview Card */}
+      <div className="bg-white p-6 sm:p-8 rounded-none border-2 border-gray-200 shadow-xs space-y-6">
+        <div className="border-b-2 border-gray-200 pb-5">
+          <div className="flex items-center gap-2 text-[#111111] mb-1">
+            <CreditCard size={20} className="text-[#f6c947]" />
+            <h3 className="text-xl font-black uppercase tracking-tight">Platform Payment & Gateway Architecture</h3>
           </div>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+            Manage system-level payment providers, settlement policies, and revenue splits.
+          </p>
+        </div>
+
+        {/* Gateway Config Status Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-5 border-2 border-gray-200 bg-gray-50/50 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-[#111111]">Primary Gateway</span>
+              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-300 text-[9px] font-black uppercase tracking-wider">
+                Live & Active
+              </span>
+            </div>
+            <p className="text-xs font-medium text-gray-600 leading-relaxed">
+              Paystack API & Webhook listeners are initialized via encrypted environment configuration with escrow protection.
+            </p>
+            <div className="pt-2">
+              <span className="text-[10px] font-mono font-bold bg-white border border-gray-300 px-2 py-1 text-gray-700">
+                PROVIDER: PAYSTACK_LIVE
+              </span>
+            </div>
+          </div>
+
+          <div className="p-5 border-2 border-gray-200 bg-gray-50/50 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-[#111111]">Escrow & Payout Cycle</span>
+              <span className="px-2 py-0.5 bg-[#111111] text-[#f6c947] text-[9px] font-black uppercase tracking-wider">
+                Instant / T+1
+              </span>
+            </div>
+            <p className="text-xs font-medium text-gray-600 leading-relaxed">
+              Funds are held in secure platform escrow until customer fulfillment confirmation or mediation clearance.
+            </p>
+            <div className="pt-2">
+              <span className="text-[10px] font-mono font-bold bg-white border border-gray-300 px-2 py-1 text-gray-700">
+                SETTLEMENT_CURRENCY: NGN (₦)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links */}
+        <div className="pt-2 border-t-2 border-gray-200 flex flex-wrap gap-4">
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('general')}
+            className="text-xs font-black uppercase tracking-wider text-[#111111] bg-[#f6c947] border border-[#f6c947] hover:bg-[#111111] hover:text-[#f6c947] hover:border-[#111111] px-4 py-2.5 rounded-none transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>Global Commission Matrix</span>
+            <ArrowUpRight size={14} />
+          </button>
+          <Link
+            href="/dashboard/admin/categories"
+            className="text-xs font-black uppercase tracking-wider text-[#111111] bg-white border-2 border-[#111111] hover:bg-[#111111] hover:text-white px-4 py-2.5 rounded-none transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>Category-Specific Commissions</span>
+            <ArrowUpRight size={14} />
+          </Link>
         </div>
       </div>
     </div>
@@ -81,10 +128,10 @@ const Settings: React.FC = () => {
   const [eventPreferences, setEventPreferences] = useState<Record<string, boolean>>({
     'New Order Placed': true,
     'Stock Level Alerts': true,
-    'Customer Dispute': true,
+    'Customer Dispute Opened': true,
     'Payout Processing': true,
-    'Platform Announcements': true,
-    'Creator Insights': false,
+    'Seller Verification Application': true,
+    'Platform Security Warnings': true,
   });
 
   useEffect(() => {
@@ -110,74 +157,127 @@ const Settings: React.FC = () => {
 
   const renderNotifications = () => (
     <div className="space-y-6">
-      <div className="bg-white p-8 rounded-2xl border border-[#e2e2e2] shadow-sm space-y-8">
-        <div className="border-b border-[#e2e2e2] pb-6">
-          <h3 className="text-xl font-black text-[#243e6b] uppercase tracking-tighter">Communication Channels</h3>
-          <p className="text-sm text-gray-400 font-medium">Choose how you want to receive important updates from the platform.</p>
+      {/* Primary Dispatch Channels */}
+      <div className="bg-white p-6 sm:p-8 rounded-none border-2 border-gray-200 shadow-xs space-y-6">
+        <div className="border-b-2 border-gray-200 pb-5">
+          <div className="flex items-center gap-2 text-[#111111] mb-1">
+            <Bell size={20} className="text-[#f6c947]" />
+            <h3 className="text-xl font-black uppercase tracking-tight">Notification Channels</h3>
+          </div>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+            Configure system-wide broadcast pathways and administrative alerts.
+          </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-4">
           {/* EMAIL */}
-          <div className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-all group">
-            <div className="flex items-center gap-6">
-              <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm"><Mail size={24} /></div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-2 border-gray-200 bg-gray-50/50">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-[#111111] text-[#f6c947] border border-[#111111] rounded-none flex items-center justify-center shrink-0">
+                <Mail size={22} />
+              </div>
               <div>
-                <p className="text-md font-black text-[#243e6b] uppercase tracking-tight">Email Notifications</p>
-                <p className="text-sm text-gray-400 font-medium max-w-xs">Receive detailed order summaries, sales reports, and customer insights directly to your inbox.</p>
+                <p className="text-sm font-black text-[#111111] uppercase tracking-tight">Email Notifications</p>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-md mt-0.5">
+                  Receive executive order summaries, daily settlement records, and critical security digests directly in your inbox.
+                </p>
               </div>
             </div>
+
             <button
+              type="button"
               onClick={() => toggleSetting('emailNotificationsEnabled')}
-              className={`w-14 h-7 rounded-full relative transition-all duration-300 shadow-inner ${settings.emailNotificationsEnabled ? 'bg-[#243e6b]' : 'bg-gray-200'}`}
+              className={`w-16 h-8 rounded-none relative transition-all duration-200 border-2 cursor-pointer shrink-0 ${
+                settings.emailNotificationsEnabled 
+                  ? 'bg-[#111111] border-[#111111]' 
+                  : 'bg-gray-200 border-gray-300'
+              }`}
             >
-              <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 ${settings.emailNotificationsEnabled ? 'right-1' : 'left-1'}`}></div>
+              <div
+                className={`absolute top-0.5 w-6 h-6 rounded-none transition-all duration-200 flex items-center justify-center font-black text-[9px] ${
+                  settings.emailNotificationsEnabled 
+                    ? 'right-0.5 bg-[#f6c947] text-[#111111]' 
+                    : 'left-0.5 bg-white text-gray-400'
+                }`}
+              >
+                {settings.emailNotificationsEnabled ? 'ON' : 'OFF'}
+              </div>
             </button>
           </div>
 
           {/* PUSH */}
-          <div className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-all group">
-            <div className="flex items-center gap-6">
-              <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm"><Bell size={24} /></div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-2 border-gray-200 bg-gray-50/50">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-[#111111] text-[#f6c947] border border-[#111111] rounded-none flex items-center justify-center shrink-0">
+                <Zap size={22} />
+              </div>
               <div>
-                <p className="text-md font-black text-[#243e6b] uppercase tracking-tight">Real-time Push Alerts</p>
-                <p className="text-sm text-gray-400 font-medium max-w-xs">Get instant browser notifications for new orders, customer messages, and critical system events.</p>
+                <p className="text-sm font-black text-[#111111] uppercase tracking-tight">Real-time Browser Push Alerts</p>
+                <p className="text-xs text-gray-500 font-medium leading-relaxed max-w-md mt-0.5">
+                  Instant live sound and desktop notifications for inbound customer orders, seller verification queues, and dispute submissions.
+                </p>
               </div>
             </div>
+
             <button
+              type="button"
               onClick={() => toggleSetting('pushNotificationsEnabled')}
-              className={`w-14 h-7 rounded-full relative transition-all duration-300 shadow-inner ${settings.pushNotificationsEnabled ? 'bg-[#243e6b]' : 'bg-gray-200'}`}
+              className={`w-16 h-8 rounded-none relative transition-all duration-200 border-2 cursor-pointer shrink-0 ${
+                settings.pushNotificationsEnabled 
+                  ? 'bg-[#111111] border-[#111111]' 
+                  : 'bg-gray-200 border-gray-300'
+              }`}
             >
-              <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 ${settings.pushNotificationsEnabled ? 'right-1' : 'left-1'}`}></div>
+              <div
+                className={`absolute top-0.5 w-6 h-6 rounded-none transition-all duration-200 flex items-center justify-center font-black text-[9px] ${
+                  settings.pushNotificationsEnabled 
+                    ? 'right-0.5 bg-[#f6c947] text-[#111111]' 
+                    : 'left-0.5 bg-white text-gray-400'
+                }`}
+              >
+                {settings.pushNotificationsEnabled ? 'ON' : 'OFF'}
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-[#e2e2e2] shadow-sm space-y-8">
-        <div className="border-b border-[#e2e2e2] pb-6">
-          <h3 className="text-xl font-black text-[#243e6b] uppercase tracking-tighter">Event-Specific Preferences</h3>
-          <p className="text-sm text-gray-400 font-medium">Fine-tune your notification triggers for granular control.</p>
+      {/* Event Specific Preferences */}
+      <div className="bg-white p-6 sm:p-8 rounded-none border-2 border-gray-200 shadow-xs space-y-6">
+        <div className="border-b-2 border-gray-200 pb-5">
+          <h3 className="text-xl font-black uppercase tracking-tight text-[#111111]">Event Trigger Filters</h3>
+          <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">
+            Fine-tune granular notification triggers according to administrative role.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { label: 'New Order Placed', desc: 'Alert when a customer makes a purchase' },
-            { label: 'Stock Level Alerts', desc: 'Notify when products are running low' },
-            { label: 'Customer Dispute', desc: 'Critical alert for opened disputes' },
-            { label: 'Payout Processing', desc: 'Status updates on your revenue withdrawals' },
-            { label: 'Platform Announcements', desc: 'Important news from the F&K team' },
-            { label: 'Creator Insights', desc: 'Weekly analytics and growth tips' }
+            { label: 'New Order Placed', desc: 'Trigger alert whenever a customer checks out successfully' },
+            { label: 'Stock Level Alerts', desc: 'Notify when high-velocity products reach reorder thresholds' },
+            { label: 'Customer Dispute Opened', desc: 'High priority alert for mediation case filings' },
+            { label: 'Payout Processing', desc: 'Notifications on merchant revenue withdrawals and escrow cycles' },
+            { label: 'Seller Verification Application', desc: 'Alert when a new merchant completes onboarding verification' },
+            { label: 'Platform Security Warnings', desc: 'Critical alerts for login anomalies or 2FA resets' }
           ].map((item) => (
-            <div key={item.label} className="flex items-start gap-4 p-4 border border-gray-50 rounded-xl hover:border-[#243e6b]/20 transition-all bg-gray-50/50">
+            <div 
+              key={item.label} 
+              onClick={() => toggleEventPreference(item.label)}
+              className={`flex items-start gap-3.5 p-4 border-2 rounded-none transition-all cursor-pointer ${
+                eventPreferences[item.label]
+                  ? 'border-[#111111] bg-gray-50/80 shadow-2xs'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
+              }`}
+            >
               <input
                 type="checkbox"
                 checked={Boolean(eventPreferences[item.label])}
-                onChange={() => toggleEventPreference(item.label)}
-                className="mt-1 w-5 h-5 accent-[#243e6b] rounded cursor-pointer"
+                onChange={() => {}} // Handled by parent container click
+                className="mt-0.5 w-4 h-4 accent-[#111111] rounded-none cursor-pointer shrink-0"
               />
-              <div>
-                <p className="text-sm font-bold text-[#243e6b] leading-none">{item.label}</p>
-                <p className="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-wider">{item.desc}</p>
+              <div className="space-y-0.5">
+                <p className="text-xs font-black text-[#111111] uppercase tracking-tight">{item.label}</p>
+                <p className="text-[11px] text-gray-500 font-medium leading-relaxed">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -187,45 +287,67 @@ const Settings: React.FC = () => {
   );
 
   const subTabs = [
-    { id: 'general', label: 'General', icon: <Store size={18} /> },
-    { id: 'payment', label: 'Payments', icon: <CreditCard size={18} /> },
-    { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> },
-    { id: 'security', label: 'Security', icon: <Shield size={18} /> },
+    { id: 'general', label: 'General & Commission', icon: <Store size={17} />, badge: 'Platform' },
+    { id: 'payment', label: 'Payment Architecture', icon: <CreditCard size={17} />, badge: 'Gateways' },
+    { id: 'notifications', label: 'Alerts & Channels', icon: <Bell size={17} />, badge: 'Events' },
+    { id: 'security', label: 'Account & Security', icon: <Shield size={17} />, badge: '2FA' },
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-gray-200 pb-4">
         <div>
-          <h1 className="text-3xl font-black text-[#243e6b] uppercase tracking-tighter">Settings</h1>
-          <p className="text-gray-400 font-medium">Orchestrate your store operations and account architecture.</p>
+          <h1 className="text-2xl font-black uppercase tracking-tight text-[#111111]">
+            Platform Administration Settings
+          </h1>
+          <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-1">
+            Configure system rules, revenue splits, security policies, and communications
+          </p>
         </div>
-
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      {/* Grid: Sharp Navigation Sidebar + Content Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Settings Navigation Sidebar */}
         <div className="lg:col-span-1">
-          <nav className="space-y-2 bg-white p-4 rounded-2xl border border-[#e2e2e2] shadow-sm">
-            {subTabs.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveSubTab(item.id)}
-                className={`
-                  w-full flex items-center gap-4 px-5 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all
-                  ${activeSubTab === item.id
-                    ? 'bg-[#243e6b] text-white shadow-xl shadow-blue-900/20 scale-[1.02]'
-                    : 'text-gray-400 hover:bg-gray-50 hover:text-[#243e6b]'}
-                `}
-              >
-                {item.icon}
-                {item.label}
-              </button>
-            ))}
+          <nav className="bg-white border-2 border-gray-200 shadow-xs rounded-none p-2 space-y-1.5">
+            <div className="px-3 py-2 border-b-2 border-gray-100 mb-1">
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                Configuration Hub
+              </span>
+            </div>
+
+            {subTabs.map((item) => {
+              const active = activeSubTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSubTab(item.id)}
+                  className={`
+                    w-full flex items-center justify-between px-3.5 py-3 rounded-none text-xs font-black uppercase tracking-wider transition-all cursor-pointer border-l-4
+                    ${active
+                      ? 'bg-[#111111] text-[#f6c947] border-[#f6c947] shadow-sm'
+                      : 'border-transparent text-gray-600 hover:bg-gray-100 hover:text-[#111111]'}
+                  `}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className={active ? 'text-[#f6c947]' : 'text-gray-400'}>
+                      {item.icon}
+                    </span>
+                    <span>{item.label}</span>
+                  </div>
+
+                  <ChevronRight size={13} className={active ? 'text-[#f6c947]' : 'text-gray-400'} />
+                </button>
+              );
+            })}
           </nav>
         </div>
 
+        {/* Tab Content Area */}
         <div className="lg:col-span-3">
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
             {activeSubTab === 'general' && renderGeneral()}
             {activeSubTab === 'payment' && renderPayments()}
             {activeSubTab === 'security' && renderSecurity()}

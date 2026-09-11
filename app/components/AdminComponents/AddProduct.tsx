@@ -337,23 +337,26 @@ const normalizeStatusForForm = (status?: string): string => {
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-[#243e6b] bg-gray-100 rounded-full text-gray-500 hover:text-white transition-colors"
+            className="p-2 hover:bg-[#111111] bg-gray-100 rounded-none text-[#111111] hover:text-[#f6c947] border border-gray-300 transition-colors"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-lg font-extrabold text-[#243e6b]">
+            <h1 className="text-2xl font-black uppercase tracking-tight text-[#111111]">
               {initialData ? 'Edit Product' : 'Add New Product'}
             </h1>
+            <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold mt-0.5">
+              {initialData ? 'Update catalog specifications and pricing' : 'Create a new catalog item for your store'}
+            </p>
           </div>
         </div>
 
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className="flex items-center gap-2 bg-[#243e6b] hover:bg-[#1d3257] transition-colors text-white font-bold px-4 py-1.5 rounded-md disabled:opacity-50"
+          className="flex items-center gap-2 bg-[#f6c947] hover:bg-[#111111] hover:text-[#f6c947] transition-all text-[#111111] font-black uppercase text-xs tracking-wider px-5 py-2.5 rounded-none border-2 border-[#f6c947] hover:border-[#111111] disabled:opacity-50 shadow-sm"
         >
-          <Save size={18} />
+          <Save size={16} />
           {isSubmitting ? 'Saving...' : initialData ? 'Update Product' : 'Save Product'}
         </button>
       </div>
@@ -361,22 +364,28 @@ const normalizeStatusForForm = (status?: string): string => {
       {/* FORM */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-[#e2e2e2] shadow-sm space-y-6">
-            <h3 className="font-bold text-[#243e6b] border-b border-[#e2e2e2] pb-4">General Information</h3>
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-sm uppercase tracking-wider text-[#111111] border-b border-gray-200 pb-3">
+              General Information
+            </h3>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-bold text-gray-700">Product Name</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                  Product Name
+                </label>
                 <input
                   {...register('title', { required: 'Title is required' })}
                   placeholder="e.g. Premium Cotton T-Shirt"
-                  className={`w-full border ${errors.title ? 'border-red-500' : 'border-[#e2e2e2] focus:border-[#243e6b]'} rounded-md px-4 py-2.5 outline-none focus:border-[#243e6b] transition-colors bg-white`}
+                  className={`w-full border ${errors.title ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} rounded-none px-4 py-2.5 outline-none text-xs font-semibold transition-colors bg-white`}
                 />
-                {errors.title && <p className="text-rose-500 text-xs mt-1">{errors.title.message}</p>}
+                {errors.title && <p className="text-rose-500 text-xs mt-1 font-bold">{errors.title.message}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-bold text-gray-700">Description</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                  Description
+                </label>
                 <textarea
                   {...register('description', {
                     minLength: { value: 20, message: 'Description must be at least 20 characters' },
@@ -384,19 +393,23 @@ const normalizeStatusForForm = (status?: string): string => {
                   })}
                   rows={6}
                   placeholder="Describe your product in detail..."
-                  className={`w-full border ${errors.description ? 'border-red-500' : 'border-[#e2e2e2] focus:border-[#243e6b]'} rounded-md px-4 py-2.5 outline-none focus:border-[#243e6b] transition-colors bg-white`}
+                  className={`w-full border ${errors.description ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} rounded-none px-4 py-2.5 outline-none text-xs font-semibold transition-colors bg-white`}
                 />
-                {errors.description && <p className="text-rose-500 text-xs mt-1">{errors.description.message}</p>}
+                {errors.description && <p className="text-rose-500 text-xs mt-1 font-bold">{errors.description.message}</p>}
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-[#e2e2e2] shadow-sm space-y-6">
-            <h3 className="font-bold text-[#243e6b] border-b border-[#e2e2e2] pb-4">Pricing & Inventory</h3>
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-sm uppercase tracking-wider text-[#111111] border-b border-gray-200 pb-3">
+              Pricing & Inventory
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1.5">
-                <label className="text-sm font-bold text-gray-700">Base Price (₦)</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                  Base Price (₦)
+                </label>
                 <input
                   type="number"
                   step="0.01"
@@ -406,12 +419,14 @@ const normalizeStatusForForm = (status?: string): string => {
                     min: { value: 0.01, message: 'Must be greater than 0' },
                   })}
                   placeholder="0.00"
-                  className={`w-full border ${errors.price ? 'border-red-500' : 'border-[#e2e2e2] focus:border-[#243e6b]'} rounded-md px-4 py-2.5 outline-none focus:border-[#243e6b] transition-colors bg-white`}
+                  className={`w-full border ${errors.price ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} rounded-none px-4 py-2.5 outline-none text-xs font-semibold transition-colors bg-white`}
                 />
-                {errors.price && <p className="text-rose-500 text-xs mt-1">{errors.price.message}</p>}
+                {errors.price && <p className="text-rose-500 text-xs mt-1 font-bold">{errors.price.message}</p>}
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-bold text-gray-700">Stock Quantity</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                  Stock Quantity
+                </label>
                 <input
                   type="number"
                   {...register('stock', {
@@ -420,32 +435,32 @@ const normalizeStatusForForm = (status?: string): string => {
                     min: { value: 0, message: 'Cannot be negative' },
                   })}
                   placeholder="0"
-                  className={`w-full border ${errors.stock ? 'border-red-500' : 'border-[#e2e2e2] focus:border-[#243e6b]'} rounded-md px-4 py-2.5 outline-none focus:border-[#243e6b] transition-colors bg-white`}
+                  className={`w-full border ${errors.stock ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} rounded-none px-4 py-2.5 outline-none text-xs font-semibold transition-colors bg-white`}
                 />
-                {errors.stock && <p className="text-rose-500 text-xs mt-1">{errors.stock.message}</p>}
+                {errors.stock && <p className="text-rose-500 text-xs mt-1 font-bold">{errors.stock.message}</p>}
               </div>
             </div>
 
             {/* LIVE SELLER PAYOUT NOTIFICATION */}
             {numericPrice > 0 && (
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50/60 p-4 rounded-xl border border-blue-200/80 space-y-2">
-                <div className="flex justify-between items-center text-xs font-bold text-[#243e6b]">
+              <div className="bg-gray-50 p-4 rounded-none border border-gray-300 space-y-2">
+                <div className="flex justify-between items-center text-xs font-black uppercase tracking-wider text-[#111111]">
                   <span className="flex items-center gap-1.5">
                     🏷️ Category Commission {selectedCategoryObj ? `(${selectedCategoryObj.name})` : '(Default Rate)'}:
                   </span>
-                  <span className="bg-blue-100 text-blue-900 px-2.5 py-0.5 rounded-full font-mono">
+                  <span className="bg-[#f6c947] text-[#111111] px-2.5 py-0.5 rounded-none font-black text-xs font-mono">
                     {(effectiveCommission * 100).toFixed(1)}%
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs text-gray-500">
+                <div className="flex justify-between items-center text-xs font-semibold text-gray-600">
                   <span>Platform Fee per item sold:</span>
-                  <span className="text-rose-600 font-semibold">
+                  <span className="text-rose-600 font-bold">
                     -₦{platformFeeAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
-                <div className="flex justify-between items-center pt-2 border-t border-blue-200/60 text-xs sm:text-sm font-extrabold text-emerald-700">
+                <div className="flex justify-between items-center pt-2 border-t border-gray-200 text-xs sm:text-sm font-black uppercase tracking-wider text-[#111111]">
                   <span>Your Net Earnings Per Item Sold:</span>
-                  <span>
+                  <span className="text-emerald-700 font-black">
                     ₦{estimatedNetPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
@@ -455,14 +470,18 @@ const normalizeStatusForForm = (status?: string): string => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-[#e2e2e2] shadow-sm space-y-6">
-            <h3 className="font-bold text-[#243e6b] border-b border-[#e2e2e2] pb-4">Product Status & Category</h3>
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-sm uppercase tracking-wider text-[#111111] border-b border-gray-200 pb-3">
+              Product Status & Category
+            </h3>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-bold text-gray-700">Status</label>
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                  Status
+                </label>
                 <select
                   {...register('status', { required: true })}
-                  className={`w-full border ${errors.status ? 'border-red-500' : 'border-[#e2e2e2] focus:border-[#243e6b]'} rounded-md px-4 py-2.5 outline-none focus:border-[#243e6b] transition-colors bg-white`}
+                  className={`w-full border ${errors.status ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} rounded-none px-4 py-2.5 outline-none font-semibold text-xs transition-colors bg-white`}
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -474,17 +493,17 @@ const normalizeStatusForForm = (status?: string): string => {
 
               {/* HIERARCHICAL CATEGORY SELECTOR */}
               <div className="space-y-1.5">
-                <label className="text-sm font-bold text-gray-700 flex items-center justify-between">
+                <label className="text-xs font-black uppercase tracking-wider text-[#111111] flex items-center justify-between">
                   <span>Category / Subcategory</span>
                   {selectedCategoryObj && (
-                    <span className="text-[11px] font-semibold text-blue-600">
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-gray-100 text-[#111111] px-2 py-0.5 border border-gray-300">
                       Gen {selectedCategoryObj.depth}
                     </span>
                   )}
                 </label>
                 <select
                   {...register('category', { required: 'Please select a category' })}
-                  className={`w-full ${errors.category ? 'border-red-500' : 'border-[#e2e2e2] focus:border-[#243e6b]'} border rounded-md px-4 py-2.5 outline-none transition-colors bg-white text-sm`}
+                  className={`w-full ${errors.category ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} border rounded-none px-4 py-2.5 outline-none transition-colors bg-white text-xs font-semibold`}
                 >
                   <option value="">Select Category or Subcategory</option>
                   {flattenedCategories.map((cat) => (
@@ -494,24 +513,24 @@ const normalizeStatusForForm = (status?: string): string => {
                   ))}
                 </select>
                 {errors.category && (
-                  <p className="text-rose-500 text-xs mt-1">{errors.category.message}</p>
+                  <p className="text-rose-500 text-xs mt-1 font-bold">{errors.category.message}</p>
                 )}
 
                 {/* ACTIVE CATEGORY PATH BREADCRUMB */}
                 {selectedCategoryObj && (
-                  <div className="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5">
-                    <div className="text-gray-500 font-medium flex items-center gap-1">
-                      <Layers size={13} className="text-[#243e6b]" />
+                  <div className="mt-2.5 p-3 bg-gray-50 border border-gray-300 rounded-none text-xs space-y-1.5">
+                    <div className="text-gray-500 font-black uppercase tracking-wider text-[10px] flex items-center gap-1">
+                      <Layers size={13} className="text-[#111111]" />
                       <span>Category Hierarchy:</span>
                     </div>
-                    <div className="font-semibold text-[#243e6b] flex items-center flex-wrap gap-1">
+                    <div className="font-bold text-[#111111] flex items-center flex-wrap gap-1">
                       {selectedCategoryObj.path.split(' > ').map((segment, idx, arr) => (
                         <React.Fragment key={idx}>
                           <span
                             className={
                               idx === arr.length - 1
-                                ? 'bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold'
-                                : 'text-gray-600'
+                                ? 'bg-[#111111] text-[#f6c947] px-2 py-0.5 rounded-none font-black text-xs uppercase tracking-wider'
+                                : 'text-gray-700'
                             }
                           >
                             {segment}
@@ -527,8 +546,8 @@ const normalizeStatusForForm = (status?: string): string => {
 
                 {/* QUICK SUB-CATEGORY DRILL-DOWN CHIPS */}
                 {directChildSubcategories.length > 0 && (
-                  <div className="mt-3 space-y-1.5 pt-2 border-t border-gray-100">
-                    <label className="text-xs font-bold text-gray-600 block">
+                  <div className="mt-3 space-y-1.5 pt-2 border-t border-gray-200">
+                    <label className="text-[11px] font-black uppercase tracking-wider text-gray-600 block">
                       Subcategories under &ldquo;{selectedCategoryObj?.name}&rdquo;:
                     </label>
                     <div className="flex flex-wrap gap-1.5">
@@ -539,7 +558,7 @@ const normalizeStatusForForm = (status?: string): string => {
                           onClick={() => {
                             setValue('category', subcat.id, { shouldValidate: true });
                           }}
-                          className="text-xs px-2.5 py-1 bg-white hover:bg-blue-50 border border-gray-300 hover:border-blue-400 text-gray-700 hover:text-blue-700 rounded-full transition flex items-center gap-1"
+                          className="text-xs px-2.5 py-1 bg-white hover:bg-[#111111] border border-gray-300 hover:border-[#111111] text-[#111111] hover:text-[#f6c947] rounded-none font-bold transition flex items-center gap-1"
                         >
                           <Plus size={11} />
                           <span>{subcat.name}</span>
@@ -552,8 +571,8 @@ const normalizeStatusForForm = (status?: string): string => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-[#e2e2e2] shadow-sm space-y-6">
-            <h3 className="font-bold text-[#243e6b] border-b border-[#e2e2e2] pb-4">
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <h3 className="font-black text-sm uppercase tracking-wider text-[#111111] border-b border-gray-200 pb-3">
               Product Images
             </h3>
 
@@ -567,28 +586,28 @@ const normalizeStatusForForm = (status?: string): string => {
                   className="hidden"
                 />
 
-                <div className="border-2 border-dashed border-[#e2e2e2] rounded-xl p-6 flex flex-col items-center justify-center h-32 text-center hover:border-[#243e6b] transition-all group relative overflow-hidden">
+                <div className="border-2 border-dashed border-gray-300 rounded-none p-6 flex flex-col items-center justify-center h-36 text-center hover:border-[#111111] hover:bg-gray-50 transition-all group relative overflow-hidden">
                   {primaryPreview ? (
                     <>
                       <Image
                         src={primaryPreview}
                         alt="Primary"
                         fill
-                        className="object-cover rounded-xl"
+                        className="object-cover rounded-none"
                       />
-                      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                        <p className="text-white text-xs font-bold">Change Image</p>
+                      <div className="absolute inset-0 bg-[#111111]/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                        <p className="text-[#f6c947] text-xs font-black uppercase tracking-wider">Change Image</p>
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-[#243e6b] group-hover:bg-blue-50 transition-all mb-3">
-                        <Upload size={22} />
+                      <div className="w-12 h-12 rounded-none bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 group-hover:text-[#111111] group-hover:bg-[#f6c947] group-hover:border-[#f6c947] transition-all mb-2">
+                        <Upload size={20} />
                       </div>
-                      <p className="text-sm font-bold text-[#243e6b]">
+                      <p className="text-xs font-black uppercase tracking-wider text-[#111111]">
                         Upload Primary Image
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-[11px] text-gray-500 mt-1 font-medium">
                         PNG, JPG or WEBP (Max 2MB)
                       </p>
                     </>
@@ -599,7 +618,7 @@ const normalizeStatusForForm = (status?: string): string => {
               {/* GALLERY */}
               <div className="grid grid-cols-3 gap-3">
                 {/* ADD MORE */}
-                <label className="aspect-square border-2 border-dashed border-[#e2e2e2] rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-[#243e6b] hover:text-[#243e6b] transition cursor-pointer">
+                <label className="aspect-square border-2 border-dashed border-gray-300 rounded-none flex flex-col items-center justify-center text-gray-500 hover:border-[#111111] hover:text-[#111111] hover:bg-gray-50 transition cursor-pointer">
                   <input
                     type="file"
                     multiple
@@ -607,15 +626,15 @@ const normalizeStatusForForm = (status?: string): string => {
                     onChange={handleOtherImagesChange}
                     className="hidden"
                   />
-                  <Plus size={22} />
-                  <span className="text-[10px] mt-1 font-semibold">Add</span>
+                  <Plus size={20} />
+                  <span className="text-[10px] mt-1 font-black uppercase tracking-wider">Add</span>
                 </label>
 
                 {/* PREVIEWS */}
                 {otherPreviews.map((url, idx) => (
                   <div
                     key={idx}
-                    className="relative aspect-square rounded-xl overflow-hidden border border-[#e2e2e2] group"
+                    className="relative aspect-square rounded-none overflow-hidden border border-gray-300 group bg-gray-100"
                   >
                     <Image
                       src={url}
@@ -625,11 +644,11 @@ const normalizeStatusForForm = (status?: string): string => {
                     />
 
                     {/* HOVER OVERLAY */}
-                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition">
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition">
                       <button
                         type="button"
                         onClick={() => removeOtherImage(idx)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                        className="absolute top-1 right-1 bg-rose-600 text-white rounded-none p-1 opacity-0 group-hover:opacity-100 transition"
                       >
                         <X size={12} />
                       </button>

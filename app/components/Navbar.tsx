@@ -33,6 +33,7 @@ import {
 import { useCartStore } from '@/store/useCartStore';
 import { useAuth } from '@/context/AuthContext';
 import NotificationBell from './AdminComponents/NotificationBell';
+import CartDrawer from './marketplace/CartDrawer';
 
 export interface CategoryItem {
   id: string;
@@ -251,8 +252,8 @@ export default function Navbar({
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  // Mini Cart Dropdown State (Desktop)
-  const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
+  // Cart Drawer State (Slide-in from right)
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   // Dynamic Announcement Rotator
@@ -269,7 +270,6 @@ export default function Navbar({
   const [categories, setCategories] = useState<CategoryItem[]>(initialCategories);
   const catMenuRef = useRef<HTMLDivElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
-  const miniCartRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const cartItems = useCartStore((state) => state.items);
@@ -353,9 +353,6 @@ export default function Navbar({
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setIsSearchFocused(false);
       }
-      if (miniCartRef.current && !miniCartRef.current.contains(event.target as Node)) {
-        setIsMiniCartOpen(false);
-      }
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setIsUserMenuOpen(false);
       }
@@ -370,7 +367,7 @@ export default function Navbar({
     setIsMobileSearchOpen(false);
     setIsCatMenuOpen(false);
     setIsSearchFocused(false);
-    setIsMiniCartOpen(false);
+    setIsCartDrawerOpen(false);
     setIsUserMenuOpen(false);
   }, [pathname]);
 
@@ -496,7 +493,11 @@ export default function Navbar({
           <div className="flex items-center justify-between gap-4 lg:gap-8">
             {/* Mobile Toggler Button */}
             <button
-              onClick={() => setIsMobileDrawerOpen(true)}
+              onClick={() => {
+                setIsMobileDrawerOpen(true);
+                setIsMobileSearchOpen(false);
+                setIsSearchFocused(false);
+              }}
               className="lg:hidden p-2 text-[#111111] hover:text-[#f6c947] transition-colors focus:outline-none cursor-pointer"
               aria-label="Open mobile menu"
             >
@@ -635,7 +636,10 @@ export default function Navbar({
             <div className="flex items-center gap-3 sm:gap-6 shrink-0">
               {/* Mobile Search Trigger */}
               <button
-                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                onClick={() => {
+                  setIsMobileSearchOpen(!isMobileSearchOpen);
+                  setIsMobileDrawerOpen(false);
+                }}
                 className="lg:hidden p-1.5 text-[#111111] hover:text-[#f6c947] transition-colors cursor-pointer"
                 aria-label="Search"
               >
@@ -734,108 +738,26 @@ export default function Navbar({
                 )}
               </div>
 
-              {/* Dynamic Shopping Cart & Mini-Cart Hover/Click Dropdown */}
-              <div className="relative" ref={miniCartRef}>
-                <div
-                  className="flex items-center gap-2.5 group cursor-pointer"
-                  onClick={() => setIsMiniCartOpen(!isMiniCartOpen)}
-                  onMouseEnter={() => setIsMiniCartOpen(true)}
-                >
-                  <div className="w-10 h-10 rounded-none bg-[#f8f8f8] border border-gray-200 flex items-center justify-center text-[#111111] group-hover:bg-[#111111] group-hover:text-white transition-all relative">
-                    <ShoppingBag size={19} />
-                    {mounted && cartCount > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 bg-[#f6c947] text-[#111111] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-none shadow-xs">
-                        {cartCount}
-                      </span>
-                    )}
-                  </div>
-                  <div className="hidden xl:flex flex-col text-left">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Shopping Cart</span>
-                    <span className="text-[11px] font-extrabold uppercase text-[#111111] group-hover:text-[#f6c947] transition-colors">
-                      {mounted && cartCount > 0 ? `₦${cartSubtotal.toLocaleString()}` : '₦0.00'}
+              {/* Dynamic Shopping Cart Trigger -> Opens Slider/Drawer from Right */}
+              <div
+                className="flex items-center gap-2.5 group cursor-pointer"
+                onClick={() => setIsCartDrawerOpen(true)}
+                title="Open Shopping Bag"
+              >
+                <div className="w-10 h-10 rounded-none bg-[#f8f8f8] border border-gray-200 flex items-center justify-center text-[#111111] group-hover:bg-[#111111] group-hover:text-white transition-all relative">
+                  <ShoppingBag size={19} />
+                  {mounted && cartCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-[#f6c947] text-[#111111] text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-none shadow-xs">
+                      {cartCount}
                     </span>
-                  </div>
+                  )}
                 </div>
-
-                {/* Mini-Cart Dropdown Panel (Desktop Preview) */}
-                {isMiniCartOpen && (
-                  <div
-                    className="hidden lg:block absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 shadow-2xl z-[120] rounded-none animate-in fade-in slide-in-from-top-2 duration-150"
-                    onMouseLeave={() => setIsMiniCartOpen(false)}
-                  >
-                    <div className="p-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                      <span className="text-xs font-black uppercase tracking-wider text-[#111111]">
-                        Cart Items ({mounted ? cartCount : 0})
-                      </span>
-                      <Link
-                        href="/cart"
-                        className="text-[10px] font-bold uppercase text-[#f6c947] hover:underline"
-                        onClick={() => setIsMiniCartOpen(false)}
-                      >
-                        View Full Cart
-                      </Link>
-                    </div>
-
-                    <div className="max-h-64 overflow-y-auto divide-y divide-gray-100 p-2">
-                      {mounted && cartItems.length > 0 ? (
-                        cartItems.map((item) => (
-                          <div key={item.id} className="py-2.5 flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gray-100 shrink-0 relative overflow-hidden border border-gray-200">
-                              {item.primaryImage ? (
-                                <Image src={item.primaryImage} alt={item.title} fill className="object-cover" />
-                              ) : (
-                                <Package size={16} className="m-auto text-gray-400" />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h5 className="text-xs font-bold text-gray-900 truncate">{item.title}</h5>
-                              <p className="text-[10px] text-gray-500">
-                                {item.quantity} x <strong className="text-[#111111]">₦{Number(item.price).toLocaleString()}</strong>
-                              </p>
-                            </div>
-                            <button
-                              onClick={() => removeItem(item.id)}
-                              className="text-gray-400 hover:text-red-600 p-1 transition-colors cursor-pointer"
-                              title="Remove item"
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="py-8 text-center text-gray-400">
-                          <ShoppingBag size={28} className="mx-auto mb-2 opacity-40" />
-                          <p className="text-xs font-semibold">Your shopping cart is empty</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {mounted && cartItems.length > 0 && (
-                      <div className="p-3 bg-gray-50 border-t border-gray-100 space-y-2">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-gray-600 uppercase">Subtotal:</span>
-                          <span className="font-black text-[#111111] text-sm">₦{cartSubtotal.toLocaleString()}</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 pt-1">
-                          <Link
-                            href="/cart"
-                            className="w-full py-2 bg-white border border-[#111111] text-[#111111] text-[10px] font-black uppercase tracking-wider text-center hover:bg-gray-100 transition-colors"
-                            onClick={() => setIsMiniCartOpen(false)}
-                          >
-                            View Cart
-                          </Link>
-                          <Link
-                            href="/checkout"
-                            className="w-full py-2 bg-[#111111] text-[#f6c947] text-[10px] font-black uppercase tracking-wider text-center hover:bg-[#f6c947] hover:text-[#111111] transition-colors"
-                            onClick={() => setIsMiniCartOpen(false)}
-                          >
-                            Checkout
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <div className="hidden xl:flex flex-col text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Shopping Cart</span>
+                  <span className="text-[11px] font-extrabold uppercase text-[#111111] group-hover:text-[#f6c947] transition-colors">
+                    {mounted && cartCount > 0 ? `₦${cartSubtotal.toLocaleString()}` : '₦0.00'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1348,7 +1270,7 @@ export default function Navbar({
 
       {/* 4. MOBILE OFF-CANVAS SLIDE-OUT DRAWER WITH MULTI-GENERATION 5-TIER RECURSIVE ACCORDIONS */}
       <div
-        className={`fixed inset-0 z-[150] lg:hidden transition-all duration-300 ${isMobileDrawerOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
+        className={`fixed inset-0 z-[200] lg:hidden transition-all duration-300 ${isMobileDrawerOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
           }`}
       >
         {/* Backdrop Fade */}
@@ -1360,7 +1282,7 @@ export default function Navbar({
 
         {/* Drawer Panel Slide-In from Left */}
         <div
-          className={`fixed top-0 left-0 w-[300px] sm:w-[350px] h-full bg-white text-[#111111] shadow-2xl flex flex-col z-10 transform transition-transform duration-300 ease-in-out ${isMobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'
+          className={`fixed top-0 left-0 w-[300px] sm:w-[350px] h-full bg-white text-[#111111] shadow-2xl flex flex-col z-20 transform transition-transform duration-300 ease-in-out ${isMobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
         >
           {/* Drawer Header */}
@@ -1494,8 +1416,16 @@ export default function Navbar({
                   <div className="pl-4 pb-2 space-y-1.5 text-xs font-medium text-gray-600 bg-gray-50 p-2">
                     <Link href="/shops" className="block py-1 hover:text-[#f6c947]" onClick={() => setIsMobileDrawerOpen(false)}>All Verified Stores</Link>
                     <Link href="/collections" className="block py-1 hover:text-[#f6c947]" onClick={() => setIsMobileDrawerOpen(false)}>Featured 50% Off Deals</Link>
-                    <Link href="/collections" className="block py-1 hover:text-[#f6c947]" onClick={() => setIsMobileDrawerOpen(false)}>Under ₦20,000 Picks</Link>
-                    <Link href="/cart" className="block py-1 hover:text-[#f6c947]" onClick={() => setIsMobileDrawerOpen(false)}>Shopping Cart</Link>
+                    <button
+                      type="button"
+                      className="block w-full text-left py-1 hover:text-[#f6c947] cursor-pointer"
+                      onClick={() => {
+                        setIsMobileDrawerOpen(false);
+                        setIsCartDrawerOpen(true);
+                      }}
+                    >
+                      Shopping Cart
+                    </button>
                   </div>
                 )}
               </div>
@@ -1615,6 +1545,9 @@ export default function Navbar({
           </div>
         </div>
       </div>
+
+      {/* 5. SLIDE-IN RIGHT CART DRAWER */}
+      <CartDrawer open={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
     </header>
   );
 }

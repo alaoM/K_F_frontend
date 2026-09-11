@@ -19,21 +19,21 @@ const RecursiveCategoryNode: React.FC<{
   const hasChildren = category.children && category.children.length > 0;
 
   const depthColors: Record<number, string> = {
-    1: 'bg-[#243e6b] text-white',
-    2: 'bg-[#f6c947] text-[#243e6b]',
-    3: 'bg-emerald-600 text-white',
-    4: 'bg-indigo-600 text-white',
-    5: 'bg-purple-600 text-white',
+    1: 'bg-[#111111] text-[#f6c947] border border-[#111111]',
+    2: 'bg-[#f6c947] text-[#111111] border border-[#f6c947]',
+    3: 'bg-[#243e6b] text-white border border-[#243e6b]',
+    4: 'bg-emerald-700 text-white border border-emerald-700',
+    5: 'bg-gray-800 text-white border border-gray-800',
   };
 
   return (
-    <div className={`space-y-2 ${depth > 1 ? 'ml-3 sm:ml-6 pl-3 border-l-2 border-dashed border-gray-200 mt-2' : ''}`}>
-      <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-gray-200 shadow-xs hover:shadow-md transition-all group">
+    <div className={`space-y-2 ${depth > 1 ? 'ml-3 sm:ml-6 pl-3 border-l-2 border-dashed border-gray-300 mt-2' : ''}`}>
+      <div className="flex items-center justify-between p-3.5 bg-white rounded-none border border-gray-300 shadow-xs hover:border-[#111111] transition-all group">
         <div className="flex items-center gap-3 min-w-0">
           {hasChildren ? (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-gray-400 hover:text-gray-700 transition-colors p-1"
+              className="text-gray-500 hover:text-[#111111] transition-colors p-1"
             >
               {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </button>
@@ -42,7 +42,7 @@ const RecursiveCategoryNode: React.FC<{
           )}
 
           <div
-            className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-lg border border-gray-200 shrink-0 bg-cover bg-center overflow-hidden px-1 select-none relative group/icon cursor-help"
+            className="w-9 h-9 rounded-none bg-gray-100 flex items-center justify-center text-lg border border-gray-300 shrink-0 bg-cover bg-center overflow-hidden px-1 select-none relative group/icon cursor-help"
             style={category.image ? { backgroundImage: `url(${category.image})`, fontSize: '0' } : {}}
             title={category.icon || '📁'}
           >
@@ -52,9 +52,9 @@ const RecursiveCategoryNode: React.FC<{
                   {category.icon || '📁'}
                 </span>
                 {category.icon && (
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 hidden group-hover/icon:flex items-center gap-1 bg-[#1e293b] text-white text-xs px-2.5 py-1.5 rounded-xl shadow-2xl whitespace-nowrap z-[100] border border-gray-700 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 hidden group-hover/icon:flex items-center gap-1 bg-[#111111] text-[#f6c947] text-xs px-2.5 py-1.5 rounded-none shadow-2xl whitespace-nowrap z-[100] border border-gray-700 animate-in fade-in zoom-in-95 duration-150">
                     <span className="text-sm">{category.icon}</span>
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1e293b]" />
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#111111]" />
                   </div>
                 )}
               </>
@@ -63,8 +63,8 @@ const RecursiveCategoryNode: React.FC<{
 
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h4 className="font-bold text-[#243e6b] text-sm truncate">{category.name}</h4>
-              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${depthColors[depth] || 'bg-gray-700 text-white'}`}>
+              <h4 className="font-bold text-[#111111] text-sm truncate">{category.name}</h4>
+              <span className={`text-[10px] font-black px-2 py-0.5 rounded-none uppercase tracking-wider ${depthColors[depth] || 'bg-gray-700 text-white'}`}>
                 Gen {depth}
               </span>
             </div>
@@ -72,26 +72,26 @@ const RecursiveCategoryNode: React.FC<{
           </div>
         </div>
 
-        <div className="flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
           {depth < 5 && (
             <button
               onClick={() => onAddSub(category.id)}
-              className="p-1.5 text-xs font-bold text-[#243e6b] bg-amber-50 hover:bg-amber-100 rounded-lg flex items-center gap-1 transition-colors"
+              className="px-2.5 py-1 text-xs font-black uppercase tracking-wider text-[#111111] bg-[#f6c947] hover:bg-[#111111] hover:text-[#f6c947] border border-[#f6c947] hover:border-[#111111] rounded-none flex items-center gap-1 transition-all"
               title="Add Subcategory"
             >
-              <Plus size={14} /> Sub
+              <Plus size={13} /> Sub
             </button>
           )}
           <button
             onClick={() => onEdit(category)}
-            className="p-1.5 text-gray-500 hover:text-[#243e6b] hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 text-gray-700 hover:text-white hover:bg-[#111111] border border-gray-300 rounded-none transition-all"
             title="Edit"
           >
             <Edit size={14} />
           </button>
           <button
             onClick={() => onDelete(category.id)}
-            className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+            className="p-1.5 text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 rounded-none transition-all"
             title="Delete"
           >
             <Trash2 size={14} />
@@ -204,13 +204,13 @@ const CategoryList: React.FC = () => {
     <div className="space-y-6">
 
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-white p-6 rounded-none border border-gray-300 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <FolderTree className="text-[#243e6b]" size={24} />
-            <h1 className="text-2xl font-bold text-[#243e6b]">Category Management</h1>
+            <FolderTree className="text-[#111111]" size={24} />
+            <h1 className="text-2xl font-black uppercase tracking-tight text-[#111111]">Category Management</h1>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mt-1">
             Organize products in up to <strong>5 generations</strong> of sub-categories.
           </p>
         </div>
@@ -218,34 +218,34 @@ const CategoryList: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => loadData()}
-            className="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors"
+            className="p-2.5 rounded-none border border-gray-300 hover:bg-gray-100 text-[#111111] transition-colors"
             title="Refresh Categories"
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
           <button
             onClick={onCreateClick}
-            className="flex items-center gap-2 bg-[#f6c947] hover:bg-[#f5c233] text-[#243e6b] font-bold px-5 py-2.5 rounded-xl shadow-xs transition-all"
+            className="flex items-center gap-2 bg-[#f6c947] text-[#111111] border-2 border-[#f6c947] hover:bg-[#111111] hover:text-[#f6c947] hover:border-[#111111] font-black uppercase text-xs tracking-wider px-5 py-2.5 rounded-none shadow-sm transition-all"
           >
-            <Plus size={18} /> New Root Category
+            <Plus size={16} /> New Root Category
           </button>
         </div>
       </div>
 
       {/* LIST */}
       {loading ? (
-        <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-gray-400">
-          <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-[#243e6b]" />
+        <div className="bg-white p-12 rounded-none border border-gray-300 text-center text-gray-400 font-bold uppercase tracking-wider text-xs">
+          <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-[#111111]" />
           Loading category hierarchy...
         </div>
       ) : categories.length === 0 ? (
-        <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center space-y-3">
+        <div className="bg-white p-12 rounded-none border border-gray-300 text-center space-y-3">
           <FolderTree size={40} className="mx-auto text-gray-300" />
-          <h3 className="font-bold text-gray-700">No categories found</h3>
-          <p className="text-xs text-gray-400">Create your first root category to get started.</p>
+          <h3 className="font-black uppercase tracking-wider text-[#111111] text-sm">No categories found</h3>
+          <p className="text-xs text-gray-500">Create your first root category to get started.</p>
           <button
             onClick={onCreateClick}
-            className="bg-[#243e6b] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#1d3358]"
+            className="bg-[#111111] text-[#f6c947] px-5 py-2.5 rounded-none text-xs font-black uppercase tracking-wider hover:bg-[#f6c947] hover:text-[#111111] transition-all"
           >
             Create Category
           </button>

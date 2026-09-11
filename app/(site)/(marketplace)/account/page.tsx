@@ -65,15 +65,15 @@ function AccountContent() {
 
       {/* Mobile Sidebar Drawer */}
       {showSidebar && (
-        <div className="fixed inset-0 z-50 flex">
+        <div className="fixed inset-0 z-[200] flex">
           {/* Overlay */}
           <div
-            className="flex-1 bg-black/50"
+            className="flex-1 bg-black/60 backdrop-blur-xs"
             onClick={() => setShowSidebar(false)}
           />
 
           {/* Drawer */}
-          <div className="w-72 bg-white h-full shadow-lg">
+          <div className="w-72 bg-white h-full shadow-2xl rounded-none">
             <Sidebar
               totalOrders={totalOrders}
               onClose={() => setShowSidebar(false)}
