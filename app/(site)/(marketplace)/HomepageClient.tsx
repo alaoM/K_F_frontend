@@ -56,7 +56,11 @@ export default function HomepageClient({ initialCategories = [] }: { initialCate
     const [activeTab, setActiveTab] = useState('All')
 
     const [products, setProducts] = useState<ApiProduct[]>([])
-    const categories = initialCategories
+    const categories = React.useMemo(() => {
+        return initialCategories.filter(
+            (c: any) => c.slug !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
+        )
+    }, [initialCategories])
     const [loading, setLoading] = useState(true)
 
     const fetchProducts = useCallback(async () => {

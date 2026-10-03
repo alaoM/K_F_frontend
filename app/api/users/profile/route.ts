@@ -7,7 +7,7 @@ export async function PATCH(req: Request) {
         const token = await getAuthToken();
         const body = await req.json();
 
-        console.log(body)
+       
         const res = await axios.patch(`${process.env.BASE_URL}/users/profile`, body, {
             headers: { Authorization: `Bearer ${token}` }
         });

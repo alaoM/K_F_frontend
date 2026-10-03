@@ -89,13 +89,15 @@ const RecursiveCategoryNode: React.FC<{
           >
             <Edit size={14} />
           </button>
-          <button
-            onClick={() => onDelete(category.id)}
-            className="p-1.5 text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 rounded-none transition-all"
-            title="Delete"
-          >
-            <Trash2 size={14} />
-          </button>
+          {category.slug !== 'uncategorized' && (
+            <button
+              onClick={() => onDelete(category.id)}
+              className="p-1.5 text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 rounded-none transition-all"
+              title="Delete"
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -285,10 +287,11 @@ const CategoryList: React.FC = () => {
           if (deleteConfirmId) handleDelete(deleteConfirmId);
         }}
         title="Delete Category"
-        message="Are you sure you want to delete this category? Categories containing active products or sub-categories cannot be deleted."
+        message="Are you sure you want to delete this category? Any associated products will be automatically transferred to 'Uncategorized', and child sub-categories will be moved up."
         confirmText="Delete Category"
         variant="danger"
       />
+
 
     </div>
   );

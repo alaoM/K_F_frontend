@@ -1,7 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// 1. Perfectly match your API JSON Response
+// 1. Match backend Product & Variant Response
+export interface ProductVariant {
+  id: string;
+  sku?: string;
+  color?: string;
+  colorHex?: string;
+  size?: string;
+  stock: number;
+  price?: number;
+  image?: string;
+  attributes?: Record<string, any>;
+}
+
 export interface Product {
   id: string;
   title: string;
@@ -14,18 +26,27 @@ export interface Product {
   seller: {
     id: string;
     businessName: string;
-    logo: string;
+    logo?: string;
   };
   views: number;
   attributes: Record<string, any>;
   status: string;
+  hasVariants?: boolean;
+  variantOptions?: {
+    colors?: string[];
+    sizes?: string[];
+    custom?: Record<string, string[]>;
+  };
+  variants?: ProductVariant[];
   averageRating?: number;
   reviewCount?: number;
 }
 
-// 2. Cart items only need specific data
+// 2. Cart items data structure
 export interface CartItem {
-  id: string;
+  id: string; // Unique Cart Item Key (e.g. productId or productId-variantId)
+  productId: string;
+  variantId?: string;
   title: string;
   price: number;
   primaryImage: string;
@@ -37,13 +58,22 @@ export interface CartItem {
     logo?: string;
   };
   color?: string;
+  colorHex?: string;
+  size?: string;
+}
+
+export interface AddItemOptions {
+  quantity?: number;
+  variant?: ProductVariant | null;
+  selectedColor?: string;
+  selectedSize?: string;
 }
 
 interface CartState {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: string) => void; // CHANGED from number to string
-  updateQuantity: (productId: string, quantity: number) => void; // CHANGED to string
+  addItem: (product: Product, quantityOrOptions?: number | AddItemOptions, options?: AddItemOptions) => void;
+  removeItem: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getItemCount: () => number;
@@ -54,44 +84,81 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
 
-      addItem: (product, quantity = 1) => {
+      addItem: (product, quantityOrOptions = 1, options) => {
+        let quantity = 1;
+        let variant: ProductVariant | null | undefined = null;
+        let selectedColor: string | undefined = undefined;
+        let selectedSize: string | undefined = undefined;
+
+        if (typeof quantityOrOptions === 'number') {
+          quantity = quantityOrOptions;
+          if (options) {
+            variant = options.variant;
+            selectedColor = options.selectedColor;
+            selectedSize = options.selectedSize;
+          }
+        } else if (typeof quantityOrOptions === 'object' && quantityOrOptions !== null) {
+          quantity = quantityOrOptions.quantity || 1;
+          variant = quantityOrOptions.variant;
+          selectedColor = quantityOrOptions.selectedColor;
+          selectedSize = quantityOrOptions.selectedSize;
+        }
+
+        const variantId = variant?.id;
+        const color = selectedColor || variant?.color;
+        const colorHex = variant?.colorHex;
+        const size = selectedSize || variant?.size;
+        const price = variant?.price !== undefined && variant?.price !== null ? Number(variant.price) : Number(product.price);
+        const image = variant?.image || product.primaryImage;
+
+        // Unique cart key based on product and variant/options
+        const itemKey = variantId
+          ? `${product.id}-${variantId}`
+          : color || size
+          ? `${product.id}-${color || 'default'}-${size || 'default'}`
+          : product.id;
+
         const currentItems = get().items;
-        const existingItem = currentItems.find((item) => item.id === product.id);
+        const existingItem = currentItems.find((item) => item.id === itemKey);
 
         if (existingItem) {
           set({
             items: currentItems.map((item) =>
-              item.id === product.id
+              item.id === itemKey
                 ? { ...item, quantity: item.quantity + quantity }
                 : item
             ),
           });
         } else {
-          // Map API Product payload to CartItem
           const newItem: CartItem = {
-            id: product.id,
+            id: itemKey,
+            productId: product.id,
+            variantId,
             title: product.title,
-            price: product.price,
-            primaryImage: product.primaryImage,
-            businessName: product.seller?.businessName || 'Unknown Seller',
+            price,
+            primaryImage: image,
+            businessName: product.seller?.businessName || 'Verified Merchant',
             quantity,
+            color,
+            colorHex,
+            size,
           };
           set({ items: [...currentItems, newItem] });
         }
       },
 
-      removeItem: (productId) => {
-        set({ items: get().items.filter((item) => item.id !== productId) });
+      removeItem: (itemId) => {
+        set({ items: get().items.filter((item) => item.id !== itemId) });
       },
 
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (itemId, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(productId);
+          get().removeItem(itemId);
           return;
         }
         set({
           items: get().items.map((item) =>
-            item.id === productId ? { ...item, quantity } : item
+            item.id === itemId ? { ...item, quantity } : item
           ),
         });
       },

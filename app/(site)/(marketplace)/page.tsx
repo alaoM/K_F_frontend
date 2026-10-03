@@ -61,7 +61,10 @@ async function getCategories() {
     if (!res.ok) return [];
     const data = await res.json();
 
-    return Array.isArray(data) ? data : data?.data || [];
+    const raw = Array.isArray(data) ? data : data?.data || [];
+    return raw.filter(
+      (c: any) => c.slug !== "uncategorized" && c.name?.toLowerCase() !== "uncategorized"
+    );
   } catch (err) {
     console.error("Failed to prefetch categories server-side:", err);
     return [];

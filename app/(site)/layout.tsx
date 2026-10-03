@@ -11,7 +11,10 @@ async function getCategories() {
     });
     if (!res.ok) return [];
     const json = await res.json();
-    return Array.isArray(json) ? json : json?.data || [];
+    const raw = Array.isArray(json) ? json : json?.data || [];
+    return raw.filter(
+      (c: any) => c.slug !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
+    );
   } catch (err) {
     console.error("Failed to fetch layout categories on server:", err);
     return [];

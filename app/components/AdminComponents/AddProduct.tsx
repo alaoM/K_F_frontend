@@ -122,6 +122,82 @@ const AddProduct: React.FC<{
   const [otherFiles, setOtherFiles] = useState<File[]>([]);
   const [otherPreviews, setOtherPreviews] = useState<string[]>([]);
 
+  // ----------------- PRODUCT VARIATIONS STATE -----------------
+  const [hasVariants, setHasVariants] = useState<boolean>(false);
+  const [enableColor, setEnableColor] = useState<boolean>(true);
+  const [enableSize, setEnableSize] = useState<boolean>(true);
+
+  const [colorList, setColorList] = useState<Array<{ name: string; hex: string }>>([
+    { name: 'Black', hex: '#111111' },
+    { name: 'White', hex: '#FFFFFF' },
+  ]);
+  const [newColorName, setNewColorName] = useState('');
+  const [newColorHex, setNewColorHex] = useState('#000000');
+
+  const [sizeList, setSizeList] = useState<string[]>(['S', 'M', 'L', 'XL']);
+  const [newSizeName, setNewSizeName] = useState('');
+
+  const [bulkStockVal, setBulkStockVal] = useState<number>(5);
+
+  interface MatrixRow {
+    id?: string;
+    sku: string;
+    color?: string;
+    colorHex?: string;
+    size?: string;
+    stock: number;
+    price?: number | '';
+  }
+
+  const [variantMatrix, setVariantMatrix] = useState<MatrixRow[]>([]);
+
+  // Regenerate / Synchronize Matrix when colorList or sizeList changes
+  useEffect(() => {
+    if (!hasVariants) return;
+
+    const activeColors = enableColor && colorList.length > 0 ? colorList : [{ name: '', hex: '' }];
+    const activeSizes = enableSize && sizeList.length > 0 ? sizeList : [''];
+
+    const newMatrix: MatrixRow[] = [];
+
+    activeColors.forEach((col) => {
+      activeSizes.forEach((sz) => {
+        if (!col.name && !sz) return;
+
+        // Try to find existing matching row to preserve stock/price
+        const existing = variantMatrix.find(
+          (m) => (col.name ? m.color === col.name : !m.color) && (sz ? m.size === sz : !m.size)
+        );
+
+        const skuParts = [
+          watch('title') ? watch('title').slice(0, 3).toUpperCase() : 'PRD',
+          col.name ? col.name.slice(0, 3).toUpperCase() : '',
+          sz ? sz.toUpperCase() : '',
+        ].filter(Boolean);
+
+        newMatrix.push({
+          id: existing?.id,
+          color: col.name || undefined,
+          colorHex: col.hex || undefined,
+          size: sz || undefined,
+          stock: existing !== undefined ? existing.stock : 5,
+          price: existing?.price !== undefined ? existing.price : '',
+          sku: existing?.sku || skuParts.join('-'),
+        });
+      });
+    });
+
+    setVariantMatrix(newMatrix);
+  }, [hasVariants, enableColor, enableSize, colorList, sizeList]);
+
+  // Sync total variant stock to main form stock field
+  useEffect(() => {
+    if (hasVariants && variantMatrix.length > 0) {
+      const totalStock = variantMatrix.reduce((acc, row) => acc + (Number(row.stock) || 0), 0);
+      setValue('stock', totalStock);
+    }
+  }, [hasVariants, variantMatrix, setValue]);
+
   /* ---------------- FETCH CATEGORIES ---------------- */
   const fetchCategories = useCallback(async () => {
     try {
@@ -198,6 +274,49 @@ const normalizeStatusForForm = (status?: string): string => {
         } catch {
           setOtherPreviews([]);
         }
+      }
+
+      // Preload Variants if available
+      if (initialData.hasVariants || (Array.isArray(initialData.variants) && initialData.variants.length > 0)) {
+        setHasVariants(true);
+        const vars = initialData.variants || [];
+        const loadedColors: Array<{ name: string; hex: string }> = [];
+        const loadedSizes: string[] = [];
+
+        vars.forEach((v: any) => {
+          if (v.color && !loadedColors.some((c) => c.name.toLowerCase() === v.color.toLowerCase())) {
+            loadedColors.push({ name: v.color, hex: v.colorHex || '#111111' });
+          }
+          if (v.size && !loadedSizes.includes(v.size)) {
+            loadedSizes.push(v.size);
+          }
+        });
+
+        if (loadedColors.length > 0) {
+          setEnableColor(true);
+          setColorList(loadedColors);
+        } else {
+          setEnableColor(false);
+        }
+
+        if (loadedSizes.length > 0) {
+          setEnableSize(true);
+          setSizeList(loadedSizes);
+        } else {
+          setEnableSize(false);
+        }
+
+        setVariantMatrix(
+          vars.map((v: any) => ({
+            id: v.id,
+            sku: v.sku || '',
+            color: v.color,
+            colorHex: v.colorHex,
+            size: v.size,
+            stock: Number(v.stock) || 0,
+            price: v.price !== undefined && v.price !== null ? v.price : '',
+          }))
+        );
       }
     }
   }, [initialData, flattenedCategories, reset, setValue]);
@@ -288,9 +407,29 @@ const normalizeStatusForForm = (status?: string): string => {
       const payload = {
         ...data,
         price: Number(data.price),
-        stock: Number(data.stock),
+        stock: hasVariants && variantMatrix.length > 0
+          ? variantMatrix.reduce((acc, r) => acc + (Number(r.stock) || 0), 0)
+          : Number(data.stock),
         status: data.status.toLowerCase(),
         categoryId: chosenCategoryId,
+        hasVariants,
+        variantOptions: hasVariants
+          ? {
+              colors: enableColor ? colorList.map((c) => c.name) : [],
+              sizes: enableSize ? sizeList : [],
+            }
+          : undefined,
+        variants: hasVariants
+          ? variantMatrix.map((r) => ({
+              id: r.id,
+              sku: r.sku,
+              color: r.color,
+              colorHex: r.colorHex,
+              size: r.size,
+              stock: Number(r.stock) || 0,
+              price: r.price !== '' && r.price !== undefined ? Number(r.price) : undefined,
+            }))
+          : [],
       };
 
       let primaryUrl = initialData?.primaryImage || '';
@@ -425,17 +564,18 @@ const normalizeStatusForForm = (status?: string): string => {
               </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-black uppercase tracking-wider text-[#111111]">
-                  Stock Quantity
+                  {hasVariants ? 'Total Stock (Auto-Summed)' : 'Stock Quantity'}
                 </label>
                 <input
                   type="number"
+                  disabled={hasVariants}
                   {...register('stock', {
                     required: 'Number of stock available is required',
                     valueAsNumber: true,
                     min: { value: 0, message: 'Cannot be negative' },
                   })}
                   placeholder="0"
-                  className={`w-full border ${errors.stock ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} rounded-none px-4 py-2.5 outline-none text-xs font-semibold transition-colors bg-white`}
+                  className={`w-full border ${errors.stock ? 'border-red-500' : 'border-gray-300 focus:border-[#111111]'} ${hasVariants ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-white'} rounded-none px-4 py-2.5 outline-none text-xs font-semibold transition-colors`}
                 />
                 {errors.stock && <p className="text-rose-500 text-xs mt-1 font-bold">{errors.stock.message}</p>}
               </div>
@@ -464,6 +604,369 @@ const normalizeStatusForForm = (status?: string): string => {
                     ₦{estimatedNetPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* ---------------- VARIATIONS BUILDER ---------------- */}
+          <div className="bg-white p-6 rounded-none border border-gray-300 shadow-sm space-y-6">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-3 flex-wrap gap-2">
+              <div>
+                <h3 className="font-black text-sm uppercase tracking-wider text-[#111111]">
+                  Product Variations (Sizes & Colors)
+                </h3>
+                <p className="text-gray-500 text-xs mt-0.5 font-medium">
+                  Configure specific colors, sizes, and individual stock levels.
+                </p>
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer bg-gray-50 border border-gray-300 hover:border-[#111111] px-3 py-1.5 transition-all">
+                <input
+                  type="checkbox"
+                  checked={hasVariants}
+                  onChange={(e) => setHasVariants(e.target.checked)}
+                  className="w-4 h-4 accent-[#111111] cursor-pointer"
+                />
+                <span className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                  Enable Variations
+                </span>
+              </label>
+            </div>
+
+            {hasVariants && (
+              <div className="space-y-6">
+                {/* 1. COLOR OPTIONS */}
+                <div className="p-4 bg-gray-50 border border-gray-200 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={enableColor}
+                        onChange={(e) => setEnableColor(e.target.checked)}
+                        className="w-4 h-4 accent-[#111111]"
+                      />
+                      <span className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                        1. Colors & Swatches
+                      </span>
+                    </label>
+                    <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                      {colorList.length} Selected
+                    </span>
+                  </div>
+
+                  {enableColor && (
+                    <div className="space-y-3 pt-2">
+                      {/* Active Color Chips */}
+                      <div className="flex flex-wrap gap-2">
+                        {colorList.map((col, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-2 px-2.5 py-1.5 bg-white border border-gray-300 rounded-none shadow-xs text-xs font-bold text-[#111111]"
+                          >
+                            <span
+                              className="w-4 h-4 rounded-full border border-gray-400 shrink-0 inline-block shadow-xs"
+                              style={{ backgroundColor: col.hex }}
+                            />
+                            <span>{col.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => setColorList((prev) => prev.filter((_, i) => i !== idx))}
+                              className="text-gray-400 hover:text-rose-600 ml-1 p-0.5"
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Color Input */}
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
+                        <input
+                          type="text"
+                          placeholder="Color Name (e.g. Navy Blue)"
+                          value={newColorName}
+                          onChange={(e) => setNewColorName(e.target.value)}
+                          className="border border-gray-300 px-3 py-1.5 text-xs font-semibold bg-white outline-none focus:border-[#111111]"
+                        />
+                        <div className="flex items-center gap-1.5 border border-gray-300 px-2 py-1 bg-white">
+                          <input
+                            type="color"
+                            value={newColorHex}
+                            onChange={(e) => setNewColorHex(e.target.value)}
+                            className="w-6 h-6 border-0 bg-transparent cursor-pointer"
+                          />
+                          <span className="text-[10px] font-mono font-bold text-gray-600">{newColorHex}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (newColorName.trim()) {
+                              setColorList((prev) => [
+                                ...prev,
+                                { name: newColorName.trim(), hex: newColorHex },
+                              ]);
+                              setNewColorName('');
+                            }
+                          }}
+                          className="bg-[#111111] hover:bg-[#f6c947] text-white hover:text-[#111111] px-4 py-2 text-xs font-black uppercase tracking-wider transition-colors"
+                        >
+                          + Add Color
+                        </button>
+                      </div>
+
+                      {/* Quick Presets */}
+                      <div className="pt-2 border-t border-gray-200">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-gray-500 block mb-1.5">
+                          Quick Presets:
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            { name: 'Black', hex: '#111111' },
+                            { name: 'White', hex: '#FFFFFF' },
+                            { name: 'Navy Blue', hex: '#000080' },
+                            { name: 'Red', hex: '#DC2626' },
+                            { name: 'Emerald', hex: '#046307' },
+                            { name: 'Beige', hex: '#F5F5DC' },
+                            { name: 'Brown', hex: '#8B4513' },
+                            { name: 'Gold', hex: '#D4AF37' },
+                          ].map((preset) => (
+                            <button
+                              key={preset.name}
+                              type="button"
+                              onClick={() => {
+                                if (!colorList.some((c) => c.name.toLowerCase() === preset.name.toLowerCase())) {
+                                  setColorList((prev) => [...prev, preset]);
+                                }
+                              }}
+                              className="text-[11px] px-2 py-0.5 bg-white border border-gray-300 hover:border-[#111111] text-gray-800 font-bold flex items-center gap-1.5"
+                            >
+                              <span
+                                className="w-2.5 h-2.5 rounded-full border border-gray-300 shrink-0"
+                                style={{ backgroundColor: preset.hex }}
+                              />
+                              <span>{preset.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. SIZE OPTIONS */}
+                <div className="p-4 bg-gray-50 border border-gray-200 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={enableSize}
+                        onChange={(e) => setEnableSize(e.target.checked)}
+                        className="w-4 h-4 accent-[#111111]"
+                      />
+                      <span className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                        2. Sizes & Dimensions
+                      </span>
+                    </label>
+                    <span className="text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                      {sizeList.length} Selected
+                    </span>
+                  </div>
+
+                  {enableSize && (
+                    <div className="space-y-3 pt-2">
+                      {/* Active Size Pills */}
+                      <div className="flex flex-wrap gap-2">
+                        {sizeList.map((sz, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-1.5 px-3 py-1 bg-white border border-gray-300 text-xs font-bold text-[#111111]"
+                          >
+                            <span>{sz}</span>
+                            <button
+                              type="button"
+                              onClick={() => setSizeList((prev) => prev.filter((_, i) => i !== idx))}
+                              className="text-gray-400 hover:text-rose-600 ml-1 p-0.5"
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Custom Size */}
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
+                        <input
+                          type="text"
+                          placeholder="Custom Size (e.g. XXL or EU 43)"
+                          value={newSizeName}
+                          onChange={(e) => setNewSizeName(e.target.value)}
+                          className="border border-gray-300 px-3 py-1.5 text-xs font-semibold bg-white outline-none focus:border-[#111111]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (newSizeName.trim()) {
+                              setSizeList((prev) => [...prev, newSizeName.trim().toUpperCase()]);
+                              setNewSizeName('');
+                            }
+                          }}
+                          className="bg-[#111111] hover:bg-[#f6c947] text-white hover:text-[#111111] px-4 py-2 text-xs font-black uppercase tracking-wider transition-colors"
+                        >
+                          + Add Size
+                        </button>
+                      </div>
+
+                      {/* Quick Size Presets */}
+                      <div className="pt-2 border-t border-gray-200 flex flex-wrap gap-2 items-center">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">
+                          Add Presets:
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setSizeList(['XS', 'S', 'M', 'L', 'XL', 'XXL'])}
+                          className="text-[11px] px-2.5 py-1 bg-white border border-gray-300 hover:border-[#111111] text-[#111111] font-bold"
+                        >
+                          + Standard (XS - XXL)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSizeList(['38', '39', '40', '41', '42', '43', '44', '45'])}
+                          className="text-[11px] px-2.5 py-1 bg-white border border-gray-300 hover:border-[#111111] text-[#111111] font-bold"
+                        >
+                          + Shoes (EU 38 - 45)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSizeList(['One Size'])}
+                          className="text-[11px] px-2.5 py-1 bg-white border border-gray-300 hover:border-[#111111] text-[#111111] font-bold"
+                        >
+                          + One Size
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. VARIANT INVENTORY & PRICING MATRIX TABLE */}
+                {variantMatrix.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <h4 className="text-xs font-black uppercase tracking-wider text-[#111111]">
+                        3. Inventory & Pricing Matrix ({variantMatrix.length} Combinations)
+                      </h4>
+
+                      {/* Bulk Stock Toolbar */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-gray-500 font-bold uppercase">Set all stock:</span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={bulkStockVal}
+                          onChange={(e) => setBulkStockVal(Math.max(0, parseInt(e.target.value) || 0))}
+                          className="w-16 border border-gray-300 px-2 py-1 text-xs font-bold text-center bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setVariantMatrix((prev) =>
+                              prev.map((row) => ({ ...row, stock: bulkStockVal }))
+                            );
+                          }}
+                          className="text-xs bg-[#f6c947] hover:bg-[#111111] hover:text-white text-[#111111] font-black uppercase px-2.5 py-1 transition-colors"
+                        >
+                          Apply to All
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto border border-gray-300 bg-white">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-gray-100 border-b border-gray-300 text-[10px] font-black uppercase tracking-wider text-gray-600">
+                            <th className="p-3">Variant Option</th>
+                            <th className="p-3 w-32">Stock Qty</th>
+                            <th className="p-3 w-36">Custom Price (₦)</th>
+                            <th className="p-3 w-40">SKU Code</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {variantMatrix.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  {row.color && (
+                                    <div className="flex items-center gap-1.5">
+                                      <span
+                                        className="w-3.5 h-3.5 rounded-full border border-gray-400 shrink-0"
+                                        style={{ backgroundColor: row.colorHex || '#111111' }}
+                                      />
+                                      <span className="font-bold text-[#111111]">{row.color}</span>
+                                    </div>
+                                  )}
+                                  {row.color && row.size && <span className="text-gray-400">/</span>}
+                                  {row.size && (
+                                    <span className="bg-gray-100 px-2 py-0.5 font-mono font-bold text-[#111111] border border-gray-300">
+                                      {row.size}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={row.stock}
+                                  onChange={(e) => {
+                                    const val = Math.max(0, parseInt(e.target.value) || 0);
+                                    setVariantMatrix((prev) =>
+                                      prev.map((r, i) => (i === idx ? { ...r, stock: val } : r))
+                                    );
+                                  }}
+                                  className="w-full border border-gray-300 px-2.5 py-1 font-bold text-[#111111] text-xs outline-none focus:border-[#111111]"
+                                />
+                              </td>
+                              <td className="p-3">
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="Base Price"
+                                  value={row.price}
+                                  onChange={(e) => {
+                                    const val = e.target.value === '' ? '' : parseFloat(e.target.value) || 0;
+                                    setVariantMatrix((prev) =>
+                                      prev.map((r, i) => (i === idx ? { ...r, price: val } : r))
+                                    );
+                                  }}
+                                  className="w-full border border-gray-300 px-2.5 py-1 font-medium text-xs outline-none focus:border-[#111111]"
+                                />
+                              </td>
+                              <td className="p-3">
+                                <input
+                                  type="text"
+                                  value={row.sku}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setVariantMatrix((prev) =>
+                                      prev.map((r, i) => (i === idx ? { ...r, sku: val } : r))
+                                    );
+                                  }}
+                                  className="w-full border border-gray-300 px-2.5 py-1 font-mono text-[11px] outline-none focus:border-[#111111]"
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="p-3 bg-gray-50 border border-gray-300 flex justify-between items-center text-xs font-black uppercase tracking-wider text-[#111111]">
+                      <span>Total Inventory Count Across Variations:</span>
+                      <span className="text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-none">
+                        {variantMatrix.reduce((sum, r) => sum + (Number(r.stock) || 0), 0)} Units in Stock
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

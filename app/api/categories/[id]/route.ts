@@ -12,7 +12,12 @@ export async function DELETE(
     try {
         const { id } = await context.params;
         const token = await getAuthToken();
-        const response = await axios.delete(`${process.env.BASE_URL}/categories/${id}`, {
+        const transferTo = request.nextUrl.searchParams.get('transferTo');
+        const url = transferTo
+            ? `${process.env.BASE_URL}/categories/${id}?transferTo=${encodeURIComponent(transferTo)}`
+            : `${process.env.BASE_URL}/categories/${id}`;
+
+        const response = await axios.delete(url, {
             headers: { Authorization: `Bearer ${token}` }
         });
         try {
@@ -21,6 +26,7 @@ export async function DELETE(
         return NextResponse.json({ success: true, data: response.data });
     } catch (e) { return handleAxiosError(e); }
 }
+
 
 // UPDATE a category
 export async function PATCH(

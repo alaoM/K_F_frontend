@@ -43,7 +43,11 @@ const Collections = () => {
                 const res = await fetch('/api/categories')
                 const json = await res.json()
                 if (json.success && Array.isArray(json.data)) {
-                    setCategories(json.data)
+                    setCategories(
+                        json.data.filter(
+                            (c: any) => c.slug !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
+                        )
+                    )
                 }
             } catch (err) {
                 console.error('Failed to fetch categories', err)

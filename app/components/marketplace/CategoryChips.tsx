@@ -32,8 +32,11 @@ const CategoryBanners = ({ categories = [] }: CategoryBannersProps) => {
   // Prefer root/parent categories if nested hierarchy exists
   const topCategories = React.useMemo(() => {
     if (!categories || categories.length === 0) return [];
-    const rootCats = categories.filter((c) => !c.parentId && !c.parent);
-    return rootCats.length > 0 ? rootCats : categories;
+    const valid = categories.filter(
+      (c) => c.slug !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
+    );
+    const rootCats = valid.filter((c) => !c.parentId && !c.parent);
+    return rootCats.length > 0 ? rootCats : valid;
   }, [categories]);
 
   if (!categories || categories.length === 0) {

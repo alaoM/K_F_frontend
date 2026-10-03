@@ -117,10 +117,33 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                       <h4 className="font-black text-xs text-[#111111] uppercase tracking-tight line-clamp-2">
                         {item.title}
                       </h4>
+
+                      {/* Variant details if present */}
+                      {(item.color || item.size) && (
+                        <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                          {item.color && (
+                            <span className="inline-flex items-center gap-1 bg-gray-100 px-1.5 py-0.5 text-[9px] font-bold text-gray-800 border border-gray-200">
+                              {item.colorHex && (
+                                <span
+                                  className="w-2 h-2 rounded-full border border-gray-400 shrink-0"
+                                  style={{ backgroundColor: item.colorHex }}
+                                />
+                              )}
+                              <span>{item.color}</span>
+                            </span>
+                          )}
+                          {item.size && (
+                            <span className="inline-block bg-gray-100 px-1.5 py-0.5 text-[9px] font-mono font-bold text-gray-800 border border-gray-200">
+                              Size: {item.size}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                         Unit Price: {formatCurrency(item.price)}
                       </p>
-                      <p className="text-xs font-black text-[#111111] pt-1">
+                      <p className="text-xs font-black text-[#111111] pt-0.5">
                         {formatCurrency(item.price * item.quantity)}
                       </p>
                     </div>

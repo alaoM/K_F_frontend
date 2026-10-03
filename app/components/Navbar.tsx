@@ -289,8 +289,11 @@ export default function Navbar({
   useEffect(() => {
     setMounted(true);
     if (initialCategories && initialCategories.length > 0) {
-      setCategories(initialCategories);
-      setHoveredRootCat((prev) => prev || initialCategories[0]);
+      const filtered = initialCategories.filter(
+        (c: any) => c.slug !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
+      );
+      setCategories(filtered);
+      setHoveredRootCat((prev) => prev || filtered[0]);
       return;
     }
 
@@ -299,9 +302,12 @@ export default function Navbar({
         const res = await fetch('/api/categories');
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
-          setCategories(json.data);
-          if (json.data.length > 0) {
-            setHoveredRootCat(json.data[0]);
+          const filtered = json.data.filter(
+            (c: any) => c.slug !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
+          );
+          setCategories(filtered);
+          if (filtered.length > 0) {
+            setHoveredRootCat(filtered[0]);
           }
         }
       } catch (err) {

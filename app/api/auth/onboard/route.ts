@@ -64,8 +64,7 @@ export async function POST(request: Request) {
         /* ----------------------------- */
         /* 4. SUCCESS RESPONSE           */
         /* ----------------------------- */
-
-        console.log("Onboarding response:", response.data); // Server-side logging ONLY
+ 
         return NextResponse.json(
             {
                 success: true,
