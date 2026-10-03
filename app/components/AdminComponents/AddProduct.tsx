@@ -1,8 +1,6 @@
-'use client';
-
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { ArrowLeft, Upload, X, Save, Plus, Layers, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Upload, X, Save, Plus, Layers, ChevronRight, Trash2, RotateCcw, Filter, Sparkles } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
@@ -123,6 +121,7 @@ const AddProduct: React.FC<{
   const [otherPreviews, setOtherPreviews] = useState<string[]>([]);
 
   // ----------------- PRODUCT VARIATIONS STATE -----------------
+  const isPreloadingRef = useRef<boolean>(false);
   const [hasVariants, setHasVariants] = useState<boolean>(false);
   const [enableColor, setEnableColor] = useState<boolean>(true);
   const [enableSize, setEnableSize] = useState<boolean>(true);
@@ -138,6 +137,8 @@ const AddProduct: React.FC<{
   const [newSizeName, setNewSizeName] = useState('');
 
   const [bulkStockVal, setBulkStockVal] = useState<number>(5);
+  const [bulkPriceVal, setBulkPriceVal] = useState<string>('');
+  const [matrixColorFilter, setMatrixColorFilter] = useState<string>('ALL');
 
   interface MatrixRow {
     id?: string;
@@ -151,10 +152,8 @@ const AddProduct: React.FC<{
 
   const [variantMatrix, setVariantMatrix] = useState<MatrixRow[]>([]);
 
-  // Regenerate / Synchronize Matrix when colorList or sizeList changes
-  useEffect(() => {
-    if (!hasVariants) return;
-
+  // Regenerate / restore all possible combinations (Cartesian product)
+  const restoreAllCombinations = useCallback(() => {
     const activeColors = enableColor && colorList.length > 0 ? colorList : [{ name: '', hex: '' }];
     const activeSizes = enableSize && sizeList.length > 0 ? sizeList : [''];
 
@@ -164,13 +163,13 @@ const AddProduct: React.FC<{
       activeSizes.forEach((sz) => {
         if (!col.name && !sz) return;
 
-        // Try to find existing matching row to preserve stock/price
+        // Try to find existing matching row to preserve customized stock/price
         const existing = variantMatrix.find(
           (m) => (col.name ? m.color === col.name : !m.color) && (sz ? m.size === sz : !m.size)
         );
 
         const skuParts = [
-          watch('title') ? watch('title').slice(0, 3).toUpperCase() : 'PRD',
+          'PRD',
           col.name ? col.name.slice(0, 3).toUpperCase() : '',
           sz ? sz.toUpperCase() : '',
         ].filter(Boolean);
@@ -188,6 +187,56 @@ const AddProduct: React.FC<{
     });
 
     setVariantMatrix(newMatrix);
+    toast.success('Restored all combination rows');
+  }, [enableColor, colorList, enableSize, sizeList, variantMatrix]);
+
+  // Synchronize Matrix when colorList or sizeList changes without overwriting user deletions
+  useEffect(() => {
+    if (!hasVariants) return;
+
+    if (isPreloadingRef.current) {
+      isPreloadingRef.current = false;
+      return;
+    }
+
+    const activeColors = enableColor && colorList.length > 0 ? colorList : [{ name: '', hex: '' }];
+    const activeSizes = enableSize && sizeList.length > 0 ? sizeList : [''];
+
+    setVariantMatrix((prev) => {
+      // 1. Remove rows for colors or sizes that were deleted from the option lists
+      const filtered = prev.filter((row) => {
+        const colorStillValid = !enableColor || !row.color || colorList.some((c) => c.name === row.color);
+        const sizeStillValid = !enableSize || !row.size || sizeList.includes(row.size);
+        return colorStillValid && sizeStillValid;
+      });
+
+      // 2. If prev was empty, generate initial matrix
+      if (prev.length === 0) {
+        const initialRows: MatrixRow[] = [];
+        activeColors.forEach((col) => {
+          activeSizes.forEach((sz) => {
+            if (!col.name && !sz) return;
+            const skuParts = [
+              'PRD',
+              col.name ? col.name.slice(0, 3).toUpperCase() : '',
+              sz ? sz.toUpperCase() : '',
+            ].filter(Boolean);
+
+            initialRows.push({
+              color: col.name || undefined,
+              colorHex: col.hex || undefined,
+              size: sz || undefined,
+              stock: 5,
+              price: '',
+              sku: skuParts.join('-'),
+            });
+          });
+        });
+        return initialRows;
+      }
+
+      return filtered;
+    });
   }, [hasVariants, enableColor, enableSize, colorList, sizeList]);
 
   // Sync total variant stock to main form stock field
@@ -224,20 +273,20 @@ const normalizeStatusForForm = (status?: string): string => {
 };
 
   useEffect(() => {
-    if (initialData) {
+    const applyProductData = (prod: any) => {
       let initCatId =
-        initialData.categoryId ||
-        initialData.category?.id ||
-        initialData.rawCategory?.id ||
+        prod.categoryId ||
+        prod.category?.id ||
+        prod.rawCategory?.id ||
         '';
 
-      if (!initCatId && initialData.category && typeof initialData.category === 'string') {
-        const directMatch = flattenedCategories.find((c) => c.id === initialData.category);
+      if (!initCatId && prod.category && typeof prod.category === 'string') {
+        const directMatch = flattenedCategories.find((c) => c.id === prod.category);
         if (directMatch) {
           initCatId = directMatch.id;
         } else {
           const nameMatch = flattenedCategories.find(
-            (c) => c.name.toLowerCase() === initialData.category.toLowerCase()
+            (c) => c.name.toLowerCase() === prod.category.toLowerCase()
           );
           if (nameMatch) {
             initCatId = nameMatch.id;
@@ -246,14 +295,14 @@ const normalizeStatusForForm = (status?: string): string => {
       }
 
       const formStatus = normalizeStatusForForm(
-        initialData.rawStatus || initialData.status
+        prod.rawStatus || prod.status
       );
 
       reset({
-        title: initialData.title || initialData.name || '',
-        description: initialData.description || '',
-        price: initialData.price || 0,
-        stock: initialData.stock || 0,
+        title: prod.title || prod.name || '',
+        description: prod.description || '',
+        price: prod.price || 0,
+        stock: prod.stock || 0,
         status: formStatus,
         category: initCatId,
         categoryId: initCatId,
@@ -265,21 +314,23 @@ const normalizeStatusForForm = (status?: string): string => {
       }
       setValue('status', formStatus);
 
-      setPrimaryPreview(initialData.primaryImage || initialData.image || null);
-      if (Array.isArray(initialData.otherImages)) {
-        setOtherPreviews(initialData.otherImages);
-      } else if (typeof initialData.otherImages === 'string') {
+      setPrimaryPreview(prod.primaryImage || prod.image || null);
+      if (Array.isArray(prod.otherImages)) {
+        setOtherPreviews(prod.otherImages);
+      } else if (typeof prod.otherImages === 'string') {
         try {
-          setOtherPreviews(JSON.parse(initialData.otherImages));
+          setOtherPreviews(JSON.parse(prod.otherImages));
         } catch {
           setOtherPreviews([]);
         }
       }
 
       // Preload Variants if available
-      if (initialData.hasVariants || (Array.isArray(initialData.variants) && initialData.variants.length > 0)) {
+      const vars = prod.variants || [];
+      if (prod.hasVariants || vars.length > 0) {
+        isPreloadingRef.current = true;
         setHasVariants(true);
-        const vars = initialData.variants || [];
+
         const loadedColors: Array<{ name: string; hex: string }> = [];
         const loadedSizes: string[] = [];
 
@@ -317,9 +368,26 @@ const normalizeStatusForForm = (status?: string): string => {
             price: v.price !== undefined && v.price !== null ? v.price : '',
           }))
         );
+      } else {
+        setHasVariants(false);
+      }
+    };
+
+    if (initialData) {
+      applyProductData(initialData);
+
+      // If initialData is missing variants or incomplete, fetch full product by ID
+      if (initialData.id) {
+        fetcher(`/api/products/${initialData.id}`)
+          .then((res: any) => {
+            if (res?.data) {
+              applyProductData(res.data);
+            }
+          })
+          .catch(() => {});
       }
     }
-  }, [initialData, flattenedCategories, reset, setValue]);
+  }, [initialData, flattenedCategories, reset, setValue, fetcher]);
 
   /* ---------------- IMAGE UPLOAD ---------------- */
   const uploadPrimaryImage = async (file: File): Promise<string> => {
@@ -583,7 +651,7 @@ const normalizeStatusForForm = (status?: string): string => {
 
             {/* LIVE SELLER PAYOUT NOTIFICATION */}
             {numericPrice > 0 && (
-              <div className="bg-gray-50 p-4 rounded-none border border-gray-300 space-y-2">
+              <div className="bg-gray-50 p-4 rounded-none border border-gray-300 space-y-2.5">
                 <div className="flex justify-between items-center text-xs font-black uppercase tracking-wider text-[#111111]">
                   <span className="flex items-center gap-1.5">
                     🏷️ Category Commission {selectedCategoryObj ? `(${selectedCategoryObj.name})` : '(Default Rate)'}:
@@ -599,10 +667,13 @@ const normalizeStatusForForm = (status?: string): string => {
                   </span>
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t border-gray-200 text-xs sm:text-sm font-black uppercase tracking-wider text-[#111111]">
-                  <span>Your Net Earnings Per Item Sold:</span>
+                  <span>Your Net Earnings Per Base Item Sold:</span>
                   <span className="text-emerald-700 font-black">
                     ₦{estimatedNetPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
+                </div>
+                <div className="text-[10px] text-gray-500 font-medium pt-1 border-t border-gray-200 flex items-center gap-1">
+                  <span>💡 Note: The {(effectiveCommission * 100).toFixed(1)}% commission applies proportionally to each variation based on its custom price.</span>
                 </div>
               </div>
             )}
@@ -849,118 +920,261 @@ const normalizeStatusForForm = (status?: string): string => {
 
                 {/* 3. VARIANT INVENTORY & PRICING MATRIX TABLE */}
                 {variantMatrix.length > 0 && (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <h4 className="text-xs font-black uppercase tracking-wider text-[#111111]">
-                        3. Inventory & Pricing Matrix ({variantMatrix.length} Combinations)
-                      </h4>
+                  <div className="space-y-4 pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <div>
+                        <h4 className="text-xs font-black uppercase tracking-wider text-[#111111] flex items-center gap-2">
+                          <span>3. Inventory & Pricing Matrix ({variantMatrix.length} Active Combinations)</span>
+                        </h4>
+                        <p className="text-[11px] text-gray-500 font-medium mt-0.5">
+                          Delete combinations you don't produce, or set stock to 0 for temporarily sold out items.
+                        </p>
+                      </div>
 
-                      {/* Bulk Stock Toolbar */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-gray-500 font-bold uppercase">Set all stock:</span>
+                      <button
+                        type="button"
+                        onClick={restoreAllCombinations}
+                        className="text-xs font-bold text-gray-700 hover:text-[#111111] flex items-center gap-1.5 border border-gray-300 hover:border-gray-500 bg-white px-3 py-1.5 transition-colors cursor-pointer"
+                        title="Recreate any missing/deleted color-size combination rows"
+                      >
+                        <RotateCcw size={13} />
+                        <span>Restore All Combinations</span>
+                      </button>
+                    </div>
+
+                    {/* COLOR FILTER TABS (FOR MULTI-COLOR MANAGEMENT) */}
+                    {colorList.length > 1 && (
+                      <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 mr-1 flex items-center gap-1">
+                          <Filter size={11} /> Filter:
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setMatrixColorFilter('ALL')}
+                          className={`text-xs px-2.5 py-1 font-bold transition-colors cursor-pointer ${
+                            matrixColorFilter === 'ALL'
+                              ? 'bg-[#111111] text-white'
+                              : 'bg-white border border-gray-300 text-gray-700 hover:border-gray-500'
+                          }`}
+                        >
+                          All Colors ({variantMatrix.length})
+                        </button>
+                        {colorList.map((col) => {
+                          const count = variantMatrix.filter((m) => m.color === col.name).length;
+                          const isSelected = matrixColorFilter === col.name;
+                          return (
+                            <button
+                              key={col.name}
+                              type="button"
+                              onClick={() => setMatrixColorFilter(col.name)}
+                              className={`text-xs px-2.5 py-1 font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                                isSelected
+                                  ? 'bg-[#111111] text-white'
+                                  : 'bg-white border border-gray-300 text-gray-700 hover:border-gray-500'
+                              }`}
+                            >
+                              <span
+                                className="w-2 h-2 rounded-full border border-gray-300 shrink-0"
+                                style={{ backgroundColor: col.hex }}
+                              />
+                              <span>{col.name}</span>
+                              <span className={`text-[10px] ${isSelected ? 'text-gray-300' : 'text-gray-400'}`}>
+                                ({count})
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* BULK ACTIONS TOOLBAR */}
+                    <div className="p-3 bg-gray-50 border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Bulk Stock */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[11px] text-gray-600 font-bold uppercase">
+                          Bulk Stock {matrixColorFilter !== 'ALL' ? `(${matrixColorFilter})` : ''}:
+                        </span>
                         <input
                           type="number"
                           min="0"
                           value={bulkStockVal}
                           onChange={(e) => setBulkStockVal(Math.max(0, parseInt(e.target.value) || 0))}
-                          className="w-16 border border-gray-300 px-2 py-1 text-xs font-bold text-center bg-white"
+                          className="w-16 border border-gray-300 px-2 py-1 text-xs font-bold text-center bg-white outline-none focus:border-[#111111]"
                         />
                         <button
                           type="button"
                           onClick={() => {
                             setVariantMatrix((prev) =>
-                              prev.map((row) => ({ ...row, stock: bulkStockVal }))
+                              prev.map((row) =>
+                                matrixColorFilter === 'ALL' || row.color === matrixColorFilter
+                                  ? { ...row, stock: bulkStockVal }
+                                  : row
+                              )
                             );
+                            toast.success(`Updated stock to ${bulkStockVal}`);
                           }}
-                          className="text-xs bg-[#f6c947] hover:bg-[#111111] hover:text-white text-[#111111] font-black uppercase px-2.5 py-1 transition-colors"
+                          className="text-xs bg-[#111111] hover:bg-[#f6c947] hover:text-[#111111] text-white font-black uppercase px-3 py-1 transition-colors cursor-pointer"
                         >
-                          Apply to All
+                          Apply Stock
+                        </button>
+                      </div>
+
+                      {/* Bulk Price */}
+                      <div className="flex items-center gap-2 flex-wrap md:justify-end">
+                        <span className="text-[11px] text-gray-600 font-bold uppercase">
+                          Bulk Price {matrixColorFilter !== 'ALL' ? `(${matrixColorFilter})` : ''}:
+                        </span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          placeholder="Base Price"
+                          value={bulkPriceVal}
+                          onChange={(e) => setBulkPriceVal(e.target.value)}
+                          className="w-24 border border-gray-300 px-2 py-1 text-xs font-bold text-center bg-white outline-none focus:border-[#111111]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const val = bulkPriceVal === '' ? '' : parseFloat(bulkPriceVal) || 0;
+                            setVariantMatrix((prev) =>
+                              prev.map((row) =>
+                                matrixColorFilter === 'ALL' || row.color === matrixColorFilter
+                                  ? { ...row, price: val }
+                                  : row
+                              )
+                            );
+                            toast.success(`Updated price across ${matrixColorFilter === 'ALL' ? 'all' : matrixColorFilter} variants`);
+                          }}
+                          className="text-xs bg-[#f6c947] hover:bg-[#111111] hover:text-white text-[#111111] font-black uppercase px-3 py-1 transition-colors cursor-pointer"
+                        >
+                          Apply Price
                         </button>
                       </div>
                     </div>
 
+                    {/* TABLE */}
                     <div className="overflow-x-auto border border-gray-300 bg-white">
                       <table className="w-full text-left border-collapse text-xs">
                         <thead>
                           <tr className="bg-gray-100 border-b border-gray-300 text-[10px] font-black uppercase tracking-wider text-gray-600">
                             <th className="p-3">Variant Option</th>
                             <th className="p-3 w-32">Stock Qty</th>
-                            <th className="p-3 w-36">Custom Price (₦)</th>
-                            <th className="p-3 w-40">SKU Code</th>
+                            <th className="p-3 w-44">Custom Price (₦)</th>
+                            <th className="p-3 w-36">SKU Code</th>
+                            <th className="p-3 w-16 text-center">Action</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                          {variantMatrix.map((row, idx) => (
-                            <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                              <td className="p-3">
-                                <div className="flex items-center gap-2">
-                                  {row.color && (
-                                    <div className="flex items-center gap-1.5">
-                                      <span
-                                        className="w-3.5 h-3.5 rounded-full border border-gray-400 shrink-0"
-                                        style={{ backgroundColor: row.colorHex || '#111111' }}
-                                      />
-                                      <span className="font-bold text-[#111111]">{row.color}</span>
-                                    </div>
-                                  )}
-                                  {row.color && row.size && <span className="text-gray-400">/</span>}
-                                  {row.size && (
-                                    <span className="bg-gray-100 px-2 py-0.5 font-mono font-bold text-[#111111] border border-gray-300">
-                                      {row.size}
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-                              <td className="p-3">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  value={row.stock}
-                                  onChange={(e) => {
-                                    const val = Math.max(0, parseInt(e.target.value) || 0);
-                                    setVariantMatrix((prev) =>
-                                      prev.map((r, i) => (i === idx ? { ...r, stock: val } : r))
+                          {variantMatrix
+                            .map((row, originalIdx) => ({ row, originalIdx }))
+                            .filter(({ row }) => matrixColorFilter === 'ALL' || row.color === matrixColorFilter)
+                            .map(({ row, originalIdx }) => (
+                              <tr key={originalIdx} className="hover:bg-gray-50 transition-colors">
+                                <td className="p-3">
+                                  <div className="flex items-center gap-2">
+                                    {row.color && (
+                                      <div className="flex items-center gap-1.5">
+                                        <span
+                                          className="w-3.5 h-3.5 rounded-full border border-gray-400 shrink-0"
+                                          style={{ backgroundColor: row.colorHex || '#111111' }}
+                                        />
+                                        <span className="font-bold text-[#111111]">{row.color}</span>
+                                      </div>
+                                    )}
+                                    {row.color && row.size && <span className="text-gray-400">/</span>}
+                                    {row.size && (
+                                      <span className="bg-gray-100 px-2 py-0.5 font-mono font-bold text-[#111111] border border-gray-300">
+                                        {row.size}
+                                      </span>
+                                    )}
+                                    {Number(row.stock) === 0 && (
+                                      <span className="ml-1 text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 px-1.5 py-0.5">
+                                        Out of stock
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="p-3">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={row.stock}
+                                    onChange={(e) => {
+                                      const val = Math.max(0, parseInt(e.target.value) || 0);
+                                      setVariantMatrix((prev) =>
+                                        prev.map((r, i) => (i === originalIdx ? { ...r, stock: val } : r))
+                                      );
+                                    }}
+                                    className="w-full border border-gray-300 px-2.5 py-1 font-bold text-[#111111] text-xs outline-none focus:border-[#111111]"
+                                  />
+                                </td>
+                                <td className="p-3">
+                                  <input
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="Base Price"
+                                    value={row.price}
+                                    onChange={(e) => {
+                                      const val = e.target.value === '' ? '' : parseFloat(e.target.value) || 0;
+                                      setVariantMatrix((prev) =>
+                                        prev.map((r, i) => (i === originalIdx ? { ...r, price: val } : r))
+                                      );
+                                    }}
+                                    className="w-full border border-gray-300 px-2.5 py-1 font-medium text-xs outline-none focus:border-[#111111]"
+                                  />
+                                  {/* LIVE NET PAYOUT FOR VARIANT */}
+                                  {(() => {
+                                    const hasCustomPrice = row.price !== '' && row.price !== undefined;
+                                    const effectiveVariantPrice = hasCustomPrice ? Number(row.price) : numericPrice;
+                                    if (effectiveVariantPrice <= 0) return null;
+                                    const fee = effectiveVariantPrice * effectiveCommission;
+                                    const net = effectiveVariantPrice - fee;
+                                    return (
+                                      <div className="mt-1 flex items-center justify-between text-[10px] leading-tight">
+                                        <span className="font-bold text-emerald-700">
+                                          Net: ₦{Math.round(net).toLocaleString()}
+                                        </span>
+                                        <span className="text-gray-400 font-medium">
+                                          (-₦{Math.round(fee).toLocaleString()})
+                                        </span>
+                                      </div>
                                     );
-                                  }}
-                                  className="w-full border border-gray-300 px-2.5 py-1 font-bold text-[#111111] text-xs outline-none focus:border-[#111111]"
-                                />
-                              </td>
-                              <td className="p-3">
-                                <input
-                                  type="number"
-                                  step="0.01"
-                                  placeholder="Base Price"
-                                  value={row.price}
-                                  onChange={(e) => {
-                                    const val = e.target.value === '' ? '' : parseFloat(e.target.value) || 0;
-                                    setVariantMatrix((prev) =>
-                                      prev.map((r, i) => (i === idx ? { ...r, price: val } : r))
-                                    );
-                                  }}
-                                  className="w-full border border-gray-300 px-2.5 py-1 font-medium text-xs outline-none focus:border-[#111111]"
-                                />
-                              </td>
-                              <td className="p-3">
-                                <input
-                                  type="text"
-                                  value={row.sku}
-                                  onChange={(e) => {
-                                    const val = e.target.value;
-                                    setVariantMatrix((prev) =>
-                                      prev.map((r, i) => (i === idx ? { ...r, sku: val } : r))
-                                    );
-                                  }}
-                                  className="w-full border border-gray-300 px-2.5 py-1 font-mono text-[11px] outline-none focus:border-[#111111]"
-                                />
-                              </td>
-                            </tr>
-                          ))}
+                                  })()}
+                                </td>
+                                <td className="p-3">
+                                  <input
+                                    type="text"
+                                    value={row.sku}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setVariantMatrix((prev) =>
+                                        prev.map((r, i) => (i === originalIdx ? { ...r, sku: val } : r))
+                                      );
+                                    }}
+                                    className="w-full border border-gray-300 px-2.5 py-1 font-mono text-[11px] outline-none focus:border-[#111111]"
+                                  />
+                                </td>
+                                <td className="p-3 text-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setVariantMatrix((prev) => prev.filter((_, i) => i !== originalIdx));
+                                      toast.info(`Removed ${row.color || ''} ${row.size || ''} combination`);
+                                    }}
+                                    title="Exclude this combination (Not produced)"
+                                    className="p-1 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                  >
+                                    <Trash2 size={15} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </div>
 
                     <div className="p-3 bg-gray-50 border border-gray-300 flex justify-between items-center text-xs font-black uppercase tracking-wider text-[#111111]">
-                      <span>Total Inventory Count Across Variations:</span>
+                      <span>Total Inventory Count Across Active Variations:</span>
                       <span className="text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-none">
                         {variantMatrix.reduce((sum, r) => sum + (Number(r.stock) || 0), 0)} Units in Stock
                       </span>

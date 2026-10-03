@@ -99,16 +99,18 @@ const ProductDetailClient = () => {
     ) || null;
   }, [hasVariants, variants, availableColors, availableSizes, selectedColor, selectedSize]);
 
-  // Effective Display Price & Stock
-  const displayPrice = activeVariant?.price !== undefined && activeVariant?.price !== null
-    ? Number(activeVariant.price)
-    : product?.price || 0;
-
+  // Check if combination is produced and in stock
+  const isCombinationProduced = hasVariants ? Boolean(activeVariant) : true;
   const effectiveStock = hasVariants
     ? (activeVariant ? activeVariant.stock : 0)
     : product?.stock || 0;
 
-  const isSoldOut = effectiveStock <= 0;
+  const isSoldOut = !isCombinationProduced || effectiveStock <= 0;
+
+  // Effective Display Price & Stock
+  const displayPrice = activeVariant?.price !== undefined && activeVariant?.price !== null
+    ? Number(activeVariant.price)
+    : product?.price || 0;
 
   // Check Cart State for this specific variant or base product
   const cartItemKey = activeVariant?.id
@@ -124,10 +126,93 @@ const ProductDetailClient = () => {
     else setQty(1);
   }, [cartItem, selectedColor, selectedSize]);
 
+  const handleColorSelect = (colorName: string) => {
+    setSelectedColor(colorName);
+    // Auto-switch to an available size if current size isn't produced for this color
+    const validForColor = variants.filter((v) => v.color === colorName);
+    const currentSizeValid = validForColor.some((v) => v.size === selectedSize);
+    if (!currentSizeValid && validForColor.length > 0) {
+      const firstInStock = validForColor.find((v) => v.stock > 0) || validForColor[0];
+      if (firstInStock?.size) {
+        setSelectedSize(firstInStock.size);
+      }
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-12 h-12 border-4 border-[#111111] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white py-12 px-4 md:px-8 lg:px-16 animate-pulse">
+        {/* SKELETON BACK BUTTON */}
+        <div className="w-28 h-4 bg-gray-200 rounded-none mb-8" />
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          {/* SKELETON LEFT: IMAGES */}
+          <div className="space-y-4">
+            <div className="aspect-[4/5] bg-gray-200 rounded-none border border-gray-100" />
+            <div className="flex gap-3 overflow-hidden">
+              <div className="w-[90px] h-24 bg-gray-200 rounded-none shrink-0" />
+              <div className="w-[90px] h-24 bg-gray-200 rounded-none shrink-0" />
+              <div className="w-[90px] h-24 bg-gray-200 rounded-none shrink-0" />
+              <div className="w-[90px] h-24 bg-gray-200 rounded-none shrink-0" />
+            </div>
+          </div>
+
+          {/* SKELETON RIGHT: DETAILS */}
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-24 h-5 bg-gray-200 rounded-none" />
+                <div className="w-32 h-4 bg-gray-200 rounded-none" />
+              </div>
+              <div className="w-3/4 h-8 bg-gray-200 rounded-none mb-3" />
+              <div className="flex items-center gap-4">
+                <div className="w-32 h-8 bg-gray-200 rounded-none" />
+                <div className="w-24 h-6 bg-gray-100 rounded-none" />
+              </div>
+            </div>
+
+            {/* SKELETON VARIATIONS */}
+            <div className="space-y-4 border-t border-b border-gray-100 py-5">
+              <div className="space-y-2">
+                <div className="w-20 h-3 bg-gray-200 rounded-none" />
+                <div className="flex gap-2">
+                  <div className="w-20 h-8 bg-gray-200 rounded-none" />
+                  <div className="w-20 h-8 bg-gray-200 rounded-none" />
+                  <div className="w-20 h-8 bg-gray-200 rounded-none" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="w-16 h-3 bg-gray-200 rounded-none" />
+                <div className="flex gap-2">
+                  <div className="w-12 h-10 bg-gray-200 rounded-none" />
+                  <div className="w-12 h-10 bg-gray-200 rounded-none" />
+                  <div className="w-12 h-10 bg-gray-200 rounded-none" />
+                </div>
+              </div>
+            </div>
+
+            {/* SKELETON DESCRIPTION */}
+            <div className="space-y-2 border-t border-gray-100 pt-4">
+              <div className="w-24 h-3 bg-gray-200 rounded-none mb-2" />
+              <div className="w-full h-3.5 bg-gray-200 rounded-none" />
+              <div className="w-11/12 h-3.5 bg-gray-200 rounded-none" />
+              <div className="w-4/5 h-3.5 bg-gray-200 rounded-none" />
+            </div>
+
+            {/* SKELETON ACTION BUTTON */}
+            <div className="space-y-4 pt-2 border-t border-gray-100">
+              <div className="w-32 h-10 bg-gray-200 rounded-none" />
+              <div className="w-full h-14 bg-gray-200 rounded-none" />
+            </div>
+
+            {/* SKELETON TRUST BADGES */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-gray-100">
+              <div className="h-16 bg-gray-100 rounded-none" />
+              <div className="h-16 bg-gray-100 rounded-none" />
+              <div className="h-16 bg-gray-100 rounded-none" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -146,7 +231,11 @@ const ProductDetailClient = () => {
         toast.warn('Please select a size option');
         return;
       }
-      if (isSoldOut) {
+      if (!isCombinationProduced) {
+        toast.error('This combination is not available');
+        return;
+      }
+      if (effectiveStock <= 0) {
         toast.error('This variation is currently sold out');
         return;
       }
@@ -224,8 +313,17 @@ const ProductDetailClient = () => {
                 </span>
               )}
               <div className="flex items-center gap-1 text-[#f6c947]">
-                <Star size={14} fill="currentColor" />
-                <span className="text-xs font-bold text-[#111111]">{product.averageRating || 0}</span>
+                <Star
+                  size={14}
+                  fill={product.reviewCount && product.reviewCount > 0 ? "currentColor" : "none"}
+                  stroke="currentColor"
+                  className={product.reviewCount && product.reviewCount > 0 ? "text-[#f6c947]" : "text-gray-400"}
+                />
+                <span className="text-xs font-bold text-[#111111]">
+                  {product.reviewCount && product.reviewCount > 0 && product.averageRating
+                    ? Number(product.averageRating).toFixed(1)
+                    : '0.0'}
+                </span>
                 <span className="text-xs text-gray-400 font-medium">({product.reviewCount || 0} Reviews)</span>
               </div>
             </div>
@@ -262,7 +360,7 @@ const ProductDetailClient = () => {
                         <button
                           key={col.name}
                           type="button"
-                          onClick={() => setSelectedColor(col.name)}
+                          onClick={() => handleColorSelect(col.name)}
                           className={`flex items-center gap-2 px-3 py-1.5 border rounded-none text-xs font-bold transition-all cursor-pointer ${
                             isSelected
                               ? 'border-[#111111] bg-[#111111] text-white shadow-xs'
@@ -294,25 +392,42 @@ const ProductDetailClient = () => {
                     {availableSizes.map((sz) => {
                       const isSelected = selectedSize === sz;
 
-                      // Check stock for this size under current color
+                      // Check if this size is produced in the currently selected color
                       const matchingVar = variants.find(
                         (v) =>
                           (availableColors.length > 0 ? v.color === selectedColor : true) &&
                           v.size === sz
                       );
+                      const isProduced = Boolean(matchingVar);
                       const sizeStock = matchingVar ? matchingVar.stock : 0;
-                      const sizeSoldOut = sizeStock <= 0;
+                      const sizeSoldOut = isProduced && sizeStock <= 0;
 
                       return (
                         <button
                           key={sz}
                           type="button"
-                          onClick={() => setSelectedSize(sz)}
+                          disabled={!isProduced}
+                          onClick={() => {
+                            if (!isProduced) {
+                              toast.info(`Size ${sz} is not available in ${selectedColor || 'this color'}`);
+                              return;
+                            }
+                            setSelectedSize(sz);
+                          }}
+                          title={
+                            !isProduced
+                              ? `Not available in ${selectedColor || 'selected color'}`
+                              : sizeSoldOut
+                              ? `${sz} is Sold Out`
+                              : `${sizeStock} units in stock`
+                          }
                           className={`min-w-[48px] h-10 px-3 border rounded-none text-xs font-black uppercase tracking-wider transition-all relative flex items-center justify-center cursor-pointer ${
                             isSelected
                               ? 'border-[#111111] bg-[#111111] text-white'
+                              : !isProduced
+                              ? 'border-dashed border-gray-200 bg-gray-50/70 text-gray-300 cursor-not-allowed opacity-50'
                               : sizeSoldOut
-                              ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-60'
+                              ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-70'
                               : 'border-gray-300 bg-white text-[#111111] hover:border-[#111111]'
                           }`}
                         >
@@ -326,7 +441,7 @@ const ProductDetailClient = () => {
                           )}
 
                           {/* LOW STOCK BADGE */}
-                          {!sizeSoldOut && sizeStock > 0 && sizeStock <= 3 && !isSelected && (
+                          {isProduced && !sizeSoldOut && sizeStock > 0 && sizeStock <= 3 && !isSelected && (
                             <span className="absolute -top-2 -right-1 bg-amber-500 text-white text-[8px] font-black px-1 rounded-none shadow-xs">
                               {sizeStock} left
                             </span>
@@ -386,7 +501,11 @@ const ProductDetailClient = () => {
               <div className="flex-1 space-y-1">
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Availability</p>
                 <p className={`font-bold text-xs ${!isSoldOut ? 'text-emerald-700' : 'text-rose-600'}`}>
-                  {!isSoldOut ? `${effectiveStock} units available` : 'Sold out / Unavailable'}
+                  {!isCombinationProduced
+                    ? 'Combination Unavailable'
+                    : effectiveStock > 0
+                    ? `${effectiveStock} units available`
+                    : 'Sold out / Out of Stock'}
                 </p>
               </div>
             </div>
@@ -401,7 +520,11 @@ const ProductDetailClient = () => {
               }`}
             >
               <ShoppingCart size={18} />
-              {isSoldOut ? 'SOLD OUT' : cartItem ? 'UPDATE CART' : 'ADD TO CART'}
+              {isSoldOut
+                ? (!isCombinationProduced ? 'UNAVAILABLE COMBINATION' : 'SOLD OUT')
+                : cartItem
+                ? 'UPDATE CART'
+                : 'ADD TO CART'}
             </button>
           </div>
 

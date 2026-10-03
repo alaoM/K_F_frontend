@@ -104,11 +104,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, view, onQuickView, o
           </div>
 
           {/* RATING */}
-          <div className="flex items-center gap-0.5">
-            <Star size={11} fill="#fca311" stroke="#fca311" />
+          <div className="flex items-center gap-1">
+            <Star
+              size={11}
+              fill={product.reviewCount && product.reviewCount > 0 ? "#fca311" : "none"}
+              stroke={product.reviewCount && product.reviewCount > 0 ? "#fca311" : "#9ca3af"}
+            />
             <span className="text-[11px] font-bold text-gray-600">
-              {product.averageRating ? product.averageRating.toFixed(1) : '5.0'}
+              {product.reviewCount && product.reviewCount > 0 && product.averageRating
+                ? Number(product.averageRating).toFixed(1)
+                : '0.0'}
             </span>
+            {product.reviewCount && product.reviewCount > 0 ? (
+              <span className="text-[10px] text-gray-400">({product.reviewCount})</span>
+            ) : null}
           </div>
         </div>
       </div>
